@@ -4,19 +4,33 @@ class ObjectAttribute:
     """
     an object attribute is what can be considered as a column of an object
     """
-    def __init__(self, att_name: str, att_required: bool) -> None:
+    def __init__(self, att_name: str, att_dtype: str, att_required: bool = False) -> None:
         self.att_name = att_name
         self.att_required = att_required
+        self.att_dtype = att_dtype
 
-class ProcessObject:
+class ProcessObjectType:
     """
     an object is a participant in a process 
         ex: customer, employee, material
+    a process object type is a definition of an object, it does not have id
+    it has a unique name that identifies it within the entire process flow
     """
-    def __init__(self, o_name: str, o_attributes: list(ObjectAttribute)) -> None:
+    def __init__(self, o_name: str, o_attributes: [ObjectAttribute]) -> None:
         self.o_name = o_name
         self.o_attributes = o_attributes
-        # self.o_type = o_type # object type ex: Material x, Consultant, 
+        
+class ProcessObjectInstance:
+    """
+    a process object instance is an object which has a type and populated data
+    it has a unique id that identifies it within the entire process flow
+    """
+    def __init__(self, o_type: ProcessObjectType, attributes: dict) -> None:
+        self.o_id = uuid.uuid4()
+        self.o_type = o_type
+        self.attributes = {
+
+        }
 
 class ActivityEffect:
     """
@@ -33,7 +47,7 @@ class ProcessActivity:
     an activity is an action an owner of the action is taking on an object
     activity owner (a_owner) is an object that performs the activity - likely a User object (employee)
     """
-    def __init__(self, a_name: str, a_effect: ActivityEffect, a_object: ProcessObject, a_owner: ProcessObject) -> None:
+    def __init__(self, a_name: str, a_effect: ActivityEffect, a_object: ProcessObjectType, a_owner: ProcessObjectType) -> None:
         self.a_name = a_name
         self.a_effect = a_effect
         self.a_object = a_object
@@ -43,7 +57,7 @@ class ProcessUnit:
     """
     a process unit is an atomic combination of an activity and objects that comes from anther process unit and goes to another process unit
     """
-    def __init__(self, pu_objects: list(ProcessObject), pu_activity: ProcessActivity, pu_comes_from: 'ProcessUnit', pu_goes_to: 'ProcessUnit') -> None:
+    def __init__(self, pu_objects: [ProcessObjectType], pu_activity: ProcessActivity, pu_comes_from: 'ProcessUnit', pu_goes_to: 'ProcessUnit') -> None:
         self.pu_id = uuid.uuid4()
         self.pu_objects = pu_objects
         self.pu_activity = pu_activity
@@ -75,3 +89,4 @@ class ProcessFlow:
 
     # TODO perform uniqueness checks for object names within a process flow 
     # (for cases when there needs to be a loop, we can reffer to the object by name)
+        # process type names
