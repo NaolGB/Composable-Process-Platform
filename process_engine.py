@@ -1,36 +1,6 @@
 import uuid
-
-class ObjectAttribute:
-    """
-    an object attribute is what can be considered as a column of an object
-    """
-    def __init__(self, att_name: str, att_dtype: str, att_required: bool = False) -> None:
-        self.att_name = att_name
-        self.att_required = att_required
-        self.att_dtype = att_dtype
-
-class ProcessObjectType:
-    """
-    an object is a participant in a process 
-        ex: customer, employee, material
-    a process object type is a definition of an object, it does not have id
-    it has a unique name that identifies it within the entire process flow
-    """
-    def __init__(self, o_name: str, o_attributes: [ObjectAttribute]) -> None:
-        self.o_name = o_name
-        self.o_attributes = o_attributes
-        
-class ProcessObjectInstance:
-    """
-    a process object instance is an object which has a type and populated data
-    it has a unique id that identifies it within the entire process flow
-    """
-    def __init__(self, o_type: ProcessObjectType, attributes: dict) -> None:
-        self.o_id = uuid.uuid4()
-        self.o_type = o_type
-        self.attributes = {
-
-        }
+import helpers
+import process_object as PO
 
 class ActivityEffect:
     """
@@ -47,7 +17,7 @@ class ProcessActivity:
     an activity is an action an owner of the action is taking on an object
     activity owner (a_owner) is an object that performs the activity - likely a User object (employee)
     """
-    def __init__(self, a_name: str, a_effect: ActivityEffect, a_object: ProcessObjectType, a_owner: ProcessObjectType) -> None:
+    def __init__(self, a_name: str, a_effect: ActivityEffect, a_object: PO.ProcessObjectType, a_owner: PO.ProcessObjectType) -> None:
         self.a_name = a_name
         self.a_effect = a_effect
         self.a_object = a_object
@@ -57,7 +27,7 @@ class ProcessUnit:
     """
     a process unit is an atomic combination of an activity and objects that comes from anther process unit and goes to another process unit
     """
-    def __init__(self, pu_objects: [ProcessObjectType], pu_activity: ProcessActivity, pu_comes_from: 'ProcessUnit', pu_goes_to: 'ProcessUnit') -> None:
+    def __init__(self, pu_objects: [PO.ProcessObjectType], pu_activity: ProcessActivity, pu_comes_from: 'ProcessUnit', pu_goes_to: 'ProcessUnit') -> None:
         self.pu_id = uuid.uuid4()
         self.pu_objects = pu_objects
         self.pu_activity = pu_activity
@@ -66,21 +36,23 @@ class ProcessUnit:
 
 class StartProcessUnit:
     """
-    a special process uit that is used at the start of a process. Should be used, at leas and at most, once in a process
+    a special process unit that is used at the start of a process. Should be used, at leas and at most, once in a process
     """
     def __init__(self) -> None:
         self.pu_id = uuid.UUID('1dfd9652-00e1-483a-9138-33f9baf4bda6')
 
 class StopProcessUnit:
     """
-    a special process uit that is used at the end of a process. Should be used, at leas and at most, once in a process
+    a special process unit that is used at the end of a process. Should be used, at leas and at most, once in a process
     """
     def __init__(self) -> None:
         self.pu_id = uuid.UUID('195b6e75-f3c5-450d-9389-af19d4d1ba71')
+        # TODO change start and stop process units to operate with names so that there can be different instancess 
+        # in different process flow instances
 
-class ProcessFlow:
+class PEProcess:
     """
-    a process flow is a combination of process units that makes up an entire process
+    a process is a combination of process units that makes up an entire process
     It begins with a StartProcessUnit and ends with StopProcessUnit
     It is a way to organize a process and a source to build a back end from
     """

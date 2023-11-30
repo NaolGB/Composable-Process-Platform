@@ -1,0 +1,2 @@
+class PORequiredAttributeNotFound(Exception):
+    pass
