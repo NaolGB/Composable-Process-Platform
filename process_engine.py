@@ -3,55 +3,44 @@ from datetime import datetime
 import helpers
 import process_object as PO
 
-class ProcessActivityInstance:
+class ProcessActivityType:
     """
-    a process activity instance is an instance of the process activity type
-    it has its own id and timestamp
+    a process activity type holds required information for the activity but is not the performance of the activity
+    It holds the definition for the operations but does not execute them
+    Activities connect to each other to make up the PEProcess. Since Activities own objects and owners, they serve as the source of information for connections
     """
-    def __init__(self, operation,  a_name: str, a_object: PO.ProcessObjectType, a_owner: PO.ProcessObjectType) -> None:
-        self.a_id = uuid.uuid4()
+    def __init__(self, operation,  a_name: str, a_object: PO.ProcessObjectType, a_owner: PO.ProcessObjectType, a_from: 'ProcessActivityType') -> None:
         self.a_name = a_name
         self.a_owner = a_owner
         self.a_object = a_object
-        self.a_timestamp = None
-        self.operation = operation
+        self.a_operation = operation
 
-    def action(self) -> uuid.UUID:
-        self.operation()
-
-# FIXME solve the logic: do we need activity type?
-class ProcessUnit:
-    """
-    a process unit is an atomic combination of an activity and objects that comes from anther process unit and goes to another process unit
-    """
-    def __init__(self, pu_objects: [PO.ProcessObjectType], pu_activity: ProcessActivityInstance, pu_comes_from: 'ProcessUnit') -> None:
-        self.pu_id = uuid.uuid4()
-        self.pu_objects = pu_objects
-        self.pu_activity = pu_activity
-        self.pu_comes_from = pu_comes_from
-        self.pu_goes_to = None
+        self.a_from = a_from
+        self.a_to = None
+        # TODO place control against a_from and a_to for start and stop
         
-        self.next_pu_id = self.pu_activity.action()
-        self.pu_activity.a_timestamp = datetime.now()
+class ProcessActivityInstance:
+    """
+    a process activity instance takes the required information from a process activity type and performs the activity
+    It includes assigning values to paramentes of operations in process activity type and executing them
+    """
+    def  __init__(self, a_type: ProcessActivityType) -> None:
+        self.a_id = uuid.uuid4()
+        self.a_timestamp = None
+        self.a_type = a_type
 
-    def what_is_next(self):
-        pass
-
-class StartProcessUnit:
-    """
-    a special process unit that is used at the start of a process. Should be used, at leas and at most, once in a process
-    """
-    def __init__(self) -> None:
-        self.pu_id = uuid.UUID('1dfd9652-00e1-483a-9138-33f9baf4bda6')
-
-class StopProcessUnit:
-    """
-    a special process unit that is used at the end of a process. Should be used, at leas and at most, once in a process
-    """
-    def __init__(self) -> None:
-        self.pu_id = uuid.UUID('195b6e75-f3c5-450d-9389-af19d4d1ba71')
-        # TODO change start and stop process units to operate with names so that there can be different instancess 
-        # in different process flow instances
+    def action(self, **kwargs):
+        self.a_type.a_operation(**kwargs)
+        self.a_timestamp = datetime.now()   
+        
+        self.a_type.a_to
+        
+        # TODO validate a_to is valid
+        
+# class ProcessUnit:
+#     """
+#     process unit is an atomic connection unit holding an activity, its object, the previous process unit and the following process unit
+#     """
 
 class PEProcess:
     """

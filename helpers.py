@@ -9,3 +9,12 @@ class PGDBDuplicateEdge(Exception):
 
 class PGDBDuplicateNode(Exception):
     pass
+
+class OPTypesMismatch(Exception):
+    pass
+
+class PAInvalidPreviousActivity(Exception):
+    pass
+
+class PAInvalidNextActivity(Exception):
+    pass
