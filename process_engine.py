@@ -1,38 +1,41 @@
 import uuid
+from datetime import datetime
 import helpers
 import process_object as PO
 
-class ActivityEffect:
+class ProcessActivityInstance:
     """
-    an effect of an activity is what determines next step's objects
-        ex: an effect  of 'Assign' creates new decument like delivery for sales order
-            an effect of 'Send' send confirmations/invoices to the customer
+    a process activity instance is an instance of the process activity type
+    it has its own id and timestamp
     """
-    def __init__(self, a_eff_name: str, a_eff_function: str) -> None:
-        self.a_eff_name = a_eff_name
-        self.a_eff_function = a_eff_function # TODO work out a logic to add functionality of effects on given objects via activities
-
-class ProcessActivity:
-    """
-    an activity is an action an owner of the action is taking on an object
-    activity owner (a_owner) is an object that performs the activity - likely a User object (employee)
-    """
-    def __init__(self, a_name: str, a_effect: ActivityEffect, a_object: PO.ProcessObjectType, a_owner: PO.ProcessObjectType) -> None:
+    def __init__(self, operation,  a_name: str, a_object: PO.ProcessObjectType, a_owner: PO.ProcessObjectType) -> None:
+        self.a_id = uuid.uuid4()
         self.a_name = a_name
-        self.a_effect = a_effect
-        self.a_object = a_object
         self.a_owner = a_owner
+        self.a_object = a_object
+        self.a_timestamp = None
+        self.operation = operation
 
+    def action(self) -> uuid.UUID:
+        self.operation()
+
+# FIXME solve the logic: do we need activity type?
 class ProcessUnit:
     """
     a process unit is an atomic combination of an activity and objects that comes from anther process unit and goes to another process unit
     """
-    def __init__(self, pu_objects: [PO.ProcessObjectType], pu_activity: ProcessActivity, pu_comes_from: 'ProcessUnit', pu_goes_to: 'ProcessUnit') -> None:
+    def __init__(self, pu_objects: [PO.ProcessObjectType], pu_activity: ProcessActivityInstance, pu_comes_from: 'ProcessUnit') -> None:
         self.pu_id = uuid.uuid4()
         self.pu_objects = pu_objects
         self.pu_activity = pu_activity
         self.pu_comes_from = pu_comes_from
-        self.pu_goes_to = pu_goes_to
+        self.pu_goes_to = None
+        
+        self.next_pu_id = self.pu_activity.action()
+        self.pu_activity.a_timestamp = datetime.now()
+
+    def what_is_next(self):
+        pass
 
 class StartProcessUnit:
     """
