@@ -7,13 +7,21 @@
 </head>
 <body>
     Add objec type
-    <button onclick="addInputField(formId=objectTypeForm)">Add attribute</button>
-    <form name="objectTypeForm", id="objectTypeForm">
-        <label for="input">Name</label>
-        <input type="text" id="input" name="input"/>
-    </form>
+    <div class="typeForm" id="objectTypeForm">
+        <div>
+            <input type="text" name="name" id="typeFormInputNameLabel" value="Name" disabled>
+            <select name="name" id="typeFormInputNameValue" class="objectTypeDropdown">
+                <option value="String">String</option>
+                <option value="Number">Number</option>
+                <option value="Datetime">Datetime</option>
+                <option value="Boolean">Boolean</option>
+            </select>
+        </div>
+    </div>
+    <button id="addObjectAttribute" data-type-form-id="objectTypeForm">Add attribute</button>
+    <button id="saveObjectType" data-type-form-id="objectTypeForm">Save Object Type</button>
 
 
     <script type="module" src="model.js"></script>
 </body>
-</html>
+</html>`
