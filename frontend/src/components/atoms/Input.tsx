@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 
 interface Props {
     isDisabled?: boolean;
-    onChange: (e: ChangeEvent) => void;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     className: string,
     defaultValue?: string
 }

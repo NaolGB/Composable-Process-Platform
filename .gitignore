@@ -164,3 +164,5 @@ cython_debug/
 
 # playground
 test.ipynb
+try.py
+try.ipynb

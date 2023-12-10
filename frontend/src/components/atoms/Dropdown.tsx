@@ -1,4 +1,5 @@
 import { v1 as uuidv1 } from "uuid";
+import { ChangeEvent } from "react";
 
 interface ChoiceProp {
     label: string;
@@ -7,7 +8,7 @@ interface ChoiceProp {
 
 interface Props {
     choices: ChoiceProp[];
-    onChange: () => void;
+    onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
     className: string
 }
 

@@ -13,39 +13,44 @@ const objectTypeDtypes = [
 ];
 
 type ObjectTypeData = {
-    [key: string]: {
-        name: string;
-        dtype: string;
-    };
+    [key: string] : {
+        [k: string]: string
+    }
 };
 
-const objTypeData: ObjectTypeData = {
-    objectTypeAttribute0: { name: "Name", dtype: "String" },
-};
+type cleanedObjTypData = {
+    [key: string] : string
+}
+
+type objTypeParsed = {
+    [key: string] : {
+        [k: string]: string
+    }
+}
+const objTypeData: ObjectTypeData = {};
 
 function ObjectTypeForm() {
+    const [objTypName, setObjTypName] = useState('Name')
     const [attributes, setAttributes] = useState([
         [
             <Input
                 key={`objectTypeAttributeInput${0}`}
                 className={`objectTypeAttribute${0}`}
-                isDisabled={true}
+                isDisabled={false}
                 onChange={handleInputChange}
-                defaultValue="Name"
-            ></Input>,
-            <Dropdown
-                choices={objectTypeDtypes}
-                key={`objectTypeAttributeSelect${0}`}
-                className={`objectTypeAttribute${0}`}
-                onChange={handleSelectChange}
-            ></Dropdown>,
+            ></Input>
         ],
     ]);
 
-    function handleInputChange(e: ChangeEvent) {
-        objTypeData[e.target.className]["name"] = e.target.value;
+    function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.className === `objectTypeAttribute${0}`) {
+            setObjTypName(e.target.value)
+        }
+        else {
+            objTypeData[e.target.className]["name"] = e.target.value;
+        }
     }
-    function handleSelectChange(e: ChangeEvent) {
+    function handleSelectChange(e: ChangeEvent<HTMLSelectElement>) {
         objTypeData[e.target.className]["dtype"] = e.target.value;
     }
     function handleAttAttributeButtonClick() {
@@ -73,14 +78,16 @@ function ObjectTypeForm() {
         objTypeData[objDtypKey] = { name: "", dtype: "String" };
     }
     function handleSaveObjectTypeButtonClick() {
-        const cleanedObjTypData = {};
+        const cleanedObjTypData: cleanedObjTypData = {};
         for (const key in objTypeData) {
             if (objTypeData.hasOwnProperty(key)) {
                 const attribute = objTypeData[key];
                 cleanedObjTypData[attribute.name] = attribute.dtype;
             }
         }
-        // console.log(JSON.stringify(cleanedObjTypData));
+        const objTypeParsed: objTypeParsed = {}
+        objTypeParsed[objTypName] = cleanedObjTypData
+        // console.log(JSON.stringify(objTypeParsed));
 
         // send object via fetch
         fetch(baseUrl, {
@@ -88,7 +95,7 @@ function ObjectTypeForm() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(cleanedObjTypData),
+            body: JSON.stringify(objTypeParsed),
         })
             .then((response) => {
                 if (!response.ok) {
@@ -101,7 +108,12 @@ function ObjectTypeForm() {
     }
     return (
         <>
-            {attributes.map((att) => att)}
+            {attributes.map((att, index) => 
+            <div key={index}>
+                {att}
+            </div>
+            
+            )}
             <Button
                 label="Add Attributes"
                 onClick={handleAttAttributeButtonClick}

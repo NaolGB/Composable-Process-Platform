@@ -1,9 +1,10 @@
 import ObjectTypeForm from "./components/organism/ObjectTypeForm"
+import ActivityTypeForm from "./components/organism/ActivityTypeForm"
 
 function App() {
   return (
     <>
-      <ObjectTypeForm></ObjectTypeForm>
+      <ActivityTypeForm></ActivityTypeForm>
     </>
   )
 }
