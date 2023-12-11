@@ -28,7 +28,6 @@ CORS_ALLOWED_ORIGINS = [
 INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
-    'pgdb', # Process Graph Database
 
     'django.contrib.admin',
     'django.contrib.auth',
