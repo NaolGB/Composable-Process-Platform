@@ -1,3 +1,4 @@
+
 function getObjectTypeSelect() {
     const options = ["String", "Number", "Datetime", "Boolean"];
     const selectElement = document.createElement("select");
@@ -14,7 +15,7 @@ function getObjectTypeSelect() {
 
 function addAttribute() {
     const element = document.getElementById("objectTypeForm");
-    
+
     const inputElement = document.createElement("input");
     inputElement.setAttribute("type", "text");
     const selectElement = getObjectTypeSelect();
@@ -32,18 +33,44 @@ function saveObjectType() {
     const data = {};
 
     for (let i = 0; i < attributes.length; i++) {
-        if (attributes[i].hasAttributes('id')) {
-            data['name'] = attributes[i].querySelector('input').value
-        }
-        else{
+        if (attributes[i].hasAttributes("id")) {
+            // TODO validate against using the typeName in other fields and ID
+            data["typeName"] = attributes[i].querySelector("input").value;
+        } else {
             data[attributes[i].querySelector("input").value] =
-            attributes[i].querySelector("select").value;
+                attributes[i].querySelector("select").value;
         }
     }
+    
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
+    fetch("/model/object-types/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify(data),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                // console.log(response)
+                alert(`Object type save failed!\n${response}`);
+            }
+        })
+        .catch((error) => {
+            console.log(`Error: ${error}`);
+        });
+
+    // console.log(data)
+
 }
 
 const addAttributeButton = document.getElementById("addObjectAttribute");
-addAttributeButton.addEventListener("click", addAttribute)
+addAttributeButton.addEventListener("click", addAttribute);
 
 const saveObjectTypeButton = document.getElementById("saveObjectType");
-saveObjectTypeButton.addEventListener("click", saveObjectType)
+saveObjectTypeButton.addEventListener("click", saveObjectType);
+
+const all_types = document.getElementById("objectTypesData")
+let x = JSON.parse(all_types.getAttribute("data-object-types"))
+console.log(x)

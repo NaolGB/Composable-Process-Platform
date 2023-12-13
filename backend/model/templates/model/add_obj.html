@@ -3,15 +3,19 @@
 {% load static %}
 
 {% block content_main %}
+{% csrf_token %}
 Add object type
 <div class="typeForm" id="objectTypeForm">
-    <div id="name">
+    <div id="typeName">
         <input type="text" name="name" placeholder="Name">
     </div>
 </div>
 
 <button id="addObjectAttribute">Add attribute</button>
 <button id="saveObjectType">Save Object Type</button>
+{{all_types}}
+
+<div id="objectTypesData" data-object-types="{{all_types}}"></div>
 
 <script type="module" src={% static "model/object_type.js" %}></script>
 {% endblock content_main %}
