@@ -1,0 +1,23 @@
+{% extends "main.html" %}
+
+{% load static %}
+
+{% block content_main %}
+{% csrf_token %}
+<button id="addObjectType">Add Object Type</button>
+<button id="addActivityType">Add Activity Type</button>
+
+<div>
+    <div id="typeForm">
+
+    </div>
+    <div id="typeButtons">
+
+    </div>
+</div>
+
+
+<div id="objectTypesData"></div>
+
+<script type="module" src={% static "model/object_type.js" %}></script>
+{% endblock content_main %}
