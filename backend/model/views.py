@@ -29,12 +29,8 @@ def obj_types(request):
 def act_types(request):
     pg_db = ProcessGraphDB()
     if request.method == 'GET':
-        all_types = pg_db.SELECT(table_name='types')
-        activity_types = {k: v for k, v in all_types['nodes'].items() if v['properties']['type']=='ACTIVITY'}
-        context = {
-            'activity_types': json.dumps(activity_types)
-        }
-        # return render(request, 'model/model.html', context)
+        
+        return HttpResponse(None)
     if request.method == 'POST':
         data = request.body.decode('utf-8')
         data = json.loads(data)

@@ -1,4 +1,4 @@
-let object_types = []
+let object_types = [];
 
 function getObjectTypeForm() {
     const typeFormDivElement = document.getElementById("typeForm");
@@ -16,7 +16,7 @@ function getObjectTypeForm() {
 
     // buttons
     const typeFormButtonsElement = document.getElementById("typeButtons");
-    typeFormButtonsElement.innerHTML = ""
+    typeFormButtonsElement.innerHTML = "";
 
     const addObjectAttributeButton = document.createElement("button");
     addObjectAttributeButton.innerText = "Add Attribute";
@@ -29,7 +29,7 @@ function getObjectTypeForm() {
     typeFormButtonsElement.appendChild(addObjectAttributeButton);
     typeFormButtonsElement.appendChild(saveObjectTypeButton);
 
-    typeFormDivElement.appendChild(nameDivElement);    
+    typeFormDivElement.appendChild(nameDivElement);
 }
 
 function getObjectTypeSelect() {
@@ -111,13 +111,12 @@ function getActivityTypeForm() {
         .then((response) => {
             if (!response.ok) {
                 alert(`Object type save failed!\n${response}`);
-            }
-            else {
-                return response.json()
+            } else {
+                return response.json();
             }
         })
         .then((data) => {
-            object_types = Object.keys(data)
+            object_types = Object.keys(data);
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
@@ -138,7 +137,7 @@ function getActivityTypeForm() {
 
     // buttons
     const typeFormButtonsElement = document.getElementById("typeButtons");
-    typeFormButtonsElement.innerHTML = ""
+    typeFormButtonsElement.innerHTML = "";
 
     const addActivityAttributeButton = document.createElement("button");
     addActivityAttributeButton.innerText = "Add Attribute";
@@ -151,7 +150,7 @@ function getActivityTypeForm() {
     typeFormButtonsElement.appendChild(addActivityAttributeButton);
     typeFormButtonsElement.appendChild(saveActivityTypeButton);
 
-    typeFormDivElement.appendChild(nameDivElement); 
+    typeFormDivElement.appendChild(nameDivElement);
 }
 
 function getActivityTypeSelect() {
@@ -198,25 +197,24 @@ function saveActivityType() {
     }
 
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
-    // // fetch("/model/object-types/", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         "X-CSRFToken": csrfToken,
-    //     },
-    //     body: JSON.stringify(data),
-    // })
-    //     .then((response) => {
-    //         if (!response.ok) {
-    //             // console.log(response)
-    //             alert(`Object type save failed!\n${response}`);
-    //         }
-    //     })
-    //     .catch((error) => {
-    //         console.log(`Error: ${error}`);
-    //     });
+    fetch("/model/activity-types/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify(data),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                // console.log(response)
+                alert(`Activity type save failed!\n${response}`);
+            }
+        })
+        .catch((error) => {
+            console.log(`Error: ${error}`);
+        });
 
-    console.log(data)
 }
 
 const addObjectTypeButton = document.getElementById("addObjectType");
