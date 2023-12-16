@@ -1,0 +1,14 @@
+#modelContainer1 {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#modelForm {
+    flex: 6;
+}
+
+#modelCanvas {
+    flex: 6;
+    background-color: beige;
+}

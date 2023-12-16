@@ -4,20 +4,28 @@
 
 {% block content_main %}
 {% csrf_token %}
-<button id="addObjectType">Add Object Type</button>
-<button id="addActivityType">Add Activity Type</button>
+<div id="modelContainer1">
+    
 
-<div>
-    <div id="typeForm">
+    <div id="modelForm">
+        <button id="addObjectType">Add Object Type</button>
+        <button id="addActivityType">Add Activity Type</button>
 
+        <div id="typeForm">
+
+        </div>
+        <div id="typeButtons">
+
+        </div>
     </div>
-    <div id="typeButtons">
 
+    <div id="modelCanvas">
+        hello
     </div>
+
 </div>
 
+<script type="module" src={% static "model/model.js" %}></script>
+<link rel="stylesheet" href="{% static 'model/model.css' %}">
 
-<div id="objectTypesData"></div>
-
-<script type="module" src={% static "model/object_type.js" %}></script>
 {% endblock content_main %}

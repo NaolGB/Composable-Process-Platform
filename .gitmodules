@@ -1,3 +1,6 @@
 [submodule "backend/pgdb/processgraphdatabase"]
 	path = backend/pgdb/processgraphdatabase
 	url = https://github.com/NaolGB/processgraphdatabase
+[submodule "backend/pgdb/processengine"]
+	path = backend/pgdb/processengine
+	url = https://github.com/NaolGB/processengine.git

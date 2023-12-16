@@ -1,5 +1,3 @@
-let object_types = [];
-
 function getObjectTypeForm() {
     const typeFormDivElement = document.getElementById("typeForm");
     typeFormDivElement.innerHTML = "";
@@ -99,7 +97,22 @@ function saveObjectType() {
 }
 
 function getActivityTypeForm() {
-    // fetch available objects
+        const typeFormDivElement = document.getElementById("typeForm");
+    typeFormDivElement.innerHTML = "";
+
+    // input
+    const nameDivElement = document.createElement("div");
+    nameDivElement.setAttribute("id", "typeName");
+
+    const inputElement = document.createElement("input");
+    inputElement.setAttribute("type", "text");
+    inputElement.setAttribute("placeholder", "Activity Name");
+    typeFormDivElement.appendChild(nameDivElement);
+
+
+    // select
+    // embed it in a div for uniform method of collecting data for send
+    const selectDivElement = document.createElement("div");
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
     fetch("/model/object-types/", {
         method: "GET",
@@ -116,22 +129,22 @@ function getActivityTypeForm() {
             }
         })
         .then((data) => {
-            object_types = Object.keys(data);
+            const selectElement = document.createElement("select");
+            const object_types = Object.keys(data)
+
+            for (let i = 0; i <  object_types.length; i++) {
+                const optionElement = document.createElement("option");
+                optionElement.setAttribute("value", object_types[i]);
+                optionElement.setAttribute("label", object_types[i]);
+                selectElement.appendChild(optionElement);
+            }
+            selectDivElement.appendChild(selectElement);
+            typeFormDivElement.appendChild(selectDivElement);
+
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
         });
-
-    const typeFormDivElement = document.getElementById("typeForm");
-    typeFormDivElement.innerHTML = "";
-
-    // input
-    const nameDivElement = document.createElement("div");
-    nameDivElement.setAttribute("id", "typeName");
-
-    const inputElement = document.createElement("input");
-    inputElement.setAttribute("type", "text");
-    inputElement.setAttribute("placeholder", "Activity Name");
 
     nameDivElement.appendChild(inputElement);
 
@@ -139,45 +152,12 @@ function getActivityTypeForm() {
     const typeFormButtonsElement = document.getElementById("typeButtons");
     typeFormButtonsElement.innerHTML = "";
 
-    const addActivityAttributeButton = document.createElement("button");
-    addActivityAttributeButton.innerText = "Add Attribute";
-    addActivityAttributeButton.addEventListener("click", addActivityAttribute);
-
     const saveActivityTypeButton = document.createElement("button");
     saveActivityTypeButton.innerText = "Save Actibity Type";
     saveActivityTypeButton.addEventListener("click", saveActivityType);
 
-    typeFormButtonsElement.appendChild(addActivityAttributeButton);
     typeFormButtonsElement.appendChild(saveActivityTypeButton);
 
-    typeFormDivElement.appendChild(nameDivElement);
-}
-
-function getActivityTypeSelect() {
-    const selectElement = document.createElement("select");
-
-    for (let i = 0; i < object_types.length; i++) {
-        let optionElement = document.createElement("option");
-        optionElement.setAttribute("value", object_types[i]);
-        optionElement.setAttribute("label", object_types[i]);
-        selectElement.appendChild(optionElement);
-    }
-
-    return selectElement;
-}
-
-function addActivityAttribute() {
-    const element = document.getElementById("typeForm");
-
-    const inputElement = document.createElement("input");
-    inputElement.setAttribute("type", "text");
-    const selectElement = getActivityTypeSelect();
-
-    const divElement = document.createElement("div");
-    divElement.appendChild(inputElement);
-    divElement.appendChild(selectElement);
-
-    element.appendChild(divElement);
 }
 
 function saveActivityType() {
@@ -191,8 +171,7 @@ function saveActivityType() {
             // TODO validate against empty name
             data["typeName"] = attributes[i].querySelector("input").value;
         } else {
-            data[attributes[i].querySelector("input").value] =
-                attributes[i].querySelector("select").value;
+            data['object'] = attributes[i].querySelector("select").value;
         }
     }
 
