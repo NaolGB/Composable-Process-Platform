@@ -4,23 +4,31 @@
 
 {% block content_main %}
 {% csrf_token %}
-<div id="modelContainer1">
+<div class="modelContainer1">
     
+    <div class="modelContainer11">
+        <div id="modelForm" class="modelContainer111">
+            <button id="addObjectType">Add Object Type</button>
+            <button id="addProcess">Add Process</button>
 
-    <div id="modelForm">
-        <button id="addObjectType">Add Object Type</button>
-        <button id="addProcess">Add Process</button>
-        {% comment %} <button id="addActivityType">Add Activity Type</button> {% endcomment %}
+            <div id="typeForm">
 
-        <div id="typeForm">
+            </div>
+            <div id="typeButtons">
 
+            </div>
         </div>
-        <div id="typeButtons">
-
+            
+        <div id="objectsList" class="modelContainer112">
+            objecis list
+        </div>
+        
+        <div id="processesList" class="modelContainer113">
+            processes list
         </div>
     </div>
 
-    <div id="modelCanvas">
+    <div class="modelContainer12">
         hello
     </div>
 

@@ -1,14 +1,28 @@
-#modelContainer1 {
+.modelContainer1 {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
-#modelForm {
+.modelContainer11 {
     flex: 6;
-}
 
-#modelCanvas {
+    display: flex;
+    flex-direction: row;
+}
+    .modelContainer111 {
+        flex: 4;
+    }
+
+    .modelContainer112 {
+        flex: 4;
+    }
+
+    .modelContainer113 {
+        flex: 4;
+    }
+
+.modelContainer12 {
     flex: 6;
     background-color: beige;
 }
