@@ -26,19 +26,19 @@ def obj_types(request):
     else:
         return HttpResponse("Request Method not allowed", status=405)
     
-def act_types(request):
-    pg_db = ProcessGraphDB()
-    if request.method == 'GET':
+# def act_types(request):
+#     pg_db = ProcessGraphDB()
+#     if request.method == 'GET':
         
-        return HttpResponse(None)
-    if request.method == 'POST':
-        data = request.body.decode('utf-8')
-        data = json.loads(data)
-        data['type'] = 'ACTIVITY'
-        # TODO validate against the field name 'type'
+#         return HttpResponse(None)
+#     if request.method == 'POST':
+#         data = request.body.decode('utf-8')
+#         data = json.loads(data)
+#         data['type'] = 'ACTIVITY'
+#         # TODO validate against the field name 'type'
         
-        added_node_id = pg_db.INSERT_NODE(table_name='types', data=data, id=data['typeName'])
+#         added_node_id = pg_db.INSERT_NODE(table_name='types', data=data, id=data['typeName'])
         
-        return HttpResponse(added_node_id)
-    else:
-        return HttpResponse("Request Method not allowed", status=405)
+#         return HttpResponse(added_node_id)
+#     else:
+#         return HttpResponse("Request Method not allowed", status=405)
