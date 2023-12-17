@@ -26,3 +26,6 @@
     flex: 6;
     background-color: beige;
 }
+    #modelCanvas {
+        height: 100%;
+    }

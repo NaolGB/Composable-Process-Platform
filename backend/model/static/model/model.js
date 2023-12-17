@@ -144,9 +144,9 @@ function saveProcessStructure() {
             if (attributes[i].id === "processName") {
                 data["processName"] =
                     attributes[i].querySelector("input").value;
-            } 
-            else if (attributes[i].id === "processSteps") {
-                data["processSteps"] = attributes[i].querySelector("input").value;
+            } else if (attributes[i].id === "processSteps") {
+                data["processSteps"] =
+                    attributes[i].querySelector("input").value;
             }
         }
     }
@@ -178,7 +178,7 @@ const addProcesButton = document.getElementById("addProcess");
 addProcesButton.addEventListener("click", getNewProcessForm);
 
 // Object List
-document.addEventListener("DOMContentLoaded", getObjectsList)
+document.addEventListener("DOMContentLoaded", getObjectsList);
 function getObjectsList() {
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
     fetch("/model/object-types/", {
@@ -191,24 +191,23 @@ function getObjectsList() {
         .then((response) => {
             if (!response.ok) {
                 alert(`Object fetch failed!\n${response}`);
-            }
-            else {
-                return response.json()
+            } else {
+                return response.json();
             }
         })
         .then((data) => {
-            const objectListElement = document.getElementById('objectsList')
-            objectListElement.innerHTML = "objects list"
-            const ulElement = document.createElement("ul")
-            
-            const dataKeys = Object.keys(data)
-            for(let i=0; i<dataKeys.length; i++) {
-                let listElement = document.createElement("li")
-                listElement.textContent = dataKeys[i]
-                ulElement.appendChild(listElement)
+            const objectListElement = document.getElementById("objectsList");
+            objectListElement.innerHTML = "objects list";
+            const ulElement = document.createElement("ul");
+
+            const dataKeys = data["object_types_id"];
+            for (let i = 0; i < dataKeys.length; i++) {
+                let listElement = document.createElement("li");
+                listElement.textContent = dataKeys[i];
+                ulElement.appendChild(listElement);
             }
 
-            objectListElement.appendChild(ulElement)
+            objectListElement.appendChild(ulElement);
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
@@ -216,7 +215,7 @@ function getObjectsList() {
 }
 
 // Process List
-document.addEventListener("DOMContentLoaded", getProcessesList)
+document.addEventListener("DOMContentLoaded", getProcessesList);
 function getProcessesList() {
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
     fetch("/model/process/", {
@@ -229,26 +228,128 @@ function getProcessesList() {
         .then((response) => {
             if (!response.ok) {
                 alert(`Process fetch failed!\n${response}`);
-            }
-            else {
-                return response.json()
+            } else {
+                return response.json();
             }
         })
         .then((data) => {
-            const objectListElement = document.getElementById('processesList')
-            objectListElement.innerHTML = "processes list"
-            const ulElement = document.createElement("ul")
-            
-            const dataKeys = Object.keys(data)
-            for(let i=0; i<dataKeys.length; i++) {
-                let listElement = document.createElement("li")
-                listElement.textContent = dataKeys[i]
-                ulElement.appendChild(listElement)
-            }
+            const objectListElement = document.getElementById("processesList");
+            objectListElement.innerHTML = "processes list";
 
-            objectListElement.appendChild(ulElement)
+            const dataKeys = data["pu_ids"];
+            for (let i = 0; i < dataKeys.length; i++) {
+                const processSelectDivElement = document.createElement("div");
+                processSelectDivElement.innerText = dataKeys[i];
+                processSelectDivElement.addEventListener("click", function () {
+                    selectProcess(dataKeys[i]);
+                });
+                objectListElement.appendChild(processSelectDivElement);
+            }
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
         });
+}
+
+function selectProcess(processId) {
+    // get process steps
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
+    fetch(`/model/process-graph/${processId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                alert(`Process fetch failed!\n${response}`);
+            } else {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            processGraph(data[processId]);
+        })
+        .catch((error) => {
+            console.log(`Error: ${error}`);
+        });
+}
+
+// Process Graph
+// document.addEventListener("DOMContentLoaded", getProcessSteps)
+function processGraph(steps) {
+    const canvasDiv = document.getElementById("modelContainer12");
+    const canvasSvg = document.getElementById("modelCanvas");
+    canvasSvg.innerHTML = "";
+
+    const canvasDivHeight = canvasDiv.offsetHeight;
+    const canvasDivWidth = canvasDiv.offsetWidth;
+
+    const numSteps = steps.length;
+    const numTransitions = numSteps - 1;
+    const unitWidth = canvasDivWidth * (0.8 / (numSteps + numTransitions));
+
+    // add rect
+    let startingX = canvasDivWidth * 0.1;
+    const boxCenter = canvasDivHeight / 2 - unitWidth / 2;
+    const lineCenter = boxCenter + unitWidth / 2;
+    for (let i = 0; i < steps.length - 1; i++) { 
+        // drawing the last rectangle outside the loop to avoid an extra transition line drawing
+        const rect = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "rect"
+        );
+        rect.setAttribute("x", startingX);
+        rect.setAttribute("y", boxCenter);
+        rect.setAttribute("rx", "0.4%");
+        rect.setAttribute("ry", "0.4%");
+        rect.setAttribute("width", unitWidth);
+        rect.setAttribute("height", unitWidth);
+        rect.setAttribute("stroke", "black");
+        rect.setAttribute("fill", "transparent");
+        rect.setAttribute("stroke-width", "2");
+        startingX += unitWidth;
+        canvasSvg.appendChild(rect);
+
+        const line = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+        );
+        line.setAttribute("x1", startingX);
+        line.setAttribute("y1", lineCenter);
+        line.setAttribute("x2", startingX + 0.75 * unitWidth);
+        line.setAttribute("y2", lineCenter);
+        line.setAttribute("stroke", "black");
+        line.setAttribute("stroke-width", "2");
+        startingX += 0.75 * unitWidth;
+        canvasSvg.appendChild(line);
+    }
+
+    // add the last rectangle
+    const rect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect"
+    );
+    rect.setAttribute("x", startingX);
+    rect.setAttribute("y", boxCenter);
+    rect.setAttribute("rx", "0.4%");
+    rect.setAttribute("ry", "0.4%");
+    rect.setAttribute("width", unitWidth);
+    rect.setAttribute("height", unitWidth);
+    rect.setAttribute("stroke", "black");
+    rect.setAttribute("fill", "transparent");
+    rect.setAttribute("stroke-width", "2");
+    startingX += unitWidth;
+    canvasSvg.appendChild(rect);
+
+}
+
+function getObjectRepresentation() {
+    const svgElement = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg"
+    );
+    svgElement.setAttribute("width", "100");
+    svgElement.setAttribute("height", "100");
 }
