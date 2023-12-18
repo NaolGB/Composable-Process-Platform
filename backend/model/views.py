@@ -69,11 +69,11 @@ def process_graph(request, id):
 
         temp_pe = ProcessEngine()
         temp_pe.deserialize(process_json=process_json)
-        steps = temp_pe.get_step_list()
+        steps = temp_pe.get_steps()
 
-        process_steps[id] = steps
+        # process_steps[id] = steps
 
-        return JsonResponse(process_steps)
+        return JsonResponse(steps)
     elif request.method == 'POST':
         return HttpResponse(None)
     else:

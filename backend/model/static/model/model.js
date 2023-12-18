@@ -215,7 +215,7 @@ function getObjectsList() {
 }
 
 // Process Graph
-const processData = {}
+let processData = {}
 document.addEventListener("DOMContentLoaded", getProcessesList);
 function getProcessesList() {
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
@@ -270,9 +270,8 @@ function selectProcess(processId) {
             }
         })
         .then((data) => {
-            // document.body.classList.toggle("showModelContainer1Sidebar")
-            console.log(data)
-            processGraph(data[processId]);
+            processData = data
+            processGraph();
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
@@ -280,7 +279,7 @@ function selectProcess(processId) {
 }
 
 // document.addEventListener("DOMContentLoaded", getProcessSteps)
-function processGraph(steps) {
+function processGraph() {
     const canvasDiv = document.getElementById("modelContainer12");
     const canvasSvg = document.getElementById("modelCanvas");
     canvasSvg.innerHTML = "";
@@ -288,7 +287,7 @@ function processGraph(steps) {
     const canvasDivHeight = canvasDiv.offsetHeight;
     const canvasDivWidth = canvasDiv.offsetWidth;
 
-    const numSteps = steps.length;
+    const numSteps = Object.keys(processData).length;
     const numTransitions = numSteps - 1;
     const unitWidth = canvasDivWidth * (0.8 / (numSteps + numTransitions));
 
@@ -296,7 +295,8 @@ function processGraph(steps) {
     let startingX = canvasDivWidth * 0.1;
     const boxCenter = canvasDivHeight / 2 - unitWidth / 2;
     const lineCenter = boxCenter + unitWidth / 2;
-    for (let i = 0; i < steps.length - 1; i++) { 
+    const steps = Object.keys(processData)
+    for (let i=0; i<numSteps -1 ; i++) {
         // drawing the last rectangle outside the loop to avoid an extra transition line drawing
         const rect = document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -311,6 +311,7 @@ function processGraph(steps) {
         rect.setAttribute("stroke", "black");
         rect.setAttribute("fill", "transparent");
         rect.setAttribute("stroke-width", "2");
+        rect.addEventListener("click", () => {fillSidebarWithPU(steps[i])})
         startingX += unitWidth;
         canvasSvg.appendChild(rect);
 
@@ -342,15 +343,78 @@ function processGraph(steps) {
     rect.setAttribute("stroke", "black");
     rect.setAttribute("fill", "transparent");
     rect.setAttribute("stroke-width", "2");
+    rect.addEventListener("click", () => {fillSidebarWithPU(steps[steps.length-1])})
     startingX += unitWidth;
     canvasSvg.appendChild(rect);
 
 }
 
+function fillSidebarWithPU(processStep) {
+    // get Object Types to attach to a step
+    // embed it in a div for uniform method of collecting data for send
+    const selectDivElement = document.createElement("div");
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
+    fetch("/model/object-types/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                alert(`Object type save failed!\n${response}`);
+            } else {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            // title
+            const sidebarTitle = document.getElementById("sidebarTitle")
+            sidebarTitle.innerHTML = ""
+            const sidebarTitleText = document.createElement("h1")
+            sidebarTitleText.textContent = processStep
+            sidebarTitle.appendChild(sidebarTitleText)
+
+            // main content
+            const sidebarMainContent = document.getElementById("modelContainer1SidebarMainContent")
+            sidebarMainContent.innerHTML = ""
+            
+            const selectElement = document.createElement("select");
+            const objectTypes = data['object_types_id']
+
+            for (let i = 0; i <  objectTypes.length; i++) {
+                const optionElement = document.createElement("option");
+                optionElement.setAttribute("value", objectTypes[i]);
+                optionElement.setAttribute("label", objectTypes[i]);
+                selectElement.appendChild(optionElement);
+            }
+            sidebarMainContent.appendChild(selectElement);
+
+            // buttons
+            const sidebarButtonsDiv = document.getElementById("sidebarButtons")
+            sidebarButtonsDiv.innerHTML = ""
+
+            const closeSidebarButton = document.createElement("div")
+            closeSidebarButton.setAttribute('id', 'closeSidebarButton')
+            closeSidebarButton.innerText = "close sidebar"
+            closeSidebarButton.addEventListener("click", toggleSidebar)
+            sidebarButtonsDiv.appendChild(closeSidebarButton)
+
+            const updateStepButton = document.createElement("div")
+            updateStepButton.setAttribute('id', 'updateStepButton')
+            updateStepButton.innerText = "save step"
+            updateStepButton.addEventListener("click", -)
+            sidebarButtonsDiv.appendChild(updateStepButton)
+
+            toggleSidebar()
+        })
+        .catch((error) => {
+            console.log(`Error: ${error}`);
+        });
+}
 
 // Sidebar
-function hideSidebar() {
+function toggleSidebar() {
     document.body.classList.toggle("showModelContainer1Sidebar")
 }
-const closeSidebarButton = document.getElementById("closeSidebarButton")
-closeSidebarButton.addEventListener("click", hideSidebar)
