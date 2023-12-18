@@ -1,26 +1,33 @@
 .modelContainer1 {
-    display: flex;
-    flex-direction: column;
     height: 100vh;
 }
 
-.modelContainer11 {
-    flex: 6;
-
+.modelContainer1MainContent {
+    z-index: 1;
+    height: 100vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    overflow: hidden;
 }
-    .modelContainer111 {
-        flex: 4;
+    .showModelContainer1Sidebar .modelContainer1MainContent{
+        pointer-events: none;
     }
+    .modelContainer11 {
+        flex: 6;
+        display: flex;
+        flex-direction: row;
+    }
+        .modelContainer111 {
+            flex: 4;
+        }
 
-    .modelContainer112 {
-        flex: 4;
-    }
+        .modelContainer112 {
+            flex: 4;
+        }
 
-    .modelContainer113 {
-        flex: 4;
-    }
+        .modelContainer113 {
+            flex: 4;
+        }
 
 .modelContainer12 {
     flex: 6;
@@ -28,4 +35,19 @@
 }
     #modelCanvas {
         height: 100%;
+    }
+
+.modelContainer1Sidebar {
+    background-color: blue;
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    height: 100vh;
+    width: 40vw;
+    right: -40vw;
+    transition: right 0.3s ease;
+}
+
+    .showModelContainer1Sidebar .modelContainer1Sidebar {
+        right: 0vw;
     }

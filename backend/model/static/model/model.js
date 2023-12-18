@@ -214,7 +214,8 @@ function getObjectsList() {
         });
 }
 
-// Process List
+// Process Graph
+const processData = {}
 document.addEventListener("DOMContentLoaded", getProcessesList);
 function getProcessesList() {
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
@@ -269,6 +270,8 @@ function selectProcess(processId) {
             }
         })
         .then((data) => {
+            // document.body.classList.toggle("showModelContainer1Sidebar")
+            console.log(data)
             processGraph(data[processId]);
         })
         .catch((error) => {
@@ -276,7 +279,6 @@ function selectProcess(processId) {
         });
 }
 
-// Process Graph
 // document.addEventListener("DOMContentLoaded", getProcessSteps)
 function processGraph(steps) {
     const canvasDiv = document.getElementById("modelContainer12");
@@ -345,11 +347,10 @@ function processGraph(steps) {
 
 }
 
-function getObjectRepresentation() {
-    const svgElement = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "svg"
-    );
-    svgElement.setAttribute("width", "100");
-    svgElement.setAttribute("height", "100");
+
+// Sidebar
+function hideSidebar() {
+    document.body.classList.toggle("showModelContainer1Sidebar")
 }
+const closeSidebarButton = document.getElementById("closeSidebarButton")
+closeSidebarButton.addEventListener("click", hideSidebar)
