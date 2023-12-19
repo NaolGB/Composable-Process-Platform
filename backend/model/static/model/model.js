@@ -271,8 +271,7 @@ function selectProcess(processId) {
         })
         .then((data) => {
             processData = data
-            console.log(processData)
-            processGraph(processId);
+             processGraph(processId);
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
