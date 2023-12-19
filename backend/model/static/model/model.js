@@ -271,15 +271,24 @@ function selectProcess(processId) {
         })
         .then((data) => {
             processData = data
-            processGraph();
+            console.log(processData)
+            processGraph(processId);
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
         });
 }
 
+function saveProcess(processId) {
+    console.log(processId)
+}
+
+function validateAndPublishProcess(processId) {
+    console.log(processId)
+}
+
 // document.addEventListener("DOMContentLoaded", getProcessSteps)
-function processGraph() {
+function processGraph(processId) {
     const canvasDiv = document.getElementById("modelContainer12");
     const canvasSvg = document.getElementById("modelCanvas");
     canvasSvg.innerHTML = "";
@@ -290,6 +299,21 @@ function processGraph() {
     const numSteps = Object.keys(processData).length;
     const numTransitions = numSteps - 1;
     const unitWidth = canvasDivWidth * (0.8 / (numSteps + numTransitions));
+
+    // add buttons
+    const buttonsDiv = document.createElement('div')
+
+    const savePUButton = document.createElement("div")
+    savePUButton.innerText = "save Process"
+    savePUButton.addEventListener("click", () => {saveProcess(processId)})
+    buttonsDiv.appendChild(savePUButton)
+
+    const publishProcessButton = document.createElement("div")
+    publishProcessButton.innerText = "validate and publish Process"
+    publishProcessButton.addEventListener("click", () => {validateAndPublishProcess(processId)})
+    buttonsDiv.appendChild(publishProcessButton)
+
+    canvasDiv.insertBefore(buttonsDiv, canvasDiv.firstChild)
 
     // add rect
     let startingX = canvasDivWidth * 0.1;
@@ -352,7 +376,6 @@ function processGraph() {
 function fillSidebarWithPU(processStep) {
     // get Object Types to attach to a step
     // embed it in a div for uniform method of collecting data for send
-    const selectDivElement = document.createElement("div");
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
     fetch("/model/object-types/", {
         method: "GET",
@@ -379,6 +402,10 @@ function fillSidebarWithPU(processStep) {
             // main content
             const sidebarMainContent = document.getElementById("modelContainer1SidebarMainContent")
             sidebarMainContent.innerHTML = ""
+
+            const currentObjectText = document.createElement("p")
+            currentObjectText.textContent = `Current Object: ${processData[processStep]}`
+            sidebarMainContent.appendChild(currentObjectText)
             
             const selectElement = document.createElement("select");
             const objectTypes = data['object_types_id']
@@ -404,7 +431,9 @@ function fillSidebarWithPU(processStep) {
             const updateStepButton = document.createElement("div")
             updateStepButton.setAttribute('id', 'updateStepButton')
             updateStepButton.innerText = "save step"
-            updateStepButton.addEventListener("click", -)
+            updateStepButton.addEventListener("click", () => {
+                updatePUStep(processStep, selectElement.value)
+            })
             sidebarButtonsDiv.appendChild(updateStepButton)
 
             toggleSidebar()
@@ -412,6 +441,11 @@ function fillSidebarWithPU(processStep) {
         .catch((error) => {
             console.log(`Error: ${error}`);
         });
+}
+
+function updatePUStep(puStep, objectType) {
+    processData[puStep] = objectType
+    toggleSidebar()
 }
 
 // Sidebar

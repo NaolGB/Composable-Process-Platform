@@ -64,16 +64,15 @@ def process_graph(request, id):
     pg_db = ProcessGraphDB()
     if request.method == 'GET':
         all_process = pg_db.SELECT(table_name='processes')
-        process_steps = {}
         process_json = all_process['nodes'][id]['properties']
 
         temp_pe = ProcessEngine()
         temp_pe.deserialize(process_json=process_json)
         steps = temp_pe.get_steps()
 
-        # process_steps[id] = steps
-
         return JsonResponse(steps)
+    elif request.method == 'PATCH':
+        return HttpResponse(None)
     elif request.method == 'POST':
         return HttpResponse(None)
     else:
