@@ -16,11 +16,8 @@ CORS_ALLOWED_ORIGINS = [
 
 
 # Application definition
-
 INSTALLED_APPS = [
-    # 'rest_framework',
     'corsheaders',
-    'pgdb',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 'type',
     'model',
 ]
 
