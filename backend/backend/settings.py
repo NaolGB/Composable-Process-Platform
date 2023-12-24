@@ -1,3 +1,5 @@
+import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,6 +20,7 @@ CORS_ALLOWED_ORIGINS = [
 # Application definition
 INSTALLED_APPS = [
     'corsheaders',
+    'pe',
 
     'django.contrib.admin',
     'django.contrib.auth',

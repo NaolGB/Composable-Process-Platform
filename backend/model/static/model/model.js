@@ -1,4 +1,4 @@
-// Object and Process forms
+// Object form
 function getObjectTypeForm() {
     const typeFormDivElement = document.getElementById("typeForm");
     typeFormDivElement.innerHTML = "";
@@ -66,9 +66,7 @@ function saveObjectType() {
 
     for (let i = 0; i < attributes.length; i++) {
         if (attributes[i].hasAttributes("id")) {
-            // TODO validate against using the typeName in other fields and ID
-            // TODO validate against empty name
-            data["typeName"] = attributes[i].querySelector("input").value;
+            data["name"] = attributes[i].querySelector("input").value;
         } else {
             data[attributes[i].querySelector("input").value] =
                 attributes[i].querySelector("select").value;
@@ -86,17 +84,15 @@ function saveObjectType() {
     })
         .then((response) => {
             if (!response.ok) {
-                // console.log(response)
                 alert(`Object type save failed!\n${response}`);
             }
         })
         .catch((error) => {
             console.log(`Error: ${error}`);
         });
-
-    // console.log(data)
 }
 
+// Process form
 function getNewProcessForm() {
     const typeFormDivElement = document.getElementById("typeForm");
     typeFormDivElement.innerHTML = "";
@@ -142,17 +138,17 @@ function saveProcessStructure() {
     for (let i = 0; i < attributes.length; i++) {
         if (attributes[i].hasAttributes("id")) {
             if (attributes[i].id === "processName") {
-                data["processName"] =
+                data["name"] =
                     attributes[i].querySelector("input").value;
             } else if (attributes[i].id === "processSteps") {
-                data["processSteps"] =
+                data["steps"] =
                     attributes[i].querySelector("input").value;
             }
         }
     }
 
     const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
-    fetch("/model/process/", {
+    fetch("/model/process-types/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -162,7 +158,6 @@ function saveProcessStructure() {
     })
         .then((response) => {
             if (!response.ok) {
-                // console.log(response)
                 alert(`Object type save failed!\n${response}`);
             }
         })
@@ -170,12 +165,6 @@ function saveProcessStructure() {
             console.log(`Error: ${error}`);
         });
 }
-
-const addObjectTypeButton = document.getElementById("addObjectType");
-addObjectTypeButton.addEventListener("click", getObjectTypeForm);
-
-const addProcesButton = document.getElementById("addProcess");
-addProcesButton.addEventListener("click", getNewProcessForm);
 
 // Object List
 document.addEventListener("DOMContentLoaded", getObjectsList);
@@ -200,10 +189,10 @@ function getObjectsList() {
             objectListElement.innerHTML = "objects list";
             const ulElement = document.createElement("ul");
 
-            const dataKeys = data["object_types_id"];
-            for (let i = 0; i < dataKeys.length; i++) {
+            const ids = data["ids"];
+            for (let i = 0; i < ids.length; i++) {
                 let listElement = document.createElement("li");
-                listElement.textContent = dataKeys[i];
+                listElement.textContent = ids[i];
                 ulElement.appendChild(listElement);
             }
 
@@ -214,8 +203,47 @@ function getObjectsList() {
         });
 }
 
+// Process list
+document.addEventListener("DOMContentLoaded", getProcessesList);
+function getProcessesList() {
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)[1];
+    fetch("/model/process-types/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+    })
+        .then((response) => {
+            if (!response.ok) {
+                alert(`Process fetch failed!\n${response}`);
+            } else {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            const objectListElement = document.getElementById("processesList");
+            objectListElement.innerHTML = "processes list";
+
+            const ids = data["ids"];
+            for (let i = 0; i < ids.length; i++) {
+                const processSelectDivElement = document.createElement("div");
+                processSelectDivElement.innerText = ids[i];
+                objectListElement.appendChild(processSelectDivElement);
+            }
+        })
+        .catch((error) => {
+            console.log(`Error: ${error}`);
+        });
+}
 
 // Sidebar
 function toggleSidebar() {
     document.body.classList.toggle("showModelContainer1Sidebar")
 }
+
+const addObjectTypeButton = document.getElementById("addObjectType");
+addObjectTypeButton.addEventListener("click", getObjectTypeForm);
+
+const addProcesButton = document.getElementById("addProcess");
+addProcesButton.addEventListener("click", getNewProcessForm);
