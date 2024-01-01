@@ -1,0 +1,12 @@
+<form [formGroup]="masterDtypeForm" >
+    <div>
+        <input type="text" formControlName="name"/>
+    </div>
+
+    <div formArrayName="extraAttributes">
+        <div *ngFor="let attribute of extraAttributes.controls; let i=index">
+            <input type="text" [formControlName]="i"/>
+        </div>
+    </div>
+
+</form>
