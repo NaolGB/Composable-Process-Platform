@@ -1,2 +1,2 @@
 # x2
-Business Process done right!
+Composable process

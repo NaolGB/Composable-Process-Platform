@@ -1,3 +1,0 @@
-[submodule "backend/pe/processengine"]
-	path = backend/pe/processengine
-	url = https://github.com/NaolGB/processengine.git
