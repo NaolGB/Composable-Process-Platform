@@ -1,12 +1,19 @@
-<form [formGroup]="masterDtypeForm" >
-    <div>
-        <input type="text" formControlName="name"/>
+<button (click)="addAttribute()">+</button>
+<form [formGroup]="masterDtypeForm" (ngSubmit)="onSubmit()">
+    <div formGroupName="nameAndType">
+        <input type="text" formControlName="name" placeholder="Name"/>
     </div>
 
     <div formArrayName="extraAttributes">
-        <div *ngFor="let attribute of extraAttributes.controls; let i=index">
-            <input type="text" [formControlName]="i"/>
+        <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i">
+            <input type="text" formControlName="name" placeholder="Attribute Name" />
+            <select formControlName="dtype">
+                <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
+                    {{opt.typeName}}
+                </option>
+            </select>
         </div>
     </div>
+    <button type="submit">Submit</button>
 
 </form>
