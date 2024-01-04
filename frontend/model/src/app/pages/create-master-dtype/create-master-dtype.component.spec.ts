@@ -8,7 +8,7 @@ describe('CreateMasterDtypeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateMasterDtypeComponent]
+      declarations: [CreateMasterDtypeComponent]
     })
     .compileComponents();
     

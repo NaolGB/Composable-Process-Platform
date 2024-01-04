@@ -167,3 +167,6 @@ test.ipynb
 try.py
 try.ipynb
 trash/
+
+# secrets
+*secret*

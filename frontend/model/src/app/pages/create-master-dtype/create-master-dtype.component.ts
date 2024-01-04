@@ -1,23 +1,23 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
+import { MasterDtypeParsedPostData } from '../../interfaces';
+import { DataService } from '../../services/data.service';
+
 
 @Component({
-	selector: 'app-create-master-dtype',
-	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule],
-	templateUrl: './create-master-dtype.component.html',
-	styleUrl: './create-master-dtype.component.css'
+  selector: 'app-create-master-dtype',
+  templateUrl: './create-master-dtype.component.html',
+  styleUrl: './create-master-dtype.component.css'
 })
 export class CreateMasterDtypeComponent {
-	dtypeOptions = [
+  dtypeOptions = [
 		{typeName: 'string'},
 		{typeName: 'number'},
 		{typeName: 'datetime'},
 		{typeName: 'boolean'},
 	]
 
-	masterDtypeForm = this.formBuilder.group({
+  masterDtypeForm = this.formBuilder.group({
 		nameAndType: this.formBuilder.group({
 			name: ['', Validators.required],
 		}),
@@ -29,9 +29,9 @@ export class CreateMasterDtypeComponent {
 		])
 	})
 
-	constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder, private apiServices: DataService) {}
 
-	get extraAttributes() {
+  get extraAttributes() {
 		return this.masterDtypeForm.get("extraAttributes") as FormArray
 	}
 
@@ -44,11 +44,9 @@ export class CreateMasterDtypeComponent {
 		)
 	}
 
-	onSubmit() {
-		interface ParsedPostData {
-			[key: string]: string
-		}
-		const parsedPostData: ParsedPostData = {
+  onSubmit() {
+		
+		const parsedPostData: MasterDtypeParsedPostData = {
 			name: this.masterDtypeForm.get("nameAndType")?.get("name")?.value || ""
 		}
 
@@ -60,6 +58,10 @@ export class CreateMasterDtypeComponent {
 			}
 		}
 
-		console.log(parsedPostData)
+    this.apiServices.postMasterDtype(parsedPostData).subscribe(
+      resposnse => {}, // TODO add success message on save in UI
+      error => {}
+    )
 	}
+
 }
