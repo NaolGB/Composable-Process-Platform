@@ -26,8 +26,8 @@ class MasterDtype:
             raise helpers.PEAttributeNotFoundError()
         if len(list(data.keys())) > 2:
             raise helpers.PETooManyAttributesError()
-        
-        self._id = data['attributes']['name'] # NOTE we are using name as _id
+            
+        self._id = helpers.name_to_id(data['attributes']['name']) # NOTE we are using name as _id
         self._organization = data['organization']
         self._attributes = data['attributes']
 
@@ -35,9 +35,50 @@ class MasterDtype:
     def create(self, **data):
         self.deserialize(**data)
         if self.is_valid():
-            self.collection.insert_one(self.serialize())
+            # insert master dtype
+            result = self.collection.insert_one(self.serialize())
+
+            # insert the corresponding source instance collection
+            if result.acknowledged:
+                result = self.db.create_collection(name=self._id)
+
+            # print(result.database.name)
+                
+            # if result.acknowledged:
+            #     pass
+            #     # return success message
+            # else:
+            #     pass
+            #     # return error message
+
+
+
+            # create source instance for new master dtype
+            # if response != None:
+                # material_object = {
+                #     organization: "SC1",
+                #     attributes: {
+                #         organization: "string", // set default to organization's name
+                #         name: "string", // set default to 'name'
+                #         quantity: "float", // set default to 0.0
+                #         plant: "object"
+                #     }
+                # }
+
+            #     mat1: {
+            #     organization: "SC1",
+            #     name: "Mac Book Air (2020)",
+            #     quantity: 156.0,
+            #     plant: "pl1"
+            # },
+
         else:
             raise helpers.PEValidationError()
+        
+    # def create_source_instance(self):
+    #     if self.is_valid():
+
 
     def is_valid(self):
-        return True # TODO
+        # TODO require data['name']
+        return True 
