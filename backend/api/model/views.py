@@ -12,5 +12,7 @@ def master_dtype(request):
             attributes=parsed_post_data,
         )
         return JsonResponse({'message':"success"})
+    elif request.method == 'GET':
+        return JsonResponse({'ids': ['a', 'b']})
     else:
         return HttpResponse(status=405) # Method not allowed

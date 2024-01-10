@@ -43,41 +43,12 @@ class MasterDtype:
                 result = self.db.create_collection(name=self._id)
 
             # print(result.database.name)
-                
-            # if result.acknowledged:
-            #     pass
-            #     # return success message
-            # else:
-            #     pass
-            #     # return error message
-
-
-
-            # create source instance for new master dtype
-            # if response != None:
-                # material_object = {
-                #     organization: "SC1",
-                #     attributes: {
-                #         organization: "string", // set default to organization's name
-                #         name: "string", // set default to 'name'
-                #         quantity: "float", // set default to 0.0
-                #         plant: "object"
-                #     }
-                # }
-
-            #     mat1: {
-            #     organization: "SC1",
-            #     name: "Mac Book Air (2020)",
-            #     quantity: 156.0,
-            #     plant: "pl1"
-            # },
-
         else:
             raise helpers.PEValidationError()
-        
-    # def create_source_instance(self):
-    #     if self.is_valid():
 
+    def get_all_ids(self):
+        ids = self.collection.find({}, {'_id': 1})
+        print(ids)
 
     def is_valid(self):
         # TODO require data['name']

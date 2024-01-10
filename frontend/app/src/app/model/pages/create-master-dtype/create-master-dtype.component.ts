@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { MasterDtypeParsedPostData } from '../../interfaces';
-import { DataService } from '../../services/data.service';
+import { MasterDtypeParsedPostData } from '../../../interfaces';
+import { DataService } from '../../../services/data.service';
 
 
 @Component({
@@ -59,8 +59,8 @@ export class CreateMasterDtypeComponent {
 		}
 
     this.apiServices.postMasterDtype(parsedPostData).subscribe(
-      resposnse => {}, // TODO add success message on save in UI
-      error => {}
+    //   resposnse => {}, // TODO add success message on save in UI
+    //   error => {}
     )
 	}
 
