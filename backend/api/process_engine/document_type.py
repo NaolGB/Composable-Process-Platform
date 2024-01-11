@@ -26,10 +26,14 @@ class DocumentType:
         
         self._id = helpers.name_to_id(data['attributes']['name'])
         self._organization = data['organization']
-        self._transaction_type = data['attributes']['']
+        self._transaction_type = data['attributes']['transactionType']
 
     def create(self, **data):
-        pass
+        self.deserialize(**data)
+        if self.is_valid():
+            result = self.collection.insert_one(self.serialize())
+        else:
+            raise helpers.PEValidationError()
 
     def is_valid(self):
         # TODO add validation

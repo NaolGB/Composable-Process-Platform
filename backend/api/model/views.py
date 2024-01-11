@@ -2,14 +2,16 @@ from rest_framework.decorators import api_view
 from django.http import HttpResponse, JsonResponse
 from process_engine.master_dtype import MasterDtype
 from process_engine.transaction_type import TransactionType
+from process_engine.document_type import DocumentType
+
+ORGANIZATION = 'SC1'
 
 @api_view(['GET', 'POST'])
 def master_dtype(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        organization = 'SC1'
         MasterDtype().create(
-            organization=organization,
+            organization=ORGANIZATION,
             attributes=parsed_post_data,
         )
         return JsonResponse({'message':"success"})
@@ -23,9 +25,8 @@ def master_dtype(request):
 def transaction_type(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        organization = 'SC1'
         TransactionType().create(
-            organization=organization,
+            organization=ORGANIZATION,
             attributes=parsed_post_data
         )
         return JsonResponse({'message':"success"})
@@ -37,4 +38,12 @@ def transaction_type(request):
     
 @ api_view(['GET', 'POST'])
 def document_type(request):
-    pass
+    if request.method == 'POST':
+        parsed_post_data = request.data
+        DocumentType().create(
+            organization=ORGANIZATION,
+            attributes=parsed_post_data
+        )
+        return JsonResponse({'message':"success"})
+    else:
+        return HttpResponse(status=405)

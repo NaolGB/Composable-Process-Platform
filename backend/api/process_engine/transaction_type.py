@@ -33,7 +33,7 @@ class TransactionType:
         if self.is_valid():
             result = self.collection.insert_one(self.serialize())
         else:
-            helpers.PEValidationError()
+            raise helpers.PEValidationError()
     
     def get_all_ids(self):
         ids = self.collection.find({}, {'_id': 1})

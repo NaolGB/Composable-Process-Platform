@@ -30,12 +30,10 @@ export class CreateDocumentTypeComponent {
 			transactionType: this.documentTypeForm.get("transactionType")?.value || ""
 		}
 
-    console.log(parsedPostData)
-
-  //   this.apiServices.(parsedPostData).subscribe(
-  //   // //   resposnse => {}, // TODO add success message on save in UI
-  //   // //   error => {}
-  //   )
+    this.apiServices.postDocumentType(parsedPostData).subscribe(
+    // //   resposnse => {}, // TODO add success message on save in UI
+    // //   error => {}
+    )
   }
 
 }
