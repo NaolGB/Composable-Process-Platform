@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MasterDtypeIdsRespose, MasterDtypeParsedPostData } from '../interfaces';
+import { MasterDtypeIdsRespose, MasterDtypeParsedPostData, TransactionTypeParsedPostData, TransactionTypeIdsRespose } from '../interfaces';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -21,5 +21,17 @@ export class DataService {
     const fullUrl = `${this.baseUrl}/master-data-type/`
     const headers = new HttpHeaders({ "Content-Type": "application/json"})
     return this.http.get<MasterDtypeIdsRespose>(fullUrl)
+  }
+
+  postTransactionDtype(data: TransactionTypeParsedPostData) {
+    const fullUrl = `${this.baseUrl}/transaction-type/`
+    const headers = new HttpHeaders({ "Content-Type": "application/json", })
+    return this.http.post(fullUrl, data, {headers})
+  }
+
+  getTransactionTypeIds(): Observable<TransactionTypeIdsRespose> {
+    const fullUrl = `${this.baseUrl}/transaction-type/`
+    const headers = new HttpHeaders({ "Content-Type": "application/json", })
+    return this.http.get<TransactionTypeIdsRespose>(fullUrl)
   }
 }

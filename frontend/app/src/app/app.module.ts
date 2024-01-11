@@ -9,13 +9,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavBarComponent } from './model/nav-bar/nav-bar.component';
 import { CreateTransactionTypeComponent } from './model/pages/create-transaction-type/create-transaction-type.component';
+import { CreateDocumentTypeComponent } from './model/pages/create-document-type/create-document-type.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateMasterDtypeComponent,
     NavBarComponent,
-    CreateTransactionTypeComponent
+    CreateTransactionTypeComponent,
+    CreateDocumentTypeComponent
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,10 @@
-<p>create-transaction-type works!</p>
+<form [formGroup]="transactionTypeForm" (ngSubmit)="onSubmit()">
+    <input type="text" formControlName="name" placeholder="Transaction type name" />
+    <select formControlName="masterDtype">
+        <option *ngFor="let opt of masterDtypeOptions" [ngValue]="opt">
+            {{opt}}
+        </option>
+    </select>
+    <button type="submit">Submit</button>
+
+</form>
