@@ -19,8 +19,8 @@
 </form>
 
 <!-- Sidebar -->
-<!-- <div>
-    <div *ngFor="let mDtype in masterDtypeInDB">
-        {{mDtype}}
+<div>
+    <div *ngFor="let prcsId of processTypeInDB">
+        <a routerLink="/model/process/connect/{{prcsId}}">{{prcsId}}</a>
     </div>
-</div> -->
+</div>

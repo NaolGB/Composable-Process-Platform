@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MasterDtypeIdsRespose, MasterDtypeParsedPostData, TransactionTypeParsedPostData, TransactionTypeIdsRespose, DocumentTypeParsedPostData, DocumentTypeIdsRespose, ProcessTypeParsedData } from '../interfaces';
+import { MasterDtypeIdsRespose, MasterDtypeParsedPostData, TransactionTypeParsedPostData, TransactionTypeIdsRespose, DocumentTypeParsedPostData, DocumentTypeIdsRespose, ProcessTypeParsedData, ProcessTypeIdsResponse } from '../interfaces';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -51,5 +51,11 @@ export class DataService {
     const fullUrl = `${this.baseUrl}/process-type/`
     const headers = new HttpHeaders({ "Content-Type": "application/json", })
     return this.http.post(fullUrl, data, {headers})
+  }
+
+  getProcessTypeIds(): Observable<ProcessTypeIdsResponse> {
+    const fullUrl = `${this.baseUrl}/process-type/`
+    const headers = new HttpHeaders({ "Content-Type": "application/json", })
+    return this.http.get<ProcessTypeIdsResponse>(fullUrl)
   }
 }

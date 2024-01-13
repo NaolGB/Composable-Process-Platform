@@ -27,3 +27,7 @@ export interface ProcessTypeParsedData {
     steps: string,
     documents: Array<String>
 }
+
+export interface ProcessTypeIdsResponse {
+    ids: Array<String>
+}

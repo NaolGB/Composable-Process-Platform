@@ -23,12 +23,19 @@ export class GenerateComponent {
     ])
   })
 
+  processTypeInDB: Array<String> = []
+
   constructor(private apiServices: DataService, private formBuilder: FormBuilder) {}
 
   ngOnInit() {
     this.apiServices.getDocumentTypeIds().subscribe(
       (resposne) => {
         this.documentTypeOptions = resposne['ids']
+      }
+    )
+    this.apiServices.getProcessTypeIds().subscribe(
+      (response) => {
+        this.processTypeInDB = response['ids']
       }
     )
   }
