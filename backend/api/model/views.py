@@ -64,8 +64,8 @@ def process(request):
             name=parsed_post_data['name'],
         )
         return JsonResponse({'message':"success"})
-    # elif request.method == 'GET':
-    #     parsed_repsonse_data = DocumentType().get_all_ids()
-    #     return JsonResponse({'ids': parsed_repsonse_data})
+    elif request.method == 'GET':
+        parsed_repsonse_data = ProcessType().get_all_ids()
+        return JsonResponse({'ids': parsed_repsonse_data})
     else:
         return HttpResponse(status=405)

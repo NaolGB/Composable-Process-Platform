@@ -48,7 +48,7 @@ class MasterDtype:
 
     def get_all_ids(self):
         ids = self.collection.find({}, {'_id': 1})
-        ids_list = [doc['_id'] for doc in ids]
+        ids_list = [str(doc['_id']) for doc in ids]
 
         return ids_list
 

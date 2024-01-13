@@ -1,6 +1,6 @@
-from . import helpers
+from . import helpers, db_secrets
 
-
+client = db_secrets.get_client() #TODO manage methods to create client better - maybe one client instance per org
 class ProcessOption:
     def __init__(self, **data) -> None:
         self._option_type = None
@@ -63,9 +63,12 @@ class ProcessType:
         self._organization = None
         self._attributes = None
         self._design_status = None
+        self.db = client['dev']
+        self.collection = self.db.process_type
 
     def serialize(self):
         serialized_process = {
+            '_id': self._id,
             'organization': self._organization,
             'design_status': self._design_status,
             'attributes': self._attributes
@@ -103,7 +106,14 @@ class ProcessType:
         for step in parsed_steps:
             self._attributes['steps'][step] = ProcessStep().generate(step_name=step)
 
-        print(self.serialize())
+        if self.is_valid():
+            self.collection.insert_one(self.serialize())
+
+    def get_all_ids(self):
+        ids = self.collection.find({}, {'_id': 1})
+        ids_list = [str(doc['_id']) for doc in ids]
+
+        return ids_list
 
     def is_valid(self):
         # TODO add validation
