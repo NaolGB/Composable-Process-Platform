@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from process_engine.master_dtype import MasterDtype
 from process_engine.transaction_type import TransactionType
 from process_engine.document_type import DocumentType
+from process_engine.process_type import ProcessType
 
 ORGANIZATION = 'SC1'
 
@@ -45,5 +46,26 @@ def document_type(request):
             attributes=parsed_post_data
         )
         return JsonResponse({'message':"success"})
+    elif request.method == 'GET':
+        parsed_repsonse_data = DocumentType().get_all_ids()
+        return JsonResponse({'ids': parsed_repsonse_data})
+    else:
+        return HttpResponse(status=405)
+    
+@ api_view(['GET', 'POST'])
+def process(request):
+    if request.method == 'POST':
+        parsed_post_data = request.data
+        ProcessType().create(
+            organization=ORGANIZATION,
+            design_status='NOT_INITIATED',
+            documents=parsed_post_data['documents'],
+            steps=parsed_post_data['steps'],
+            name=parsed_post_data['name'],
+        )
+        return JsonResponse({'message':"success"})
+    # elif request.method == 'GET':
+    #     parsed_repsonse_data = DocumentType().get_all_ids()
+    #     return JsonResponse({'ids': parsed_repsonse_data})
     else:
         return HttpResponse(status=405)

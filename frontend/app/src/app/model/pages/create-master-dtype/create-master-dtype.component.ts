@@ -10,14 +10,14 @@ import { DataService } from '../../../services/data.service';
   styleUrl: './create-master-dtype.component.css'
 })
 export class CreateMasterDtypeComponent {
-  dtypeOptions = [
+	dtypeOptions = [
 		{typeName: 'string'},
 		{typeName: 'number'},
 		{typeName: 'datetime'},
 		{typeName: 'boolean'},
 	]
 
-  masterDtypeForm = this.formBuilder.group({
+	masterDtypeForm = this.formBuilder.group({
 		nameAndType: this.formBuilder.group({
 			name: ['', Validators.required],
 		}),
@@ -29,9 +29,20 @@ export class CreateMasterDtypeComponent {
 		])
 	})
 
-  constructor(private formBuilder: FormBuilder, private apiServices: DataService) {}
+	masterDtypeInDB: Array<String> = []
 
-  get extraAttributes() {
+	constructor(private formBuilder: FormBuilder, private apiServices: DataService) {}
+
+	ngOnInit() {
+		// sidebar
+		this.apiServices.getMasterDtypeIds().subscribe(
+			(response) => {
+				this.masterDtypeInDB = response['ids']
+			}
+		)
+	}
+
+	get extraAttributes() {
 		return this.masterDtypeForm.get("extraAttributes") as FormArray
 	}
 
@@ -44,7 +55,7 @@ export class CreateMasterDtypeComponent {
 		)
 	}
 
-  onSubmit() {
+  	onSubmit() {
 		
 		const parsedPostData: MasterDtypeParsedPostData = {
 			name: this.masterDtypeForm.get("nameAndType")?.get("name")?.value || ""
@@ -58,10 +69,9 @@ export class CreateMasterDtypeComponent {
 			}
 		}
 
-    this.apiServices.postMasterDtype(parsedPostData).subscribe(
-    //   resposnse => {}, // TODO add success message on save in UI
-    //   error => {}
-    )
+		this.apiServices.postMasterDtype(parsedPostData).subscribe(
+		//   resposnse => {}, // TODO add success message on save in UI
+		//   error => {}
+		)
 	}
-
 }

@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavBarComponent } from './model/nav-bar/nav-bar.component';
 import { CreateTransactionTypeComponent } from './model/pages/create-transaction-type/create-transaction-type.component';
 import { CreateDocumentTypeComponent } from './model/pages/create-document-type/create-document-type.component';
+import { GenerateComponent } from './model/pages/process/generate/generate.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { CreateDocumentTypeComponent } from './model/pages/create-document-type/
     CreateMasterDtypeComponent,
     NavBarComponent,
     CreateTransactionTypeComponent,
-    CreateDocumentTypeComponent
+    CreateDocumentTypeComponent,
+    GenerateComponent
   ],
   imports: [
     BrowserModule,

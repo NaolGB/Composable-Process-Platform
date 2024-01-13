@@ -34,6 +34,12 @@ class DocumentType:
             result = self.collection.insert_one(self.serialize())
         else:
             raise helpers.PEValidationError()
+        
+    def get_all_ids(self):
+        ids = self.collection.find({}, {'_id': 1})
+        ids_list = [doc['_id'] for doc in ids]
+
+        return ids_list
 
     def is_valid(self):
         # TODO add validation

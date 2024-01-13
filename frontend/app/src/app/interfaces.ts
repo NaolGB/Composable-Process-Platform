@@ -17,3 +17,13 @@ export interface TransactionTypeIdsRespose {
 export interface DocumentTypeParsedPostData {
     [key: string]: string
 }
+
+export interface DocumentTypeIdsRespose {
+    ids: Array<String>
+}
+
+export interface ProcessTypeParsedData {
+    name: string,
+    steps: string,
+    documents: Array<String>
+}
