@@ -23,9 +23,7 @@ export interface DocumentTypeIdsRespose {
 }
 
 export interface ProcessTypeParsedData {
-    name: string,
-    steps: string,
-    documents: Array<String>
+    [key: string]: any
 }
 
 export interface ProcessTypeIdsResponse {

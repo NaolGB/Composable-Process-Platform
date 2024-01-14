@@ -69,3 +69,21 @@ def process(request):
         return JsonResponse({'ids': parsed_repsonse_data})
     else:
         return HttpResponse(status=405)
+    
+@ api_view(['GET', 'POST'])
+def single_process(request, id):
+    if request.method == 'POST':
+        # parsed_post_data = request.data
+        # ProcessType().create(
+        #     organization=ORGANIZATION,
+        #     design_status='NOT_INITIATED',
+        #     documents=parsed_post_data['documents'],
+        #     steps=parsed_post_data['steps'],
+        #     name=parsed_post_data['name'],
+        # )
+        return JsonResponse({'message':"success"})
+    elif request.method == 'GET':
+        parsed_response_data = ProcessType().get_process(processId=id)
+        return JsonResponse(parsed_response_data)
+    else:
+        return HttpResponse(status=405)

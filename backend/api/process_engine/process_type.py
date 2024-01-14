@@ -1,3 +1,4 @@
+from bson import json_util
 from . import helpers, db_secrets
 
 client = db_secrets.get_client() #TODO manage methods to create client better - maybe one client instance per org
@@ -114,7 +115,13 @@ class ProcessType:
         ids_list = [str(doc['_id']) for doc in ids]
 
         return ids_list
-
+    
+    def get_process(self, processId):
+        prcs = self.collection.find({'_id': processId})
+        prcs = json_util.loads(json_util.dumps(prcs))[0]
+        
+        return prcs
+    
     def is_valid(self):
         # TODO add validation
         return True

@@ -6,4 +6,5 @@ urlpatterns = [
     path('transaction-type/', view=views.transaction_type, name='transaction_type'),
     path('document-type/', view=views.document_type, name='document_type'),
     path('process-type/', view=views.process, name='process_type'),
+    path('process/<str:id>', view=views.single_process, name='single_process'),
 ]

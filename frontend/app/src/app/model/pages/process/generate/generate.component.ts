@@ -61,7 +61,7 @@ export class GenerateComponent {
 		}
 
     for (let i = 0; i < this.documents.length; i++) {
-      parsedPostData.documents.push(this.documents.controls[i].value["documentId"])
+      parsedPostData['documents'].push(this.documents.controls[i].value["documentId"])
       // parsedPostData.documents.push(this.documents.at(i).value("documentId"))
     }
 
