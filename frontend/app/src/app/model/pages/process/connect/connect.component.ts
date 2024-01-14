@@ -10,7 +10,7 @@ import { ProcessTypeParsedData } from '../../../../interfaces';
 })
 export class ConnectComponent {
   processId: string = ''
-  processData: ProcessTypeParsedData ={}
+  processData: ProcessTypeParsedData = {}
 
   constructor(private route: ActivatedRoute, private apiServices: DataService) {}
 
@@ -19,9 +19,18 @@ export class ConnectComponent {
     this.apiServices.getProcessById(this.processId).subscribe(
       (response) => {
         this.processData = response
-        console.log(this.processData['_id'])
+        this.getStepsOrder()
       }
     )
   }
+
+  getStepsOrder() {
+    // TODO build it an interface and use that
+    for (const key in this.processData['attributes']['steps']) {
+      console.log(key)
+    }
+  }
+
+
 
 }
