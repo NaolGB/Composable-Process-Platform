@@ -38,7 +38,8 @@ class ProcessStep:
 
     def serialize(self):
         serialized_step = {
-            "options": self._options
+            "options": self._options,
+            "next_steps": {}
         }
 
         return serialized_step
