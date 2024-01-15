@@ -90,7 +90,6 @@ export class ConnectComponent {
     const allStepsObject = this.processData['attributes']['steps']
     const allStepsArray: (string | number)[] = []
     const allConnectedSteps: (string | number)[] = []
-    const startSteps: (string | number)[] = []
     for (const step in allStepsObject) {
       if(!allStepsArray.includes(step)) {
         allStepsArray.push(step)
@@ -101,8 +100,6 @@ export class ConnectComponent {
         }
       });
     }
-
-    console.log(allStepsArray)
 
     // get all conneceted and unconnected steps
     allStepsArray.forEach((step) => {
@@ -119,25 +116,55 @@ export class ConnectComponent {
     })
     const allUnconnectedSteps: (string | number)[] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
 
-    // find the start step
-    allConnectedSteps.forEach((stepLoopOne: string | number) => {
-      let hasSourceStep = false
-      allConnectedSteps.forEach((stepLoopTwo: string | number) => {
-        if (allStepsObject[stepLoopTwo]['next_steps'].includes(stepLoopOne)) {
-          hasSourceStep = true
-        }
-      })
-      if (hasSourceStep == false) {
-        startSteps.push(stepLoopOne)
+    // find the end steps
+    const endSteps: (string | number)[] = []
+    allConnectedSteps.forEach((step: string | number) => {
+      if (allStepsObject[step]['next_steps'].length == 0) {
+        endSteps.push(step)
       }
     })
 
-    // assign columns
-    startSteps.forEach((step: string | number) => {
-      allStepsObject[step]['column'] = 0
+    // assign rows and columns to connected steps
+    let prevSteps: (string | number)[] = endSteps
+    let currentColumn = 0
+    while (prevSteps.length > 0) {
+      const newColumnSteps: (string | number)[] = []
+      let currentRow = 0
+      prevSteps.forEach((currS) => {
+        allStepsObject[currS]['column'] = currentColumn
+        allStepsObject[currS]['row'] = currentRow
+        allConnectedSteps.forEach((prevS) => {
+          if (allStepsObject[prevS]['next_steps'].includes(currS)) {
+            newColumnSteps.push(prevS)
+          }
+        })
+        currentRow += 1
+      })
+      prevSteps = newColumnSteps
+      currentColumn -= 1
+    }
+    allConnectedSteps.forEach((step) => { // reset columns to start from 0
+      allStepsObject[step]['column'] = allStepsObject[step]['column'] + Math.abs(currentColumn) - 1
     })
 
-    console.log(allConnectedSteps, allUnconnectedSteps, startSteps, allStepsObject)
+    // assign rows and columns to unconnected steps
+    if(allUnconnectedSteps.length > 0) {
+      const numMaxRows = Math.ceil(Math.sqrt(allUnconnectedSteps.length))
+      allUnconnectedSteps.forEach(step)
+      for (let r=0; r<numMaxRows; r++) {
+        for (let c=0; c<numMaxRows; c++) {
+
+        }
+      }
+
+
+      console.log(numMaxRows)
+    }
+    
+    
+
+    // console.log(allConnectedSteps, allUnconnectedSteps, endSteps)
+    console.log(allStepsObject)
 
   }
 
