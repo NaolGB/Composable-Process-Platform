@@ -2,17 +2,19 @@
     <div>
         {{processId}}
     </div>
+    <div *ngFor="let step of allStepsObject | keyvalue">
+        
+    </div>
     
     <!-- Preview -->
     <div style=" max-height: 40vh; min-height: 400px; position: fixed; width: 100%; height: 100%; bottom: 0; left: 0; background-color: #e0e0e0;">
         <svg #canvas xmlns="http://www.w3.org/2000/svg" style=" height: 100%; width: 100%; padding: 15px; background-color: #f3ff68">
-            <!-- <g *ngFor="let step of stepOrder; let i=index;">
+            <g *ngFor="let step of allStepsObject | keyvalue">
                 <rect 
-                    *ngFor="let step of stepOrder; let i=index;"
-                    [attr.width]="rectHeight" 
-                    [attr.height]="rectHeight" 
-                    [attr.x]="(((i+1)*canvasWidth/(numColumns+1)) - (rectHeight/2))" 
-                    [attr.y]="1*rectHeight" 
+                    [attr.width]="rectSize" 
+                    [attr.height]="rectSize" 
+                    [attr.x]="(canvasWidth/(numMaxColumns+1) * step.value.column) - (rectSize/2)" 
+                    [attr.y]="100" 
                     rx="5"
                     fill="none"
                     stroke="black"
@@ -20,11 +22,11 @@
                 >
                 </rect>
                 <text 
-                    [attr.x]="(((i+1)*canvasWidth/(numColumns+1)) - (rectHeight/2))"
-                    [attr.y]="1.5*rectHeight" 
+                    [attr.x]="10"
+                    [attr.y]="10" 
                     fill="black"
-                >{{step}}</text>
-            </g> -->
+                >{{step.key}}</text>
+            </g>
             
         </svg>
     </div>

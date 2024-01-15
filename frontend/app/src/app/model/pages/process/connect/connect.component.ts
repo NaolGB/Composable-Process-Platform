@@ -12,11 +12,12 @@ export class ConnectComponent {
   @ViewChild('canvas') canvas!: ElementRef;
   processId: string = ''
   processData: ProcessTypeParsedData = {}
+  allStepsObject: ProcessTypeParsedData = {'hi': 'NY!'}
   stepOrder: Object = {}
   canvasHeight: number = 100
   canvasWidth: number = 300
-  numRows: number = 0
-  numColumns: number = 0
+  numMaxRows: number = 0
+  numMaxColumns: number = 0
 
   constructor(private route: ActivatedRoute, private apiServices: DataService, private cd: ChangeDetectorRef) {}
 
@@ -26,13 +27,6 @@ export class ConnectComponent {
       (response) => {
           this.processData = response
           this.getStepsOrder()
-
-          // this.numColumns = this.stepOrder.length
-          // this.stepOrder.forEach(step => {
-          //   if (step.length > this.numRows) {
-          //     this.numRows = step.length;
-          //   }
-          // });
       }
     )
   }
@@ -41,12 +35,12 @@ export class ConnectComponent {
     const canvasElement = this.canvas.nativeElement
     this.canvasHeight = canvasElement.height.baseVal.value
     this.canvasWidth = canvasElement.width.baseVal.value
-
+    // this.getStepsOrder()
     this.cd.detectChanges() // detect changes manually because we changed the rectangles' height adn width attribute 
   }
 
-  get rectHeight() {
-    return this.canvasHeight / ((2*(this.numColumns,this.numRows)) + 1)
+  get rectSize() {
+    return this.canvasHeight / ((2*(this.numMaxRows)) + 1)
   }
 
   getStepsOrder() {
@@ -131,40 +125,46 @@ export class ConnectComponent {
       const newColumnSteps: (string | number)[] = []
       let currentRow = 0
       prevSteps.forEach((currS) => {
-        allStepsObject[currS]['column'] = currentColumn
         allStepsObject[currS]['row'] = currentRow
+        allStepsObject[currS]['column'] = currentColumn
         allConnectedSteps.forEach((prevS) => {
           if (allStepsObject[prevS]['next_steps'].includes(currS)) {
             newColumnSteps.push(prevS)
           }
         })
         currentRow += 1
+        if(currentRow > this.numMaxRows) {this.numMaxRows = currentRow}
       })
       prevSteps = newColumnSteps
       currentColumn -= 1
     }
+    const connectedColumns = Math.abs(currentColumn)
+    if(connectedColumns > this.numMaxColumns) {this.numMaxColumns = connectedColumns}
     allConnectedSteps.forEach((step) => { // reset columns to start from 0
-      allStepsObject[step]['column'] = allStepsObject[step]['column'] + Math.abs(currentColumn) - 1
+      allStepsObject[step]['column'] = allStepsObject[step]['column'] + connectedColumns - 1
     })
 
     // assign rows and columns to unconnected steps
     if(allUnconnectedSteps.length > 0) {
-      const numMaxRows = Math.ceil(Math.sqrt(allUnconnectedSteps.length))
-      allUnconnectedSteps.forEach(step)
-      for (let r=0; r<numMaxRows; r++) {
-        for (let c=0; c<numMaxRows; c++) {
-
+      const numUnconnectedRows = Math.ceil(Math.sqrt(allUnconnectedSteps.length))
+      if(numUnconnectedRows > this.numMaxRows) {this.numMaxRows = numUnconnectedRows}
+      // allUnconnectedSteps.forEach(step)
+      for (let r=0; r<numUnconnectedRows; r++) {
+        for (let c=0; c<numUnconnectedRows; c++) {
+          allStepsObject[allUnconnectedSteps[r+c]]['row'] = r
+          allStepsObject[allUnconnectedSteps[r+c]]['column'] = c + connectedColumns
+          if(c+connectedColumns > this.numMaxColumns) {this.numMaxColumns = c+connectedColumns}
         }
       }
-
-
-      console.log(numMaxRows)
     }
+
+    // update max number or rows (to update the rectangle sizes with)
     
     
 
     // console.log(allConnectedSteps, allUnconnectedSteps, endSteps)
     console.log(allStepsObject)
+    // this.cd.detectChanges()
 
   }
 
