@@ -12,7 +12,7 @@ export class ConnectComponent {
   @ViewChild('canvas') canvas!: ElementRef;
   processId: string = ''
   processData: ProcessTypeParsedData = {}
-  stepOrder: Array<Array<String>> = []
+  stepOrder: Object = {}
   canvasHeight: number = 100
   canvasWidth: number = 300
   numRows: number = 0
@@ -27,12 +27,12 @@ export class ConnectComponent {
           this.processData = response
           this.getStepsOrder()
 
-          this.numColumns = this.stepOrder.length
-          this.stepOrder.forEach(step => {
-            if (step.length > this.numRows) {
-              this.numRows = step.length;
-            }
-          });
+          // this.numColumns = this.stepOrder.length
+          // this.stepOrder.forEach(step => {
+          //   if (step.length > this.numRows) {
+          //     this.numRows = step.length;
+          //   }
+          // });
       }
     )
   }
@@ -79,7 +79,7 @@ export class ConnectComponent {
      * }
      * 
      * stepOrder's rows and columns are determined with the following method.
-     * 1. determine the connected adn unconnected steps
+     * 1. determine the connected and unconnected steps
      * 2. for the connected steps, find the start 
      *    - using any first step, traverse through connected steps until you find a step not in any step's next_step
      * 3. set the first step's column as 0
@@ -87,12 +87,58 @@ export class ConnectComponent {
      *    - after completing the first column, assign each one a unique row
      * 4. repeat step 4 until all connected steps are assigned row and column
      */
-    for (const key in this.processData['attributes']['steps']) {
-      this.stepOrder.push([key])
+    const allStepsObject = this.processData['attributes']['steps']
+    const allStepsArray: (string | number)[] = []
+    const allConnectedSteps: (string | number)[] = []
+    const startSteps: (string | number)[] = []
+    for (const step in allStepsObject) {
+      if(!allStepsArray.includes(step)) {
+        allStepsArray.push(step)
+      }
+      allStepsObject[step]['next_steps'].forEach((element: string | number) => {
+        if (!allStepsArray.includes(element)) {
+          allStepsArray.push(element)
+        }
+      });
     }
 
+    console.log(allStepsArray)
 
-    
+    // get all conneceted and unconnected steps
+    allStepsArray.forEach((step) => {
+      if (allStepsObject[step]['next_steps'].length > 0) {
+        if (!allConnectedSteps.includes(step)) {
+          allConnectedSteps.push(step)
+        }
+        allStepsObject[step]['next_steps'].forEach((element: string | number) => {
+          if (!allConnectedSteps.includes(element)) {
+            allConnectedSteps.push(element)
+          }
+        });
+      }
+    })
+    const allUnconnectedSteps: (string | number)[] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
+
+    // find the start step
+    allConnectedSteps.forEach((stepLoopOne: string | number) => {
+      let hasSourceStep = false
+      allConnectedSteps.forEach((stepLoopTwo: string | number) => {
+        if (allStepsObject[stepLoopTwo]['next_steps'].includes(stepLoopOne)) {
+          hasSourceStep = true
+        }
+      })
+      if (hasSourceStep == false) {
+        startSteps.push(stepLoopOne)
+      }
+    })
+
+    // assign columns
+    startSteps.forEach((step: string | number) => {
+      allStepsObject[step]['column'] = 0
+    })
+
+    console.log(allConnectedSteps, allUnconnectedSteps, startSteps, allStepsObject)
+
   }
 
 }
