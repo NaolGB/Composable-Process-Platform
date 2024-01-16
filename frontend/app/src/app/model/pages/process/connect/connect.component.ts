@@ -16,6 +16,8 @@ export class ConnectComponent {
   allStepsObject: ProcessTypeParsedData = {}
   allConnectedSteps: (string | number)[] = []
   allUnconnectedSteps: (string | number)[] = []
+  selectedStep: (string | number) = ''
+  stepSelected: boolean = false
 
   constructor(private route: ActivatedRoute, private apiServices: DataService, private cd: ChangeDetectorRef, private processPreviewServices: ProcessPreviewService) {}
 
@@ -38,6 +40,11 @@ export class ConnectComponent {
 
   ngAfterViewInit() {
     this.cd.detectChanges()
+  }
+
+  getStepForm(step: (string | number) ) {
+    this.selectedStep = step
+    this.stepSelected = !this.stepSelected
   }
 
 }

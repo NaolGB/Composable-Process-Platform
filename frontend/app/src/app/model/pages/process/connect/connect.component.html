@@ -1,11 +1,19 @@
 <div style="display: flex; flex-direction: column; position: relative;">
-    <div>
-        {{processId}}
+    <div *ngIf="stepSelected">
+        {{selectedStep}}
     </div>
     
     <!-- Sidebar -->
     <div>
-        
+        connceted steps
+        <div *ngFor="let step of allConnectedSteps" (click)="getStepForm(step)">
+            {{step}}
+        </div>
+
+        unconnceted steps
+        <div *ngFor="let step of allUnconnectedSteps" (click)="getStepForm(step)">
+            {{step}}
+        </div>
     </div>
     
     <!-- Preview -->
