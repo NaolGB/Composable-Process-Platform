@@ -1,0 +1,24 @@
+{{canvasWidth}}
+{{rectSize}}
+{{numMaxRows}}
+{{numMaxColumns}}
+<svg #canvas xmlns="http://www.w3.org/2000/svg" style=" height: 100%; width: 100%; padding: 15px; background-color: #f3ff68">
+    <g *ngFor="let step of allStepsObject | keyvalue">
+        <rect 
+            [attr.width]="rectSize" 
+            [attr.height]="rectSize" 
+            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize/2)" 
+            [attr.y]="step.value.row + rectSize" 
+            rx="5"
+            fill="none"
+            stroke="black"
+            stroke-width="2"
+        >
+        </rect>
+        <text 
+            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize)" 
+            [attr.y]="step.value.row + (1.5*rectSize)" 
+            fill="black"
+        >{{step.key}}</text>
+    </g>
+</svg>

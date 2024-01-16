@@ -12,6 +12,7 @@ import { CreateTransactionTypeComponent } from './model/pages/create-transaction
 import { CreateDocumentTypeComponent } from './model/pages/create-document-type/create-document-type.component';
 import { GenerateComponent } from './model/pages/process/generate/generate.component';
 import { ConnectComponent } from './model/pages/process/connect/connect.component';
+import { ProcessPreviewComponent } from './model/process-preview/process-preview.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ConnectComponent } from './model/pages/process/connect/connect.componen
     CreateTransactionTypeComponent,
     CreateDocumentTypeComponent,
     GenerateComponent,
-    ConnectComponent
+    ConnectComponent,
+    ProcessPreviewComponent
   ],
   imports: [
     BrowserModule,
