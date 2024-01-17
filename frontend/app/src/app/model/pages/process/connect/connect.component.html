@@ -1,39 +1,38 @@
 <div style="display: flex; flex-direction: column; position: relative;">
     <div *ngIf="stepSelected">
-        <button (click)="addNextStep()">+</button>
-        <form [formGroup]="stepsForm">
-            <div formArrayName="stepsArray">
-                <div *ngFor="let step of stepsArray.controls; let i=index" [formGroupName]="i">
-                    <select formControlName="step" [(ngModel)]="selectedNextStep">
-                        <option *ngFor="let opt of allStepsArray">
-                            {{opt}}
-                        </option>
-                    </select>
-                    {{selectedNextStep}}
-                    <button (click)="getSidebarTransitionLogic()">add logic</button>
+        current step: {{selectedStepKey}}
+        <div *ngFor="let selectedStepAttribute of selectedStep | keyvalue">
+            <div *ngIf="selectedStepAttribute.key == 'column'">
+                Column: {{selectedStep['column']}}
+            </div>
+            <div *ngIf="selectedStepAttribute.key == 'next_steps'">
+                <div *ngFor="let nextStep of selectedStepAttribute.value">
+                    added next steps: {{nextStep}}
                 </div>
             </div>
-        </form>
+        </div>
     </div>
     
     <!-- Sidebar -->
     <div>
         <div *ngIf="sidebarContent == 'stepsList'">
             connceted steps
-            <div *ngFor="let step of allConnectedSteps" (click)="getStepForm(step)">
+            <div *ngFor="let step of allConnectedSteps" (click)="getNextStepsListSidebar(step)">
                 {{step}}
             </div>
 
             unconnceted steps
-            <div *ngFor="let step of allUnconnectedSteps" (click)="getStepForm(step)">
+            <div *ngFor="let step of allUnconnectedSteps" (click)="getNextStepsListSidebar(step)">
                 {{step}}
             </div>
         </div>
-        <div *ngIf="sidebarContent == 'transitionLogic'">
-            <div>
-                <button>Cancel</button>
-                <button>Save</button>
+        <div *ngIf="sidebarContent == 'addNextStepsForm'">
+            valid next step options
+            <div  *ngFor="let nextStep of getValidNextSteps()" (click)="addNextStep(nextStep)">
+                {{nextStep}}
             </div>
+            <button>Cancel</button>
+            <button (click)="getSidebarTransitionLogicSidebar()">Continue</button>
         </div>
     </div>
     

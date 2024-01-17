@@ -18,21 +18,16 @@ export class ConnectComponent {
   allConnectedSteps: (string | number)[] = []
   allUnconnectedSteps: (string | number)[] = []
   allStepsArray: (string | number)[] = []
-  selectedStep: (string | number) = ''
-  selectedNextStep: (string | number) = ''
+  selectedStep: ProcessTypeParsedData = {}
+  selectedStepKey: (string | number) = ''
   stepSelected: boolean = false
   sidebarContent: string = 'stepsList'
-
-  stepsForm = this.formBuilder.group({
-    stepsArray: this.formBuilder.array([])
-  })
 
   constructor(
     private route: ActivatedRoute, 
     private apiServices: DataService, 
     private cd: ChangeDetectorRef, 
     private processPreviewServices: ProcessPreviewService,
-    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -53,25 +48,25 @@ export class ConnectComponent {
     this.cd.detectChanges()
   }
 
-  getStepForm(step: (string | number) ) {
-    this.selectedStep = step
-    this.stepSelected = !this.stepSelected
+  getValidNextSteps() {
+    let validNextSteps = this.allStepsArray.filter(item => !this.selectedStep['next_steps'].includes(item))
+    validNextSteps = validNextSteps.filter(item => item !== this.selectedStepKey)
+    return validNextSteps
   }
 
-  get stepsArray() {
-    return this.stepsForm.get("stepsArray") as FormArray
+  addNextStep(stepKey: (string | number)) {
+    this.selectedStep['next_steps'].push(stepKey)
   }
 
-  addNextStep() {
-    this.stepsArray.push(
-      this.formBuilder.group({
-        step: ['', Validators.required]
-      })
-    )
+  getNextStepsListSidebar(stepKey: (string | number) ) {
+    this.selectedStepKey = stepKey
+    this.selectedStep = this.allStepsObject[stepKey]
+    this.stepSelected = true
+    this.sidebarContent = 'addNextStepsForm'
   }
 
-  getSidebarTransitionLogic() {
-    this.sidebarContent = 'transitionLogic'
+  getSidebarTransitionLogicSidebar() {
+    this.sidebarContent = ''
   }
 
 }
