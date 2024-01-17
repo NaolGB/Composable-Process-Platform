@@ -25,8 +25,6 @@ export class ProcessPreviewService {
     return allStepsArray
   }
 
-  
-
   getConnectedStepsArray(allStepsObject: ProcessTypeParsedData | any, allStepsArray: (string | number)[] ) {
     const allConnectedSteps: (string | number)[] = []
     allStepsArray.forEach((step) => {
@@ -123,15 +121,17 @@ export class ProcessPreviewService {
     })
 
     // assign rows and columns to unconnected steps
-    if(allUnconnectedSteps.length > 0) {
-      const numUnconnectedRows = Math.ceil(Math.sqrt(allUnconnectedSteps.length))
-      // if(numUnconnectedRows > numMaxRows) {numMaxRows = numUnconnectedRows}
-      // allUnconnectedSteps.forEach(step)
-      for (let r=0; r<numUnconnectedRows; r++) {
-        for (let c=0; c<numUnconnectedRows; c++) {
-          allStepsObject[allUnconnectedSteps[r+c]]['row'] = r
-          allStepsObject[allUnconnectedSteps[r+c]]['column'] = c + connectedColumns
-          // if(c+connectedColumns > numMaxColumns) {numMaxColumns = c+connectedColumns}
+    if (allUnconnectedSteps.length > 0) {
+      const numUnconnectedRows = Math.ceil(Math.sqrt(allUnconnectedSteps.length));
+    
+      for (let r = 0; r < numUnconnectedRows; r++) {
+        for (let c = 0; c < numUnconnectedRows; c++) {
+          const index = r * numUnconnectedRows + c;
+    
+          if (index < allUnconnectedSteps.length) {
+            allStepsObject[allUnconnectedSteps[index]]['row'] = r;
+            allStepsObject[allUnconnectedSteps[index]]['column'] = c + connectedColumns;
+          }
         }
       }
     }

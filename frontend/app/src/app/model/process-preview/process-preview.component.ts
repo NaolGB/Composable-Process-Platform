@@ -37,7 +37,7 @@ export class ProcessPreviewComponent {
     else {
       rectSize = this.canvasHeight / ((this.numMaxRows*2)+1)
     }
-    return rectSize
+    return rectSize/1.25
   }
 
   get numMaxRows() {
@@ -45,7 +45,7 @@ export class ProcessPreviewComponent {
     for(const step in this.allStepsObject) {
       if(this.allStepsObject[step]['row'] > retVal){retVal=this.allStepsObject[step]['row']}
     }
-    return retVal
+    return retVal+1
   }
 
   get numMaxColumns() {
@@ -53,6 +53,6 @@ export class ProcessPreviewComponent {
     for(const step in this.allStepsObject) {
       if(this.allStepsObject[step]['column'] > retVal){retVal=this.allStepsObject[step]['column']}
     }
-    return retVal
+    return retVal+1
   }
 }

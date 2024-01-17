@@ -7,8 +7,8 @@
         <rect 
             [attr.width]="rectSize" 
             [attr.height]="rectSize" 
-            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize/2)" 
-            [attr.y]="step.value.row + rectSize" 
+            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize)" 
+            [attr.y]="(step.value.row+0.5) * (rectSize*1.25)" 
             rx="5"
             fill="none"
             stroke="black"
@@ -16,9 +16,11 @@
         >
         </rect>
         <text 
-            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize)" 
-            [attr.y]="step.value.row + (1.5*rectSize)" 
+            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize) + (rectSize/3)" 
+            [attr.y]="(step.value.row+0.5) * (rectSize*1.25) + (rectSize/2)" 
             fill="black"
-        >{{step.key}}</text>
+        >
+            {{step.key}}
+        </text>
     </g>
 </svg>
