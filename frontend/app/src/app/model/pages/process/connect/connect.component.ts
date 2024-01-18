@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../../../services/data.service';
 import { ProcessTypeParsedData } from '../../../../interfaces';
@@ -44,8 +44,10 @@ export class ConnectComponent {
     )
   }
 
-  ngAfterViewInit() {
-    this.cd.detectChanges()
+  getNewAllStepsObjectReference() {
+    const tempProcessData = {...this.processData}
+    this.allStepsObject = {...tempProcessData['attributes']['steps']} // NOTE to trigger change detection in process preview
+    this.allStepsObject = this.processPreviewServices.getStepsOrder(this.allStepsObject)
   }
 
   getValidNextSteps() {
@@ -56,17 +58,21 @@ export class ConnectComponent {
 
   addNextStep(stepKey: (string | number)) {
     this.selectedStep['next_steps'].push(stepKey)
+    this.getNewAllStepsObjectReference()
   }
 
   getNextStepsListSidebar(stepKey: (string | number) ) {
     this.selectedStepKey = stepKey
-    this.selectedStep = this.allStepsObject[stepKey]
+    this.selectedStep = this.processData['attributes']['steps'][stepKey]  // NOTE use processData directly because allStepsObject's reference is getting updated to initiate change in process-preview
     this.stepSelected = true
     this.sidebarContent = 'addNextStepsForm'
   }
 
   getSidebarTransitionLogicSidebar() {
-    this.sidebarContent = ''
+    console.log(this.selectedStep)
+    console.log(this.allStepsObject)
+    console.log(this.processData)
+    this.cd.detectChanges();
   }
 
 }

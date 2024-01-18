@@ -21,7 +21,6 @@ export class ProcessPreviewService {
         }
       });
     }
-    console.log('hi NY! from process-preview-component.ts')
     return allStepsArray
   }
 

@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { ProcessTypeParsedData } from '../../interfaces';
 
 @Component({
   selector: 'app-process-preview',
+  changeDetection: ChangeDetectionStrategy.OnPush, // NOTE OnPush change detection strategy to listen to allStepsObjects manually
   templateUrl: './process-preview.component.html',
   styleUrl: './process-preview.component.css'
 })
@@ -19,14 +20,20 @@ export class ProcessPreviewComponent {
   constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
-    
+    console.log('process-preview init')
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['allStepsObject']) {
+      console.log('process-preview cahgnes')
+    }
   }
 
   ngAfterViewInit() {
     const canvasElement = this.canvas.nativeElement
     this.canvasHeight = canvasElement.height.baseVal.value
     this.canvasWidth = canvasElement.width.baseVal.value
-    this.cd.detectChanges() // detect changes manually because we changed the rectangles' height adn width attribute 
+    this.cd.detectChanges() // detect changes manually because we changed the rectangles' height and width attribute 
   }
 
   get rectSize() {
