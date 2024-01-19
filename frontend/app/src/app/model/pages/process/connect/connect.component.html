@@ -6,8 +6,9 @@
                 Column: {{selectedStep['column']}}
             </div>
             <div *ngIf="selectedStepAttribute.key == 'next_steps'">
-                <div *ngFor="let nextStep of selectedStepAttribute.value">
-                    added next steps: {{nextStep}}
+                <div *ngFor="let nextStep of selectedStepAttribute.value | keyvalue">
+                    added next steps: {{nextStep.key}}
+                    <button (click)="getSidebarTransitionLogicSidebar()">add transition logic</button>
                 </div>
             </div>
         </div>
@@ -32,7 +33,10 @@
                 {{nextStep}}
             </div>
             <button>Cancel</button>
-            <button (click)="getSidebarTransitionLogicSidebar()">Continue</button>
+        </div>
+        <div *ngIf="sidebarContent == 'addTransitionLogic'">
+            transition logic baby!
+            <button>Cancel</button>
         </div>
     </div>
     

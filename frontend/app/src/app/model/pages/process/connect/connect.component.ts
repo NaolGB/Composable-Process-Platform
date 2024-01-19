@@ -51,13 +51,17 @@ export class ConnectComponent {
   }
 
   getValidNextSteps() {
-    let validNextSteps = this.allStepsArray.filter(item => !this.selectedStep['next_steps'].includes(item))
+    let currenNextSteps: (string | number)[] = Object.keys(this.selectedStep['next_steps'])
+
+    // NOTE the filter statement is not inline function, do not add filter statemetn in {}
+    let validNextSteps = this.allStepsArray.filter(item => !currenNextSteps.includes(item))
     validNextSteps = validNextSteps.filter(item => item !== this.selectedStepKey)
+
     return validNextSteps
   }
 
   addNextStep(stepKey: (string | number)) {
-    this.selectedStep['next_steps'].push(stepKey)
+    this.selectedStep['next_steps'][stepKey] = {}
     this.getNewAllStepsObjectReference()
   }
 
@@ -69,10 +73,7 @@ export class ConnectComponent {
   }
 
   getSidebarTransitionLogicSidebar() {
-    console.log(this.selectedStep)
-    console.log(this.allStepsObject)
-    console.log(this.processData)
-    this.cd.detectChanges();
+    this.sidebarContent = 'addTransitionLogic'
   }
 
 }

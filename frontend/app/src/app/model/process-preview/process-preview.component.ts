@@ -20,13 +20,13 @@ export class ProcessPreviewComponent {
   constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
-    console.log('process-preview init')
+    // console.log('process-preview init')
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['allStepsObject']) {
-      console.log('process-preview cahgnes')
-    }
+    // if (changes['allStepsObject']) {
+    //   console.log('process-preview cahgnes')
+    // }
   }
 
   ngAfterViewInit() {

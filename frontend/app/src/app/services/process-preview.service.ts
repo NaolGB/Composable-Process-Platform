@@ -15,7 +15,7 @@ export class ProcessPreviewService {
       if(!allStepsArray.includes(step)) {
         allStepsArray.push(step)
       }
-      allStepsObject[step]['next_steps'].forEach((element: string | number) => {
+      Object.keys(allStepsObject[step]['next_steps']).forEach((element: string | number) => {
         if (!allStepsArray.includes(element)) {
           allStepsArray.push(element)
         }
@@ -27,11 +27,11 @@ export class ProcessPreviewService {
   getConnectedStepsArray(allStepsObject: ProcessTypeParsedData | any, allStepsArray: (string | number)[] ) {
     const allConnectedSteps: (string | number)[] = []
     allStepsArray.forEach((step) => {
-      if (allStepsObject[step]['next_steps'].length > 0) {
+      if (Object.keys(allStepsObject[step]['next_steps']).length > 0) {
         if (!allConnectedSteps.includes(step)) {
           allConnectedSteps.push(step)
         }
-        allStepsObject[step]['next_steps'].forEach((element: string | number) => {
+        Object.keys(allStepsObject[step]['next_steps']).forEach((element: string | number) => {
           if (!allConnectedSteps.includes(element)) {
             allConnectedSteps.push(element)
           }
@@ -84,11 +84,12 @@ export class ProcessPreviewService {
     const allStepsArray: (string | number)[] = this.getAllStepsArray(allStepsObject)
     const allConnectedSteps: (string | number)[] = this.getConnectedStepsArray(allStepsObject, allStepsArray)
     const allUnconnectedSteps: (string | number)[] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
+    console.log(allStepsArray, allConnectedSteps, allUnconnectedSteps)
 
     // find the end steps
     const endSteps: (string | number)[] = []
     allConnectedSteps.forEach((step: string | number) => {
-      if (allStepsObject[step]['next_steps'].length == 0) {
+      if (Object.keys(allStepsObject[step]['next_steps']).length == 0) {
         endSteps.push(step)
       }
     })
@@ -103,12 +104,12 @@ export class ProcessPreviewService {
         allStepsObject[currS]['row'] = currentRow
         allStepsObject[currS]['column'] = currentColumn
         allConnectedSteps.forEach((prevS) => {
-          if (allStepsObject[prevS]['next_steps'].includes(currS)) {
+          let prevStep_sNextSteps: (string | number)[] = Object.keys(allStepsObject[prevS]['next_steps'])
+          if (prevStep_sNextSteps.includes(currS)) {
             newColumnSteps.push(prevS)
           }
         })
         currentRow += 1
-        // if(currentRow > numMaxRows) {numMaxRows = currentRow}
       })
       prevSteps = newColumnSteps
       currentColumn -= 1
