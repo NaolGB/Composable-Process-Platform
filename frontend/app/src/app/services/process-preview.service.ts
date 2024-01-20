@@ -24,7 +24,7 @@ export class ProcessPreviewService {
     return allStepsArray
   }
 
-  getConnectedStepsArray(allStepsObject: ProcessTypeParsedData | any, allStepsArray: (string | number)[] ) {
+  getConnectedStepsArray(allStepsObject: ProcessTypeParsedData | any, allStepsArray: (string | number)[]) {
     const allConnectedSteps: (string | number)[] = []
     allStepsArray.forEach((step) => {
       if (Object.keys(allStepsObject[step]['next_steps']).length > 0) {
@@ -40,6 +40,28 @@ export class ProcessPreviewService {
     })
 
     return allConnectedSteps
+  }
+
+  getTransitionLines(allStepsObject: ProcessTypeParsedData | any) {
+    allStepsObject = this.getStepsOrder(allStepsObject)
+    const lines: {[key: string]: any} = {}
+    Object.keys(allStepsObject).forEach(step => {
+      Object.keys(allStepsObject[step]['next_steps']).forEach(nextStep => {
+        let fromRow: (string | number) = allStepsObject[step]['row']
+        let toRow: (string | number) = allStepsObject[nextStep]['row']
+        let fromColumn: (string | number) = allStepsObject[step]['column']
+        let toColumn: (string | number) = allStepsObject[nextStep]['column']
+
+        lines[`${fromRow}${fromColumn}${toRow}${toColumn}`] = ({
+          fromRow: allStepsObject[step]['row'],
+          toRow: allStepsObject[nextStep]['row'],
+          fromColumn: allStepsObject[step]['column'],
+          toColumn: allStepsObject[nextStep]['column']
+        })
+      })
+    })
+    
+    return lines
   }
 
   getStepsOrder(allStepsObject: ProcessTypeParsedData | any) {

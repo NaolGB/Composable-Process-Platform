@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { ProcessTypeParsedData } from '../../interfaces';
+import { ProcessPreviewService } from '../../services/process-preview.service';
 
 @Component({
   selector: 'app-process-preview',
@@ -14,26 +15,45 @@ export class ProcessPreviewComponent {
   @Input() allStepsObject: ProcessTypeParsedData | undefined 
 
   stepOrder: Object = {}
+  transitionLines: {[key: string]: any} = {}
   canvasHeight: number = 0
   canvasWidth: number = 0
+  allStepsArray: (string | number)[] = []
+  allConnectedSteps: (string | number)[] = []
+  allUnconnectedSteps: (string | number)[] = []
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, private processPreviewServices: ProcessPreviewService,) {}
 
   ngOnInit() {
-    // console.log('process-preview init')
+    console.log(this.allStepsArray, this.allConnectedSteps, this.allUnconnectedSteps)
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // if (changes['allStepsObject']) {
-    //   console.log('process-preview cahgnes')
-    // }
+    if (changes['allStepsObject']) {
+      this.allStepsArray = this.processPreviewServices.getAllStepsArray(this.allStepsObject)
+      this.allConnectedSteps = this.processPreviewServices.getConnectedStepsArray(this.allStepsObject, this.allStepsArray)
+      this.allUnconnectedSteps = this.allStepsArray.filter(step => !this.allConnectedSteps.includes(step))
+      this.transitionLines = this.processPreviewServices.getTransitionLines(this.allStepsObject)
+      console.log(this.transitionLines)
+    }
   }
 
   ngAfterViewInit() {
     const canvasElement = this.canvas.nativeElement
     this.canvasHeight = canvasElement.height.baseVal.value
     this.canvasWidth = canvasElement.width.baseVal.value
+
     this.cd.detectChanges() // detect changes manually because we changed the rectangles' height and width attribute 
+  }
+
+  getArrowHeadPoints(line:{[key: string]: number}) {
+    let x1 = (this.canvasWidth/(this.numMaxColumns+1)) * line['toColumn'] + this.rectSize - (this.rectSize/3)
+    let y1 = line['toRow'] + this.rectSize - (this.rectSize/3/2)
+    let y2 = y1 + (this.rectSize/3)
+    let x3 = x1 + (this.rectSize/3)
+    let y3 = y1 + ((y2 - y1) / 2)
+    
+    return `${x1},${y1} ${x1},${y2} ${x3},${y3}`
   }
 
   get rectSize() {
