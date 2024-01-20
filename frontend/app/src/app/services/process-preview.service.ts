@@ -106,7 +106,6 @@ export class ProcessPreviewService {
     const allStepsArray: (string | number)[] = this.getAllStepsArray(allStepsObject)
     const allConnectedSteps: (string | number)[] = this.getConnectedStepsArray(allStepsObject, allStepsArray)
     const allUnconnectedSteps: (string | number)[] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
-    console.log(allStepsArray, allConnectedSteps, allUnconnectedSteps)
 
     // find the end steps
     const endSteps: (string | number)[] = []

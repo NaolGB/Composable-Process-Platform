@@ -24,9 +24,7 @@ export class ProcessPreviewComponent {
 
   constructor(private cd: ChangeDetectorRef, private processPreviewServices: ProcessPreviewService,) {}
 
-  ngOnInit() {
-    console.log(this.allStepsArray, this.allConnectedSteps, this.allUnconnectedSteps)
-  }
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['allStepsObject']) {
@@ -34,7 +32,6 @@ export class ProcessPreviewComponent {
       this.allConnectedSteps = this.processPreviewServices.getConnectedStepsArray(this.allStepsObject, this.allStepsArray)
       this.allUnconnectedSteps = this.allStepsArray.filter(step => !this.allConnectedSteps.includes(step))
       this.transitionLines = this.processPreviewServices.getTransitionLines(this.allStepsObject)
-      console.log(this.transitionLines)
     }
   }
 

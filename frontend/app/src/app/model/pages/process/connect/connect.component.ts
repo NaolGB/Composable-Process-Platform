@@ -1,9 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../../../services/data.service';
 import { ProcessTypeParsedData } from '../../../../interfaces';
 import { ProcessPreviewService } from '../../../../services/process-preview.service';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-connect',
@@ -14,9 +13,8 @@ export class ConnectComponent {
   @ViewChild('canvas') canvas!: ElementRef;
   processId: string = ''
   processData: ProcessTypeParsedData = {}
+  processDesignStatus: string = ""
   allStepsObject: ProcessTypeParsedData = {}
-  allConnectedSteps: (string | number)[] = []
-  allUnconnectedSteps: (string | number)[] = []
   allStepsArray: (string | number)[] = []
   selectedStep: ProcessTypeParsedData = {}
   selectedStepKey: (string | number) = ''
@@ -35,13 +33,19 @@ export class ConnectComponent {
     this.apiServices.getProcessById(this.processId).subscribe(
       (response) => {
           this.processData = response
+          this.processDesignStatus = this.processData["design_status"]
           this.allStepsObject = this.processData['attributes']['steps']
-          this.allStepsObject = this.processPreviewServices.getStepsOrder(this.allStepsObject)
           this.allStepsArray = this.processPreviewServices.getAllStepsArray(this.allStepsObject)
-          this.allConnectedSteps = this.processPreviewServices.getConnectedStepsArray(this.allStepsObject, this.allStepsArray)
-          this.allUnconnectedSteps = this.allStepsArray.filter(step => !this.allConnectedSteps.includes(step))
       }
     )
+  }
+
+  get allConnectedSteps() {
+    return this.processPreviewServices.getConnectedStepsArray(this.allStepsObject, this.allStepsArray)
+  }
+
+  get allUnconnectedSteps() {
+    return this.allStepsArray.filter(step => !this.allConnectedSteps.includes(step))
   }
 
   getNewAllStepsObjectReference() {
@@ -55,7 +59,7 @@ export class ConnectComponent {
 
     // NOTE the filter statement is not inline function, do not add filter statemetn in {}
     let validNextSteps = this.allStepsArray.filter(item => !currenNextSteps.includes(item))
-    validNextSteps = validNextSteps.filter(item => item !== this.selectedStepKey)
+    validNextSteps = validNextSteps.filter(item => item != this.selectedStepKey)
 
     return validNextSteps
   }
@@ -65,15 +69,24 @@ export class ConnectComponent {
     this.getNewAllStepsObjectReference()
   }
 
+  // Data push functions
+  putProcess() {
+    console.log('putting')
+    this.apiServices.putProcessById(this.processId, this.processData).subscribe();
+  }
+
+  // Sidebar funcitons
+  getAllStepsList() {
+    this.sidebarContent = 'stepsList'
+    this.stepSelected = false
+    console.log(this.processData)
+  }
+
   getNextStepsListSidebar(stepKey: (string | number) ) {
     this.selectedStepKey = stepKey
     this.selectedStep = this.processData['attributes']['steps'][stepKey]  // NOTE use processData directly because allStepsObject's reference is getting updated to initiate change in process-preview
     this.stepSelected = true
-    this.sidebarContent = 'addNextStepsForm'
-  }
-
-  getSidebarTransitionLogicSidebar() {
-    this.sidebarContent = 'addTransitionLogic'
+    this.sidebarContent = 'nextStepsList'
   }
 
 }

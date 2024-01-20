@@ -64,4 +64,10 @@ export class DataService {
     const headers = new HttpHeaders({ "Content-Type": "application/json", })
     return this.http.get<ProcessTypeParsedData>(fullUrl)
   }
+
+  putProcessById(id: string, data: ProcessTypeParsedData) {
+    const fullUrl = `${this.baseUrl}/process/${id}`
+    const headers = new HttpHeaders({ "Content-Type": "application/json", })
+    return this.http.put(fullUrl, data, {headers})
+  }
 }

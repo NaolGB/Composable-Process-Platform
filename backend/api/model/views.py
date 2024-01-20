@@ -58,7 +58,7 @@ def process(request):
         parsed_post_data = request.data
         ProcessType().create(
             organization=ORGANIZATION,
-            design_status='NOT_INITIATED',
+            design_status='01_STEPS_ADDED', # creating a new process
             documents=parsed_post_data['documents'],
             steps=parsed_post_data['steps'],
             name=parsed_post_data['name'],
@@ -70,17 +70,10 @@ def process(request):
     else:
         return HttpResponse(status=405)
     
-@ api_view(['GET', 'POST'])
+@ api_view(['GET', 'PUT'])
 def single_process(request, id):
-    if request.method == 'POST':
-        # parsed_post_data = request.data
-        # ProcessType().create(
-        #     organization=ORGANIZATION,
-        #     design_status='NOT_INITIATED',
-        #     documents=parsed_post_data['documents'],
-        #     steps=parsed_post_data['steps'],
-        #     name=parsed_post_data['name'],
-        # )
+    if request.method == 'PUT':
+        ProcessType().put_process(id=id, data=request.data)
         return JsonResponse({'message':"success"})
     elif request.method == 'GET':
         parsed_response_data = ProcessType().get_process(processId=id)

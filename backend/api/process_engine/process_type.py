@@ -2,46 +2,22 @@ from bson import json_util
 from . import helpers, db_secrets
 
 client = db_secrets.get_client() #TODO manage methods to create client better - maybe one client instance per org
-class ProcessOption:
-    def __init__(self, **data) -> None:
-        self._option_type = None
-        self._label = None
-        self._action = None
-
-    def serialize(self):
-        serialized_option = {
-            "label": self._label,
-            "action": self._action
-        }
-
-        return serialized_option
-
-    def deserialize(self):
-        pass
-
-    def generate(self):
-        self._option_type = "cancel"
-        self._label = "Cancel"
-        self._action = {}
-
-        return self.serialize()
-
-    def is_valid(self):
-        return True
-
-
 class ProcessStep:
     def __init__(self) -> None:
         self._id = None
         self._options = {}
         self._next_steps = []
+        self._row = 0 # for process graph
+        self._column = 0 # for process graph
 
     def serialize(self):
         serialized_step = {
             "options": self._options,
             "next_steps": {
                 
-            }
+            },
+            "row": self._row,
+            "column": self._column
         }
 
         return serialized_step
@@ -51,9 +27,16 @@ class ProcessStep:
 
     def generate(self, step_name: str):
         self._id = step_name
-        default_process_option = ProcessOption()
-        serialized_default_process_option = default_process_option.generate()
-        self._options[default_process_option._option_type] = serialized_default_process_option
+        self._options = {
+            "cancel":{
+                "label": "Cancel",
+                "actions": {}
+            },
+            "save":{
+                "label": "Save",
+                "actions": {}
+            }
+        }
 
         return self.serialize()
 
@@ -125,6 +108,14 @@ class ProcessType:
         
         return prcs
     
+    # Next Steps functions
+    def put_process(self, id, **data): 
+        # TODO validate
+        # TODO update design status
+        data = data['data'] # data comes as a value of a dict with key of 'data'
+        
+        self.collection.update_one({"_id": id}, {"$set":data}) # TODO find a better way to updaete new adn existing updated fields only
+
     def is_valid(self):
         # TODO add validation
         return True
