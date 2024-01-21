@@ -37,7 +37,7 @@ def transaction_type(request):
     else:
         return HttpResponse(status=405)
     
-@ api_view(['GET', 'POST'])
+@api_view(['GET', 'POST'])
 def document_type(request):
     if request.method == 'POST':
         parsed_post_data = request.data
@@ -52,13 +52,13 @@ def document_type(request):
     else:
         return HttpResponse(status=405)
     
-@ api_view(['GET', 'POST'])
+@api_view(['GET', 'POST'])
 def process(request):
     if request.method == 'POST':
         parsed_post_data = request.data
         ProcessType().create(
             organization=ORGANIZATION,
-            design_status='00_GENERATED', # creating a new process
+            design_status='00_GENERATED_NOT_CONNECTION_ADDED', # creating a new process
             documents=parsed_post_data['documents'],
             steps=parsed_post_data['steps'],
             name=parsed_post_data['name'],
@@ -70,7 +70,7 @@ def process(request):
     else:
         return HttpResponse(status=405)
     
-@ api_view(['GET', 'PUT'])
+@api_view(['GET', 'PUT'])
 def single_process(request, id):
     if request.method == 'PUT':
         ProcessType().put_process(id=id, data=request.data)

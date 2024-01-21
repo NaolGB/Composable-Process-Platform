@@ -41,21 +41,57 @@
 
     <!-- Tab 2 -->
     <div *ngIf="selectedTab === 2">
-        tab 2
+        <!-- left section -->
+        <div>
+            <div *ngFor="let step of allStepsList">
+                <div (click)="selectStep(step)">
+                    Step: {{step}} | next steps: 
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps'] | keyvalue">
+                            {{nextStep.key}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- right section -->
+        <div>
+            <div *ngIf="selectedStepKey !== ''">
+                Valid Next Steps
+                <div *ngFor="let validNextStep of ValidNextSteps" (click)="addNextStep(validNextStep)">
+                    {{validNextStep}}
+                </div>
+            </div>
+        </div>
+        <button [disabled]="unconnectedSteps.length !== 0" (click)="putProcess()">Continue</button>
     </div>
 
     <!-- Tab 3 -->
     <div *ngIf="selectedTab === 3">
-        tab 3
+        <!-- left section -->
+        <div>
+            tab 4
+        </div>
+        <!-- right section -->
+        <div>
+            
+        </div>
     </div>
 
     <!-- Tab 4 -->
     <div *ngIf="selectedTab === 4">
-        tab 4
+        <!-- left section -->
+        <div>
+            tab 4
+        </div>
+        <!-- right section -->
+        <div>
+            
+        </div>
     </div>
 </div>
 
 <!-- Preview Section -->
-<div>
-
+<div style=" max-height: 40vh; min-height: 400px; position: fixed; width: 100%; height: 100%; bottom: 0; left: 0; background-color: #e0e0e0;">
+    <app-process-preview
+        [allStepsObject]="allStepsObject"
+    ></app-process-preview>
 </div>

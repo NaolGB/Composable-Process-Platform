@@ -52,6 +52,7 @@ class ProcessType:
         self._design_status = None
         self.db = client['dev']
         self.collection = self.db.process_type
+        self._data = {}
 
     def serialize(self):
         serialized_process = {
@@ -63,8 +64,8 @@ class ProcessType:
 
         return serialized_process
 
-    def deserialize(self, **data):
-        pass
+    # def deserialize(self, **data):
+    #     pass
 
     def create(self, **data):
         """
@@ -110,11 +111,28 @@ class ProcessType:
     
     # Next Steps functions
     def put_process(self, id, **data): 
-        # TODO validate
-        # TODO update design status
-        data = data['data'] # data comes as a value of a dict with key of 'data'
+        self._data = data['data'] # data comes as a value of a dict with key of 'data'
+
+        if self.is_valid():
+            self.update_process_design_status()
+            self.collection.update_one({"_id": id}, {"$set":self._data}) # TODO find a better way to updaete new adn existing updated fields only
+
+    def update_process_design_status(self):
+        # check if all steps are connected, but without all requirements added
+        all_steps = [k for k, _ in self._data['attributes']['steps'].items()]
+        connected_steps = []
+
+        for step in all_steps:
+            next_steps = self._data['attributes']['steps'][step]['next_steps'].keys()
+            if len(next_steps) != 0:
+                connected_steps.append(step)
+                connected_steps += next_steps
         
-        self.collection.update_one({"_id": id}, {"$set":data}) # TODO find a better way to updaete new adn existing updated fields only
+        connected_steps = list(set(connected_steps))
+        
+        if (len(connected_steps) == len(all_steps)):
+            self._data['design_status'] = '01_CONNECTED_NOT_REQUIREMENT_COMPLETED'
+       
 
     def is_valid(self):
         # TODO add validation
