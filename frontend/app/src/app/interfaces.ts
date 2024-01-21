@@ -27,5 +27,5 @@ export interface ProcessTypeParsedData {
 }
 
 export interface ProcessTypeIdsResponse {
-    ids: Array<String>
+    ids: (string | number) []
 }

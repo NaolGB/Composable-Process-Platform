@@ -58,7 +58,7 @@ def process(request):
         parsed_post_data = request.data
         ProcessType().create(
             organization=ORGANIZATION,
-            design_status='01_STEPS_ADDED', # creating a new process
+            design_status='00_GENERATED', # creating a new process
             documents=parsed_post_data['documents'],
             steps=parsed_post_data['steps'],
             name=parsed_post_data['name'],

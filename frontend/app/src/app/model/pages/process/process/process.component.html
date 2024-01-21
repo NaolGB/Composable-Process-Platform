@@ -1,0 +1,61 @@
+<!-- Select tabs -->
+<div>
+    <button (click)="selectTab(1)">Tab1</button>
+    <button (click)="selectTab(2)">Tab2</button>
+    <button (click)="selectTab(3)">Tab3</button>
+    <button (click)="selectTab(4)">Tab4</button>
+</div>
+
+<!-- Tabs -->
+<div>
+    <!-- Tab 1/Generate Process -->
+    <div *ngIf="selectedTab === 1">
+        <!-- left section -->
+        <div>
+            <button (click)="addDocumentType()">+</button>
+            <form [formGroup]="generateProcessForm" (ngSubmit)="onGenerateProcessSubmit()">
+                <div formGroupName="nameAndSteps">
+                    <input type="text" formControlName="name" placeholder="Name"/>
+                    <input type="text" formControlName="steps" placeholder="All steps separated by comma"/>
+                </div>
+    
+                <div formArrayName="documents">
+                    <div *ngFor="let doc of documents.controls; let i=index" [formGroupName]="i">
+                        <select formControlName="documentId">
+                            <option *ngFor="let opt of documentTypeIds" [ngValue]="opt">
+                                {{opt}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <!-- right section -->
+        <div *ngFor="let processId of processTypeIds">
+            <div (click)="selectProcess(processId)">{{processId}}</div>
+
+        </div>
+       
+    </div>
+
+    <!-- Tab 2 -->
+    <div *ngIf="selectedTab === 2">
+        tab 2
+    </div>
+
+    <!-- Tab 3 -->
+    <div *ngIf="selectedTab === 3">
+        tab 3
+    </div>
+
+    <!-- Tab 4 -->
+    <div *ngIf="selectedTab === 4">
+        tab 4
+    </div>
+</div>
+
+<!-- Preview Section -->
+<div>
+
+</div>

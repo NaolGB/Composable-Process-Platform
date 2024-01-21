@@ -59,7 +59,7 @@ export class DataService {
     return this.http.get<ProcessTypeIdsResponse>(fullUrl)
   }
 
-  getProcessById(id: string): Observable<ProcessTypeParsedData> {
+  getProcessById(id: string | number): Observable<ProcessTypeParsedData> {
     const fullUrl = `${this.baseUrl}/process/${id}`
     const headers = new HttpHeaders({ "Content-Type": "application/json", })
     return this.http.get<ProcessTypeParsedData>(fullUrl)
