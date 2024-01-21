@@ -10,8 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavBarComponent } from './model/nav-bar/nav-bar.component';
 import { CreateTransactionTypeComponent } from './model/pages/create-transaction-type/create-transaction-type.component';
 import { CreateDocumentTypeComponent } from './model/pages/create-document-type/create-document-type.component';
-import { GenerateComponent } from './model/pages/process/generate/generate.component';
-import { ConnectComponent } from './model/pages/process/connect/connect.component';
 import { ProcessPreviewComponent } from './model/process-preview/process-preview.component';
 
 @NgModule({
@@ -21,8 +19,6 @@ import { ProcessPreviewComponent } from './model/process-preview/process-preview
     NavBarComponent,
     CreateTransactionTypeComponent,
     CreateDocumentTypeComponent,
-    GenerateComponent,
-    ConnectComponent,
     ProcessPreviewComponent
   ],
   imports: [
