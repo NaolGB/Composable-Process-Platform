@@ -21,30 +21,24 @@ def master_dtype(request):
         return JsonResponse({'ids': parsed_response_data})
     else:
         return HttpResponse(status=405) # Method not allowed
-
+    
 @api_view(['GET', 'POST'])
-def transaction_type(request):
+def single_master_dtype(request, id):
     if request.method == 'POST':
-        parsed_post_data = request.data
-        TransactionType().create(
-            organization=ORGANIZATION,
-            attributes=parsed_post_data
-        )
-        return JsonResponse({'message':"success"})
+        pass
+        return JsonResponse({})
     elif request.method == 'GET':
-        parsed_repsonse_data = TransactionType().get_all_ids()
-        return JsonResponse({'ids': parsed_repsonse_data})
+        parsed_response_data = MasterDtype().get_master_dtype(id)
+        return JsonResponse({'data': parsed_response_data})
     else:
-        return HttpResponse(status=405)
+        return HttpResponse(status=405) # Method not allowed
     
 @api_view(['GET', 'POST'])
 def document_type(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        DocumentType().create(
-            organization=ORGANIZATION,
-            attributes=parsed_post_data
-        )
+        parsed_post_data['organization'] = ORGANIZATION
+        DocumentType().create(data=parsed_post_data)
         return JsonResponse({'message':"success"})
     elif request.method == 'GET':
         parsed_repsonse_data = DocumentType().get_all_ids()
@@ -56,13 +50,9 @@ def document_type(request):
 def process(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        ProcessType().create(
-            organization=ORGANIZATION,
-            design_status='00_GENERATED_NOT_CONNECTION_ADDED', # creating a new process
-            documents=parsed_post_data['documents'],
-            steps=parsed_post_data['steps'],
-            name=parsed_post_data['name'],
-        )
+        parsed_post_data['organization'] = ORGANIZATION
+        parsed_post_data['design_status']=['00_GENERATED_NOT_CONNECTION_ADDED'] # creating a new process
+        ProcessType().create(data=parsed_post_data)
         return JsonResponse({'message':"success"})
     elif request.method == 'GET':
         parsed_repsonse_data = ProcessType().get_all_ids()

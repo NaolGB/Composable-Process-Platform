@@ -1,8 +1,8 @@
 <!-- Select tabs -->
 <div>
-    <button (click)="selectTab(1)">Tab1</button>
-    <button (click)="selectTab(2)">Tab2</button>
-    <button (click)="selectTab(3)">Tab3</button>
+    <button (click)="selectTab(1)">generate</button>
+    <button (click)="selectTab(2)">connect</button>
+    <button (click)="selectTab(3)">add transition requirement</button>
     <button (click)="selectTab(4)">Tab4</button>
 </div>
 
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Tab 2 -->
-    <div *ngIf="selectedTab === 2">
+    <div *ngIf="(selectedTab === 2) && (processDesignStatus.includes('00_GENERATED_NOT_CONNECTION_ADDED'))">
         <!-- left section -->
         <div>
             <div *ngFor="let step of allStepsList">
@@ -65,10 +65,10 @@
     </div>
 
     <!-- Tab 3 -->
-    <div *ngIf="selectedTab === 3">
+    <div *ngIf="(selectedTab === 3) && (processDesignStatus.includes('01_CONNECTED_NOT_REQUIREMENT_COMPLETED'))">
         <!-- left section -->
         <div>
-            tab 4
+            tab 3
         </div>
         <!-- right section -->
         <div>

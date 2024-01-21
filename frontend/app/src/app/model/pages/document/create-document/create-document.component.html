@@ -1,0 +1,44 @@
+<button (click)="addAttribute()">+</button>
+<form [formGroup]="documentTypeForm" (ngSubmit)="postDocumentType()">
+    <div formGroupName="requiredAttributes">
+        <input type="text" formControlName="name" placeholder="Name"/>
+        <div>
+            lead object type:
+            <button type="button" (click)="setleadObjectType('master_dtype')">Master Data</button>
+            <button type="button" (click)="setleadObjectType('Document')">Document</button>
+        </div>
+
+        <div>
+            lead object type:
+            <select (change)="selectLeadObject($event)">
+                <option *ngFor="let opt of leadObjectOptions" [ngValue]="opt">
+                    {{opt}}
+                </option>
+            </select>
+        </div>
+
+        <div>
+            editable fields
+            <span *ngFor="let field of editableFields">{{field}}</span>
+        </div>
+    </div>
+
+    <div formArrayName="extraAttributes">
+        <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i">
+            <input type="text" formControlName="name" placeholder="Attribute Name" />
+            <select formControlName="dtype">
+                <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
+                    {{opt.typeName}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Sidebar -->
+<div >
+    <div *ngFor="let field of leadObjectFields">
+        <span *ngIf="!editableFields.includes(field)" (click)="addEditableField(field)">{{field}}</span>
+    </div>
+</div>

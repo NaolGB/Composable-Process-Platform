@@ -1,4 +1,5 @@
 import uuid
+from bson import json_util
 from . import helpers, db_secrets
 
 client = db_secrets.get_client() #TODO manage methods to create client better - maybe one client instance per org
@@ -42,7 +43,6 @@ class MasterDtype:
             if result.acknowledged:
                 result = self.db.create_collection(name=self._id)
 
-            # print(result.database.name)
         else:
             raise helpers.PEValidationError()
 
@@ -51,6 +51,11 @@ class MasterDtype:
         ids_list = [str(doc['_id']) for doc in ids]
 
         return ids_list
+    
+    def get_master_dtype(self, id):
+        response = self.collection.find_one({'_id': id})
+        response = json_util.loads(json_util.dumps(response))
+        return response
 
     def is_valid(self):
         # TODO require data['name']

@@ -49,7 +49,6 @@ export class ProcessComponent {
         this.processTypeIds = response['ids']
       }
     )
-    this.getSelectedProcessById()
   }
 
   selectTab(tabNumber: number) {
@@ -67,6 +66,15 @@ export class ProcessComponent {
 
   putProcess() {
     this.apiServices.putProcessById(this.selectedProcessId, this.selectedProcessObject).subscribe()
+  }
+
+  get processDesignStatus() {
+    if (this.selectedProcessObject['design_status']) {
+      return this.selectedProcessObject['design_status']
+    }
+    else{
+      return ''
+    }
   }
 
   // Generate Process tab functions
@@ -101,10 +109,8 @@ export class ProcessComponent {
       this.apiServices.getProcessById(this.selectedProcessId).subscribe(
         (response) => {
             this.selectedProcessObject = response
-            this.allStepsObject = this.selectedProcessObject['attributes']['steps']
+            this.allStepsObject = this.selectedProcessObject['steps']
             this.allStepsList = this.previewServices.getAllStepsArray(this.allStepsObject)
-            // this.processDesignStatus = this.processData["design_status"]
-            // this.allStepsArray = this.processPreviewServices.getAllStepsArray(this.allStepsObject)
         }
       )
     }
@@ -176,7 +182,7 @@ export class ProcessComponent {
 
   addNextStep(nextStepKey: string | number) {
     this.allStepsObject[this.selectedStepKey]['next_steps'][nextStepKey] = {}
-    this.allStepsObject = {...this.selectedProcessObject['attributes']['steps']}
+    this.allStepsObject = {...this.selectedProcessObject['steps']}
     this.allStepsObject = this.previewServices.getStepsOrder(this.allStepsObject)
     console.log(this.allStepsObject)
   }

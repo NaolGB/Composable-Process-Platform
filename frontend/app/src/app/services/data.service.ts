@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MasterDtypeIdsRespose, MasterDtypeParsedPostData, TransactionTypeParsedPostData, TransactionTypeIdsRespose, DocumentTypeParsedPostData, DocumentTypeIdsRespose, ProcessTypeParsedData, ProcessTypeIdsResponse } from '../interfaces';
+import { MasterDtypeIdsRespose, MasterDtypeParsedPostData, DocumentTypeIdsRespose, ProcessTypeParsedData, ProcessTypeIdsResponse } from '../interfaces';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -23,19 +23,13 @@ export class DataService {
     return this.http.get<MasterDtypeIdsRespose>(fullUrl)
   }
 
-  postTransactionDtype(data: TransactionTypeParsedPostData) {
-    const fullUrl = `${this.baseUrl}/transaction-type/`
-    const headers = new HttpHeaders({ "Content-Type": "application/json", })
-    return this.http.post(fullUrl, data, {headers})
+  getMasterDtypeById(id: string): Observable<any> {
+    const fullUrl = `${this.baseUrl}/master-data-type/${id}`
+    const headers = new HttpHeaders({ "Content-Type": "application/json"})
+    return this.http.get<any>(fullUrl)
   }
 
-  getTransactionTypeIds(): Observable<TransactionTypeIdsRespose> {
-    const fullUrl = `${this.baseUrl}/transaction-type/`
-    const headers = new HttpHeaders({ "Content-Type": "application/json", })
-    return this.http.get<TransactionTypeIdsRespose>(fullUrl)
-  }
-
-  postDocumentType(data: DocumentTypeParsedPostData) {
+  postDocumentType(data: any) {
     const fullUrl = `${this.baseUrl}/document-type/`
     const headers = new HttpHeaders({ "Content-Type": "application/json", })
     return this.http.post(fullUrl, data, {headers})

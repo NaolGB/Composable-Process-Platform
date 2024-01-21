@@ -3,15 +3,7 @@ export interface MasterDtypeParsedPostData {
 }
 
 export interface MasterDtypeIdsRespose {
-    ids: Array<String>
-}
-
-export interface TransactionTypeParsedPostData {
-    [key: string]: string
-}
-
-export interface TransactionTypeIdsRespose {
-    ids: Array<String>
+    ids: string[]
 }
 
 export interface DocumentTypeParsedPostData {
