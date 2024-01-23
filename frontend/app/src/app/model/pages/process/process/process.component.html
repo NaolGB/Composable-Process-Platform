@@ -68,7 +68,14 @@
     <div *ngIf="(selectedTab === 3) && (processDesignStatus.includes('01_CONNECTED_NOT_REQUIREMENT_COMPLETED'))">
         <!-- left section -->
         <div>
-            tab 3
+            <div *ngFor="let step of allStepsList">
+                <div>
+                    Step: {{step}} | next steps: 
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps'] | keyvalue">
+                            {{nextStep.key}}
+                    </span>
+                </div>
+            </div>
         </div>
         <!-- right section -->
         <div>

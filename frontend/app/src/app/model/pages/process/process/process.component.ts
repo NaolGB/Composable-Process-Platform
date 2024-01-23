@@ -187,4 +187,7 @@ export class ProcessComponent {
     console.log(this.allStepsObject)
   }
 
+  // Add Transition Requirements tab functions
+  
+
 }

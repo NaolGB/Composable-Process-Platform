@@ -7,30 +7,11 @@ client = db_secrets.get_client()
 
 class ProcessStep:
     def __init__(self) -> None:
-        self._id = None
-        self._options = {}
-        self._next_steps = []
-        self._row = 0  # for process graph
-        self._column = 0  # for process graph
-
-    def serialize(self):
-        serialized_step = {
-            "options": self._options,
-            "next_steps": {
-
-            },
-            "row": self._row,
-            "column": self._column
-        }
-
-        return serialized_step
-
-    def deserialize(self):
-        pass
+        self._data = {}
 
     def generate(self, step_name: str):
-        self._id = step_name
-        self._options = {
+        self._data['_id'] = helpers.name_to_id(step_name)
+        self._data['options'] = {
             "cancel": {
                 "label": "Cancel",
                 "actions": {}
@@ -40,8 +21,14 @@ class ProcessStep:
                 "actions": {}
             }
         }
+        self._data['next_steps'] = {
+            "steps": [],
+            "requirement": ""
+        }
+        self._data["row"] = 0
+        self._data["column"] = 0
 
-        return self.serialize()
+        return self._data
 
     def is_valid(self):
         pass
