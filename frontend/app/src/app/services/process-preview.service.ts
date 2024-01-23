@@ -11,27 +11,27 @@ export class ProcessPreviewService {
   getAllStepsArray(allStepsObject: ProcessTypeParsedData | any) {
     const allStepsArray: (string | number)[] = []
     
-    for (const step in allStepsObject) {
+    Object.keys(allStepsObject).forEach(step => {
       if(!allStepsArray.includes(step)) {
         allStepsArray.push(step)
       }
-      Object.keys(allStepsObject[step]['next_steps']).forEach((element: string | number) => {
+      allStepsObject[step]['next_steps']['steps'].forEach((element: string | number) => {
         if (!allStepsArray.includes(element)) {
           allStepsArray.push(element)
         }
       });
-    }
+    })
     return allStepsArray
   }
 
   getConnectedStepsArray(allStepsObject: ProcessTypeParsedData | any, allStepsArray: (string | number)[]) {
     const allConnectedSteps: (string | number)[] = []
     allStepsArray.forEach((step) => {
-      if (Object.keys(allStepsObject[step]['next_steps']).length > 0) {
+      if (allStepsObject[step]['next_steps']['steps'].length > 0) {
         if (!allConnectedSteps.includes(step)) {
           allConnectedSteps.push(step)
         }
-        Object.keys(allStepsObject[step]['next_steps']).forEach((element: string | number) => {
+        allStepsObject[step]['next_steps']['steps'].forEach((element: string | number) => {
           if (!allConnectedSteps.includes(element)) {
             allConnectedSteps.push(element)
           }
@@ -46,7 +46,7 @@ export class ProcessPreviewService {
     allStepsObject = this.getStepsOrder(allStepsObject)
     const lines: {[key: string]: any} = {}
     Object.keys(allStepsObject).forEach(step => {
-      Object.keys(allStepsObject[step]['next_steps']).forEach(nextStep => {
+      allStepsObject[step]['next_steps']['steps'].forEach((nextStep: string | number) => {
         let fromRow: (string | number) = allStepsObject[step]['row']
         let toRow: (string | number) = allStepsObject[nextStep]['row']
         let fromColumn: (string | number) = allStepsObject[step]['column']
@@ -110,7 +110,7 @@ export class ProcessPreviewService {
     // find the end steps
     const endSteps: (string | number)[] = []
     allConnectedSteps.forEach((step: string | number) => {
-      if (Object.keys(allStepsObject[step]['next_steps']).length == 0) {
+      if (Object.keys(allStepsObject[step]['next_steps']['steps']).length == 0) {
         endSteps.push(step)
       }
     })
@@ -125,7 +125,7 @@ export class ProcessPreviewService {
         allStepsObject[currS]['row'] = currentRow
         allStepsObject[currS]['column'] = currentColumn
         allConnectedSteps.forEach((prevS) => {
-          let prevStep_sNextSteps: (string | number)[] = Object.keys(allStepsObject[prevS]['next_steps'])
+          let prevStep_sNextSteps: (string | number)[] = allStepsObject[prevS]['next_steps']['steps']
           if (prevStep_sNextSteps.includes(currS)) {
             newColumnSteps.push(prevS)
           }

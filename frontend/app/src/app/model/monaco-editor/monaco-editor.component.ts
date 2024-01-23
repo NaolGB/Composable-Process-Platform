@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 /**
  * Monaco Editor integration: https://www.npmjs.com/package/ngx-monaco-editor-v2
@@ -10,6 +10,14 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
   styleUrl: './monaco-editor.component.css'
 })
 export class MonacoEditorComponent {
+  @Input() requirementCode: string | undefined
+
+  code: string= '# insert code here'
   editorOptions = {theme: 'vs', language: 'python'};
-  code: string= 'def x():\n\tprint("Hello world!")';
+  
+  ngOnInt() {
+    if (this.requirementCode) {
+      this.code = this.requirementCode
+    }
+  }
 }

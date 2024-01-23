@@ -4,6 +4,7 @@ import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ProcessTypeParsedData } from '../../../../interfaces';
 import { ProcessPreviewService } from '../../../../services/process-preview.service';
 import { concat } from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-process',
@@ -65,7 +66,9 @@ export class ProcessComponent {
   }
 
   putProcess() {
-    this.apiServices.putProcessById(this.selectedProcessId, this.selectedProcessObject).subscribe()
+    this.apiServices.putProcessById(this.selectedProcessId, this.selectedProcessObject).subscribe(
+      // TODO refresh process type to get new design_status
+    )
   }
 
   get processDesignStatus() {
@@ -157,7 +160,7 @@ export class ProcessComponent {
     let validNextSteps = this.allStepsList
 
     // exculde next steps already included
-    let currenNextSteps: (string | number)[] = Object.keys(this.allStepsObject[this.selectedStepKey]['next_steps'])
+    let currenNextSteps: (string | number)[] = this.allStepsObject[this.selectedStepKey]['next_steps']['steps']
     // NOTE the filter statement is not inline function, do not add filter statemetn in {}
     validNextSteps = validNextSteps.filter(item => !currenNextSteps.includes(item))
 
@@ -181,13 +184,13 @@ export class ProcessComponent {
   }
 
   addNextStep(nextStepKey: string | number) {
-    this.allStepsObject[this.selectedStepKey]['next_steps'][nextStepKey] = {}
+    this.allStepsObject[this.selectedStepKey]['next_steps']['steps'].push(nextStepKey)
     this.allStepsObject = {...this.selectedProcessObject['steps']}
     this.allStepsObject = this.previewServices.getStepsOrder(this.allStepsObject)
     console.log(this.allStepsObject)
   }
 
   // Add Transition Requirements tab functions
-  
+
 
 }

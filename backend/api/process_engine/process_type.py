@@ -89,7 +89,7 @@ class ProcessType:
         connected_steps = []
 
         for step in all_steps:
-            next_steps = self._data['steps'][step]['next_steps'].keys()
+            next_steps = self._data['steps'][step]['next_steps']['steps']
             if len(next_steps) != 0:
                 connected_steps.append(step)
                 connected_steps += next_steps
@@ -103,17 +103,6 @@ class ProcessType:
             self._data['design_status'].remove(
                 '01_CONNECTED_NOT_REQUIREMENT_COMPLETED')
 
-    # def update_transition_requirements(self):
-    #     if ('01_CONNECTED_NOT_REQUIREMENT_COMPLETED' in self._data['design_status'] and 
-    #         ('02_CONNECTED_REQUIREMENT_COMPLETED' not in self._data['design_status'])):
-    #         all_steps = [k for k, _ in self._data['steps'].items()]
-            
-    #         for step in all_steps:
-    #             next_steps = self._data['steps'][step]['next_steps'].keys() 
-    #             if len(next_steps) == 1:
-    #                 self._data['steps'][step]['next_steps'][next_steps[0]]['requirement'] = ""
-    #             if len(next_steps) > 1:
-    #                 pass
 
     def is_valid(self):
         # TODO add validation

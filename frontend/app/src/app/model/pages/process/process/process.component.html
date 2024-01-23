@@ -46,8 +46,8 @@
             <div *ngFor="let step of allStepsList">
                 <div (click)="selectStep(step)">
                     Step: {{step}} | next steps: 
-                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps'] | keyvalue">
-                            {{nextStep.key}}
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                            {{nextStep}}
                     </span>
                 </div>
             </div>
@@ -71,8 +71,8 @@
             <div *ngFor="let step of allStepsList">
                 <div>
                     Step: {{step}} | next steps: 
-                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps'] | keyvalue">
-                            {{nextStep.key}}
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                            {{nextStep}}
                     </span>
                 </div>
             </div>
