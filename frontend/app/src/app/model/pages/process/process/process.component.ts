@@ -36,7 +36,9 @@ export class ProcessComponent {
   selectedStepKey: string | number = ''
   allStepsList: (string | number)[] = []
 
-  constructor(private apiServices: DataService, private formBuilder: FormBuilder, private previewServices: ProcessPreviewService) {}
+  // Add Transition Requirements tab variables
+
+  constructor(private apiServices: DataService, private formBuilder: FormBuilder, private previewServices: ProcessPreviewService, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     // Generate Process tab inits
@@ -119,7 +121,6 @@ export class ProcessComponent {
     }
   }
   
-
   onGenerateProcessSubmit() {
     const parsedPostData: ProcessTypeParsedData = {
 			name: this.generateProcessForm.get("nameAndSteps")?.get("name")?.value || "",
@@ -143,7 +144,9 @@ export class ProcessComponent {
 
   // Connect Process tab functions
   selectStep(stepKey: string | number) {
+    // only available after process is selected (selectedProcessId !== '')
     this.selectedStepKey = stepKey
+    console.log(this.selectedStepKey)
   }
 
   get connectedSteps() {
@@ -187,10 +190,12 @@ export class ProcessComponent {
     this.allStepsObject[this.selectedStepKey]['next_steps']['steps'].push(nextStepKey)
     this.allStepsObject = {...this.selectedProcessObject['steps']}
     this.allStepsObject = this.previewServices.getStepsOrder(this.allStepsObject)
-    console.log(this.allStepsObject)
   }
 
   // Add Transition Requirements tab functions
-
+  onMonacoContentChagne($newContent: string) {
+    this.allStepsObject[this.selectedStepKey]['next_steps']['requirement'] = $newContent
+    console.log(this.allStepsObject[this.selectedStepKey]['next_steps']['requirement'])
+  }
 
 }

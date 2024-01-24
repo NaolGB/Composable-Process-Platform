@@ -1,3 +1,5 @@
+import base64
+
 class PEValidationError(Exception):
     def __init__(self, messege="Process Engine validation failed") -> None:
         self.message = messege
@@ -18,3 +20,15 @@ def name_to_id(name: str):
     new_name = name.strip()
     new_name = new_name.replace(' ', '_')
     return new_name
+
+def get_b64_text(plain_text):
+    encoded_bytes = base64.b64encode(plain_text.encode('utf-8'))
+    b64_text = encoded_bytes.decode('utf-8')
+    
+    return b64_text
+
+def get_plain_text(b64_text):
+    decoded_bytes = base64.b64decode(b64_text)
+    plain_text = decoded_bytes.decode('utf-8')
+
+    return plain_text

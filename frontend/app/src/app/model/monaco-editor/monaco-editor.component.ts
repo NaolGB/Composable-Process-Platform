@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ProcessTypeParsedData } from '../../interfaces';
 
 /**
  * Monaco Editor integration: https://www.npmjs.com/package/ngx-monaco-editor-v2
@@ -10,14 +11,34 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
   styleUrl: './monaco-editor.component.css'
 })
 export class MonacoEditorComponent {
-  @Input() requirementCode: string | undefined
+  @Input() allStepsObject!: ProcessTypeParsedData  
+  @Input() selectedStepKey!: string | number 
+  @Output() editorContentChange = new EventEmitter<string>()
 
-  code: string= '# insert code here'
+  // editorContent: string = 'this.requirementCode'
   editorOptions = {theme: 'vs', language: 'python'};
+  initialRequirementCode: string = '# insert code here'
+  requirementCode: string = this.initialRequirementCode
+
+  constructor(private cd: ChangeDetectorRef) {}
   
-  ngOnInt() {
-    if (this.requirementCode) {
-      this.code = this.requirementCode
+  ngOnInt() {}
+
+  ngAfterViewInit() {
+    this.requirementCode = this.allStepsObject[this.selectedStepKey]['next_steps']['requirement']
+    this.cd.detectChanges()
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('change')
+    if (changes['selectedStepKey']) {
+      this.requirementCode = this.allStepsObject[this.selectedStepKey]['next_steps']['requirement']
+    }
+  }
+
+  ngDoCheck() {
+    if(this.requirementCode !== this.initialRequirementCode) {
+      this.editorContentChange.emit(this.requirementCode)
     }
   }
 }
