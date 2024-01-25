@@ -11,6 +11,7 @@ import { ProcessTypeParsedData } from '../../interfaces';
   styleUrl: './monaco-editor.component.css'
 })
 export class MonacoEditorComponent {
+  @Input() contentType!: string
   @Input() allStepsObject!: ProcessTypeParsedData  
   @Input() selectedStepKey!: string | number 
   @Output() editorContentChange = new EventEmitter<string>()
@@ -25,14 +26,24 @@ export class MonacoEditorComponent {
   ngOnInt() {}
 
   ngAfterViewInit() {
-    this.requirementCode = this.allStepsObject[this.selectedStepKey]['next_steps']['requirement']
+    if(this.contentType === 'requirements') {
+      this.requirementCode = this.allStepsObject[this.selectedStepKey]['next_steps']['requirements']
+    }
+    else if(this.contentType === 'actions') {
+      this.requirementCode = this.allStepsObject[this.selectedStepKey]['options']['save']['actions']
+    }
     this.cd.detectChanges()
   }
 
   ngOnChanges(changes: SimpleChanges) {
     console.log('change')
     if (changes['selectedStepKey']) {
-      this.requirementCode = this.allStepsObject[this.selectedStepKey]['next_steps']['requirement']
+      if(this.contentType === 'requirements') {
+        this.requirementCode = this.allStepsObject[this.selectedStepKey]['next_steps']['requirements']
+      }
+      else if(this.contentType === 'actions') {
+        this.requirementCode = this.allStepsObject[this.selectedStepKey]['options']['save']['actions']
+      }
     }
   }
 

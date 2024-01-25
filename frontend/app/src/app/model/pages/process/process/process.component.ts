@@ -36,7 +36,11 @@ export class ProcessComponent {
   selectedStepKey: string | number = ''
   allStepsList: (string | number)[] = []
 
-  // Add Transition Requirements tab variables
+  // Transition Requirements tab variables
+  requirementsContentType: string = 'requirements'
+
+  // Action tab variables
+  actionsContentType: string = 'actions'
 
   constructor(private apiServices: DataService, private formBuilder: FormBuilder, private previewServices: ProcessPreviewService, private cd: ChangeDetectorRef) {}
 
@@ -193,9 +197,13 @@ export class ProcessComponent {
   }
 
   // Add Transition Requirements tab functions
-  onMonacoContentChagne($newContent: string) {
-    this.allStepsObject[this.selectedStepKey]['next_steps']['requirement'] = $newContent
-    console.log(this.allStepsObject[this.selectedStepKey]['next_steps']['requirement'])
+  onMonacoRequirementContentChagne($newContent: string) {
+    this.allStepsObject[this.selectedStepKey]['next_steps']['requirements'] = $newContent
+  }
+
+  // Add Action tab functions
+  onMonacoActionContentChagne($newContent: string) {
+    this.allStepsObject[this.selectedStepKey]['options']['save']['actions'] = $newContent
   }
 
 }

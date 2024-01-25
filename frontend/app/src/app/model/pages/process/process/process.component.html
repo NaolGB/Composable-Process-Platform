@@ -84,7 +84,8 @@
                 <app-monaco-editor
                     [allStepsObject]="allStepsObject"
                     [selectedStepKey]="selectedStepKey"
-                    (editorContentChange)="onMonacoContentChagne($event)"
+                    [contentType]="requirementsContentType"
+                    (editorContentChange)="onMonacoRequirementContentChagne($event)"
                 ></app-monaco-editor>
             </div>
         </div>
@@ -95,11 +96,25 @@
     <div *ngIf="selectedTab === 4">
         <!-- left section -->
         <div>
-            tab 4
+            <div *ngFor="let step of allStepsList">
+                <div (click)="selectStep(step)">
+                    Step: {{step}} | next steps: 
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                            {{nextStep}}
+                    </span>
+                </div>
+            </div>
         </div>
         <!-- right section -->
         <div>
-            
+            <div *ngIf="selectedStepKey !== ''">
+                <app-monaco-editor
+                    [allStepsObject]="allStepsObject"
+                    [selectedStepKey]="selectedStepKey"
+                    [contentType]="actionsContentType"
+                    (editorContentChange)="onMonacoActionContentChagne($event)"
+                ></app-monaco-editor>
+            </div>
         </div>
     </div>
 </div>

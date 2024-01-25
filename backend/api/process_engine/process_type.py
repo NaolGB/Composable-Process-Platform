@@ -15,16 +15,16 @@ class ProcessStep:
         self._data['options'] = {
             "cancel": {
                 "label": "Cancel",
-                "actions": {}
+                "actions": ""
             },
             "save": {
                 "label": "Save",
-                "actions": {}
+                "actions": ""
             }
         }
         self._data['next_steps'] = {
             "steps": [],
-            "requirement": ""
+            "requirements": ""
         }
         self._data["row"] = 0
         self._data["column"] = 0
@@ -72,16 +72,19 @@ class ProcessType:
         self._data = prcs
 
         self.update_transition_requirement_to_get()
+        self.update_actions_to_get()
 
         return self._data
 
     def put_process(self, id, **data):
         # data comes as a value of a dict with key of 'data'
         self._data = data['data']
+        print(self._data)
 
         if self.is_valid():
             self.update_process_design_status()
             self.update_transition_requirement_to_put()
+            self.update_actions_to_put()
 
             # TODO find a better way to updaete new adn existing updated fields only
             self.collection.update_one({"_id": id}, {"$set": self._data})
@@ -115,9 +118,9 @@ class ProcessType:
         for step in all_steps:
             next_steps = self._data['steps'][step]['next_steps']['steps']
             if len(next_steps) != 0:
-                code_content = self._data['steps'][step]['next_steps']['requirement']
+                code_content = self._data['steps'][step]['next_steps']['requirements']
                 code_content = helpers.get_b64_text(code_content)
-                self._data['steps'][step]['next_steps']['requirement'] = code_content
+                self._data['steps'][step]['next_steps']['requirements'] = code_content
 
     def update_transition_requirement_to_get(self):
         all_steps = [k for k, _ in self._data['steps'].items()]
@@ -125,9 +128,25 @@ class ProcessType:
         for step in all_steps:
             next_steps = self._data['steps'][step]['next_steps']['steps']
             if len(next_steps) != 0:
-                code_content = self._data['steps'][step]['next_steps']['requirement']
+                code_content = self._data['steps'][step]['next_steps']['requirements']
                 code_content = helpers.get_plain_text(code_content)
-                self._data['steps'][step]['next_steps']['requirement'] = code_content
+                self._data['steps'][step]['next_steps']['requirements'] = code_content
+
+    def update_actions_to_put(self):
+        all_steps = [k for k, _ in self._data['steps'].items()]
+
+        for step in all_steps:
+            code_content = self._data['steps'][step]['options']['save']['actions']
+            code_content = helpers.get_b64_text(code_content)
+            self._data['steps'][step]['options']['save']['actions'] = code_content
+
+    def update_actions_to_get(self):
+        all_steps = [k for k, _ in self._data['steps'].items()]
+
+        for step in all_steps:
+            code_content = self._data['steps'][step]['options']['save']['actions']
+            code_content = helpers.get_plain_text(code_content)
+            self._data['steps'][step]['options']['save']['actions'] = code_content
 
 
     def is_valid(self):
