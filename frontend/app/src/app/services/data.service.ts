@@ -41,6 +41,12 @@ export class DataService {
     return this.http.get<DocumentTypeIdsRespose>(fullUrl)
   }
 
+  getDocumentTypeById(id: string): Observable<any> {
+    const fullUrl = `${this.baseUrl}/document-type/${id}`
+    const headers = new HttpHeaders({ "Content-Type": "application/json", })
+    return this.http.get<any>(fullUrl)
+  }
+
   postProcessType(data: ProcessTypeParsedData) {
     const fullUrl = `${this.baseUrl}/process-type/`
     const headers = new HttpHeaders({ "Content-Type": "application/json", })

@@ -8,21 +8,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavBarComponent } from './model/nav-bar/nav-bar.component';
 import { ProcessPreviewComponent } from './model/process-preview/process-preview.component';
-import { CreateMasterDtypeComponent } from './model/pages/create-master-dtype/create-master-dtype.component';
 import { ProcessComponent } from './model/pages/process/process/process.component';
 import { CreateDocumentComponent } from './model/pages/document/create-document/create-document.component';
 import { MonacoEditorComponent } from './model/monaco-editor/monaco-editor.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { CreateMasterComponent } from './model/pages/master/create-master/create-master.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
-    CreateMasterDtypeComponent,
     ProcessPreviewComponent,
     ProcessComponent,
     CreateDocumentComponent,
-    MonacoEditorComponent
+    MonacoEditorComponent,
+    CreateMasterComponent
   ],
   imports: [
     BrowserModule,

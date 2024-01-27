@@ -1,15 +1,16 @@
 <!-- Select tabs -->
 <div>
-    <button (click)="selectTab(1)">generate</button>
-    <button (click)="selectTab(2)">connect</button>
-    <button (click)="selectTab(3)">add transition requirement</button>
-    <button (click)="selectTab(4)">Tab4</button>
+    <button (click)="selectTab('generate')">generate</button>
+    <button (click)="selectTab('connect')">connect</button>
+    <button (click)="selectTab('fields')">Add step type</button>
+    <button (click)="selectTab('requirement')">add transition requirement</button>
+    <button (click)="selectTab('action')">Tab4</button>
 </div>
 
 <!-- Tabs -->
 <div>
     <!-- Tab 1/Generate Process -->
-    <div *ngIf="selectedTab === 1">
+    <div *ngIf="selectedTab === 'generate'">
         <!-- left section -->
         <div>
             <button (click)="addDocumentType()">+</button>
@@ -40,7 +41,7 @@
     </div>
 
     <!-- Tab 2 -->
-    <div *ngIf="(selectedTab === 2) && (processDesignStatus.includes('00_GENERATED_NOT_CONNECTION_ADDED'))">
+    <div *ngIf="(selectedTab === 'connect') && (processDesignStatus.includes('00_GENERATED_NOT_CONNECTION_ADDED'))">
         <!-- left section -->
         <div>
             <div *ngFor="let step of allStepsList">
@@ -64,8 +65,40 @@
         <button [disabled]="unconnectedSteps.length !== 0" (click)="putProcess()">Continue</button>
     </div>
 
+    <!-- Add Step Type and Fields -->
+    <div *ngIf="selectedTab === 'fields'">
+        <!-- left section -->
+        <div>
+            <div *ngFor="let step of allStepsList">
+                <div (click)="selectStep(step)">
+                    Step: {{step}}
+                </div>
+            </div>
+        </div>
+        <!-- right section -->
+        <div>
+            <div *ngIf="selectedStepKey !== ''">
+                <button (click)="selectEventType('create')">Create</button>
+                <button (click)="selectEventType('read')">Read</button>
+                <button (click)="selectEventType('update')">Update</button>
+            </div>
+
+            <div *ngIf="selectedEventType === 'update'">
+                document fields
+                <div *ngFor="let document of selectedProcessDocuments | keyvalue">
+                    {{document.value.name}}
+                    <!-- <div *ngFor="let extraAttribute of document.value.extra_attributes | keyvalue">
+                        {{extraAttribute.key}}
+                    </div> -->
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
     <!-- Tab 3 -->
-    <div *ngIf="(selectedTab === 3) && (processDesignStatus.includes('01_CONNECTED_NOT_REQUIREMENT_COMPLETED'))">
+    <div *ngIf="(selectedTab === 'requirement') && (processDesignStatus.includes('01_CONNECTED_NOT_REQUIREMENT_COMPLETED'))">
         <!-- left section -->
         <div>
             <div *ngFor="let step of allStepsList">
@@ -93,7 +126,7 @@
     </div>
 
     <!-- Tab 4 -->
-    <div *ngIf="selectedTab === 4">
+    <div *ngIf="selectedTab === 'action'">
         <!-- left section -->
         <div>
             <div *ngFor="let step of allStepsList">

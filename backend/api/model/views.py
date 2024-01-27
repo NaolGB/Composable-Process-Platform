@@ -47,6 +47,19 @@ def document_type(request):
         return HttpResponse(status=405)
     
 @api_view(['GET', 'POST'])
+def single_document_type(request, id):
+    if request.method == 'POST':
+        # parsed_post_data = request.data
+        # parsed_post_data['organization'] = ORGANIZATION
+        # DocumentType().create(data=parsed_post_data)
+        return JsonResponse({'message':"success"})
+    elif request.method == 'GET':
+        parsed_repsonse_data = DocumentType().get_document_type(documentId=id)
+        return JsonResponse(parsed_repsonse_data)
+    else:
+        return HttpResponse(status=405)
+    
+@api_view(['GET', 'POST'])
 def process(request):
     if request.method == 'POST':
         parsed_post_data = request.data

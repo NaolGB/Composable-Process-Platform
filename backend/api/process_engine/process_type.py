@@ -28,6 +28,9 @@ class ProcessStep:
         }
         self._data["row"] = 0
         self._data["column"] = 0
+        self._data["event_type"] = "",
+
+        self._data["fields"] = {}
 
         return self._data
 

@@ -1,21 +1,15 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { MasterDtypeParsedPostData } from '../../../interfaces';
-import { DataService } from '../../../services/data.service';
-
+import { MasterDtypeParsedPostData } from '../../../../interfaces';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { DataService } from '../../../../services/data.service';
 
 @Component({
-  selector: 'app-create-master-dtype',
-  templateUrl: './create-master-dtype.component.html',
-  styleUrl: './create-master-dtype.component.css'
+  selector: 'app-create-master',
+  templateUrl: './create-master.component.html',
+  styleUrl: './create-master.component.css'
 })
-export class CreateMasterDtypeComponent {
-	dtypeOptions = [
-		{typeName: 'string'},
-		{typeName: 'number'},
-		{typeName: 'datetime'},
-		{typeName: 'boolean'},
-	]
+export class CreateMasterComponent {
+  dtypeOptions = [ 'string', 'number', 'datetime', 'boolean',]
 
 	masterDtypeForm = this.formBuilder.group({
 		nameAndType: this.formBuilder.group({
@@ -69,9 +63,6 @@ export class CreateMasterDtypeComponent {
 			}
 		}
 
-		this.apiServices.postMasterDtype(parsedPostData).subscribe(
-		//   resposnse => {}, // TODO add success message on save in UI
-		//   error => {}
-		)
+		this.apiServices.postMasterDtype(parsedPostData).subscribe()
 	}
 }

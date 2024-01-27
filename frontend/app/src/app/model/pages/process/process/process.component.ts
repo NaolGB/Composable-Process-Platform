@@ -12,7 +12,8 @@ import { HttpResponse } from '@angular/common/http';
   styleUrl: './process.component.css',
 })
 export class ProcessComponent {
-  selectedTab: number = 1
+  selectedTab: string | number = 'generate'
+  selectedProcessDocuments: {[key: string | number]: any} = {}
 
   // Generate Process tab variables  
   documentTypeIds: Array<String> = []
@@ -36,6 +37,9 @@ export class ProcessComponent {
   selectedStepKey: string | number = ''
   allStepsList: (string | number)[] = []
 
+  // Add Step Type and Fields tab variables
+  selectedEventType: string = 'read'
+
   // Transition Requirements tab variables
   requirementsContentType: string = 'requirements'
 
@@ -58,10 +62,10 @@ export class ProcessComponent {
     )
   }
 
-  selectTab(tabNumber: number) {
-    this.selectedTab = tabNumber
+  selectTab(tabName: string | number) {
+    this.selectedTab = tabName
 
-    if((tabNumber === 2) && (this.selectedProcessId !== '') ) {
+    if((tabName === 'connect') && (this.selectedProcessId !== '') ) {
       this.apiServices.getProcessById(this.selectedProcessId).subscribe(
         (response) => {
           this.selectedProcessObject = response
@@ -110,7 +114,7 @@ export class ProcessComponent {
   selectProcess(id: string | number) {
     this.selectedProcessId = id
     this.getSelectedProcessById()
-    this.selectTab(2)
+    this.selectTab('connect')
   }
 
   getSelectedProcessById() {
@@ -120,6 +124,16 @@ export class ProcessComponent {
             this.selectedProcessObject = response
             this.allStepsObject = this.selectedProcessObject['steps']
             this.allStepsList = this.previewServices.getAllStepsArray(this.allStepsObject)
+            
+            this.selectedProcessObject['documents'].forEach((element: string) => {
+              this.apiServices.getDocumentTypeById(element).subscribe(
+                (response) => {
+                  this.selectedProcessDocuments[element] = response
+                  console.log(this.selectedProcessDocuments)
+                }
+              )
+            });
+
         }
       )
     }
@@ -194,6 +208,11 @@ export class ProcessComponent {
     this.allStepsObject[this.selectedStepKey]['next_steps']['steps'].push(nextStepKey)
     this.allStepsObject = {...this.selectedProcessObject['steps']}
     this.allStepsObject = this.previewServices.getStepsOrder(this.allStepsObject)
+  }
+
+  // Add Step Type and Fields tab functions
+  selectEventType(eventTypeName: string) {
+    this.selectedEventType = eventTypeName
   }
 
   // Add Transition Requirements tab functions

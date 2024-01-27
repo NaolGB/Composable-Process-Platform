@@ -9,7 +9,7 @@
             <input type="text" formControlName="name" placeholder="Attribute Name" />
             <select formControlName="dtype">
                 <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
-                    {{opt.typeName}}
+                    {{opt}}
                 </option>
             </select>
         </div>
@@ -20,7 +20,7 @@
 
 <!-- Sidebar -->
 <div>
-    <div *ngFor="let mDtype in masterDtypeInDB">
+    <div *ngFor="let mDtype of masterDtypeInDB">
         {{mDtype}}
     </div>
 </div>
