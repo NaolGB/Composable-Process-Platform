@@ -164,7 +164,6 @@ export class ProcessComponent {
   selectStep(stepKey: string | number) {
     // only available after process is selected (selectedProcessId !== '')
     this.selectedStepKey = stepKey
-    console.log(this.selectedStepKey)
   }
 
   get connectedSteps() {
@@ -213,6 +212,44 @@ export class ProcessComponent {
   // Add Step Type and Fields tab functions
   selectEventType(eventTypeName: string) {
     this.selectedEventType = eventTypeName
+  }
+
+  addUpdateDocumentField(documentId: string, fieldId: any) {
+    const fullFieldId = `${documentId}.${fieldId}`
+    this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] = 'update'
+
+    // add to document_fields
+    if (Object.keys(this.selectedProcessObject['steps'][this.selectedStepKey]['fields']).includes(documentId)) {
+      if (!this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['document_fields'].includes(fullFieldId)) {
+        this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['document_fields'].push(fullFieldId)
+      }
+    }
+    else {
+      this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId] = {
+        'document_fields': [fullFieldId],
+        'lead_object_fields': []
+      }
+    }
+  }
+
+  addUpdateSourceField(documentId: string, fieldId: any) {
+    const fullFieldId = `${documentId}.${this.selectedProcessDocuments[documentId]['lead_object']}.${fieldId}`
+    this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] = 'update'
+
+    // add to document_fields
+    if (Object.keys(this.selectedProcessObject['steps'][this.selectedStepKey]['fields']).includes(documentId)) {
+      if (!this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['lead_object_fields'].includes(fullFieldId)) {
+        this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['lead_object_fields'].push(fullFieldId)
+      }
+    }
+    else {
+      this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId] = {
+        'document_fields': [],
+        'lead_object_fields': [fullFieldId]
+      }
+    }
+
+    console.log(this.selectedProcessObject)
   }
 
   // Add Transition Requirements tab functions

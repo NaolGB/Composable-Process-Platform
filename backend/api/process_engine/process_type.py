@@ -28,9 +28,11 @@ class ProcessStep:
         }
         self._data["row"] = 0
         self._data["column"] = 0
-        self._data["event_type"] = "",
+        self._data["event_type"] = '',
 
-        self._data["fields"] = {}
+        self._data["fields"] = {
+
+        }
 
         return self._data
 
@@ -82,7 +84,6 @@ class ProcessType:
     def put_process(self, id, **data):
         # data comes as a value of a dict with key of 'data'
         self._data = data['data']
-        print(self._data)
 
         if self.is_valid():
             self.update_process_design_status()

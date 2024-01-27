@@ -62,7 +62,6 @@
                 </div>
             </div>
         </div>
-        <button [disabled]="unconnectedSteps.length !== 0" (click)="putProcess()">Continue</button>
     </div>
 
     <!-- Add Step Type and Fields -->
@@ -86,12 +85,23 @@
             <div *ngIf="selectedEventType === 'update'">
                 document fields
                 <div *ngFor="let document of selectedProcessDocuments | keyvalue">
-                    {{document.value.name}}
-                    <!-- <div *ngFor="let extraAttribute of document.value.extra_attributes | keyvalue">
-                        {{extraAttribute.key}}
-                    </div> -->
+                    <div 
+                        *ngFor="let extraAttribute of document.value.extra_attributes | keyvalue"
+                        (click)="addUpdateDocumentField(document.key, extraAttribute.key)"
+                    >
+                        {{document.value.name}} -> {{extraAttribute.key}}
+                    </div>
                 </div>
 
+                source data fields
+                <div *ngFor="let document of selectedProcessDocuments | keyvalue">
+                    <div 
+                        *ngFor="let field of document.value.editable_fields"
+                        (click)="addUpdateSourceField(document.key, field)"
+                    >
+                        {{document.value.name}} -> {{document.value.lead_object}} -> {{field}}
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -110,7 +120,6 @@
                 </div>
             </div>
         </div>
-        <button (click)="putProcess()">Continue</button>
         <!-- right section -->
         <div>
             <div *ngIf="selectedStepKey !== ''">
@@ -150,6 +159,7 @@
             </div>
         </div>
     </div>
+    <button (click)="putProcess()">Continue</button>
 </div>
 
 <!-- Preview Section -->
