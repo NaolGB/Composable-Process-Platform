@@ -248,8 +248,6 @@ export class ProcessComponent {
         'lead_object_fields': [fullFieldId]
       }
     }
-
-    console.log(this.selectedProcessObject)
   }
 
   // Add Transition Requirements tab functions
