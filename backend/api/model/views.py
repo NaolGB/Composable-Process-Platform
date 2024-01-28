@@ -82,3 +82,11 @@ def single_process(request, id):
         return JsonResponse(parsed_response_data)
     else:
         return HttpResponse(status=405)
+    
+@api_view(['GET', 'PUT'])
+def single_process_publish(request, id):
+    if request.method == 'PUT':
+        ProcessType().validate_and_publish_process(process_id=id, data=request.data)
+        return JsonResponse({'message':"success"})
+    else:
+        return HttpResponse(status=405)

@@ -164,6 +164,7 @@
 
 <!-- Preview Section -->
 <div style=" max-height: 40vh; min-height: 400px; position: fixed; width: 100%; height: 100%; bottom: 0; left: 0; background-color: #e0e0e0;">
+    <button (click)="publishProcess()">Validate and Publish</button>
     <app-process-preview
         [allStepsObject]="allStepsObject"
     ></app-process-preview>

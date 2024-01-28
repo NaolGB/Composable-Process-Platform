@@ -29,6 +29,7 @@ class ProcessStep:
         self._data["row"] = 0
         self._data["column"] = 0
         self._data["event_type"] = '',
+        self._data["edge_status"] = '00_NOT_EDGE',
 
         self._data["fields"] = {
 
@@ -112,7 +113,36 @@ class ProcessType:
         elif (len(connected_steps) != len(all_steps)):
             self._data['design_status'].remove(
                 '01_CONNECTED_NOT_REQUIREMENT_COMPLETED')
-            
+
+    def validate_and_publish_process(self, process_id, **data):
+        # if not unwrapped, data will be passed with a second 'data' wrap while put_process expents and unwraps only one 'data' wrap
+        self.put_process(id=process_id, data=data['data'])  
+        # needed to get decoded values because they will be encoded later on put in this same function
+        self.get_process(processId=process_id) 
+
+        all_steps = [k for k, _ in self._data['steps'].items()]
+        all_steps_progress_count ={step: {'goes_to': 0, 'comes_from': 0} for step in all_steps}
+        
+        # determine edges
+        for step in all_steps:
+            next_steps = self._data['steps'][step]['next_steps']['steps']
+            all_steps_progress_count[step]['goes_to'] = len(next_steps)
+            for n_step in next_steps:
+                all_steps_progress_count[n_step]['comes_from'] += 1
+
+        for step in all_steps:
+            if all_steps_progress_count[step]['goes_to'] == 0:
+                self._data['steps'][step]['edge_status'] = '02_END'
+            if all_steps_progress_count[step]['comes_from'] == 0:
+                self._data['steps'][step]['edge_status'] = '01_START'
+
+        # udpate process status
+        if self.is_valid():
+            self._data['design_status'] = 'VALIDATED_AND_PUBLISHED'
+            print(self._data)
+            # self.collection.update_one({"_id": id}, {"$set": self._data})
+        # TODO add final validation steps for process
+
     def update_transition_requirement_to_put(self):
         # TODO update design status
         
@@ -167,7 +197,6 @@ class ProcessType:
 
             return instance_frame
         
-
     def is_valid(self):
         # TODO add validation
         return True

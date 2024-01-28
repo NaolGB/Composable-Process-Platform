@@ -81,6 +81,12 @@ export class ProcessComponent {
     )
   }
 
+  publishProcess() {
+    this.apiServices.putProcessByIdForPublishing(this.selectedProcessId, this.selectedProcessObject).subscribe(
+      // TODO check if response is OK
+    )
+  }
+
   get processDesignStatus() {
     if (this.selectedProcessObject['design_status']) {
       return this.selectedProcessObject['design_status']
