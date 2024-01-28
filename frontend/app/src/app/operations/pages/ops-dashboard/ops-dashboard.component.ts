@@ -13,6 +13,7 @@ export class OpsDashboardComponent {
   
   // Main section variables
   mainSectionFocus: string = 'processInformaiton'
+  selectedProcessInstances: string[] = []
 
   constructor(private apiServices: DataService) {}
 
@@ -27,10 +28,21 @@ export class OpsDashboardComponent {
   // Main section functions
   selectProcess(id: string | number) {
     this.selectedProcessTypeId = id
+    this.getProcessInstances(id)
+    // determine process from next_steps
+    // present current steps's documents and their elements
   }
 
   createNewProcessInstance(processTypeId: string | number) {
     this.apiServices.postProcessInstanceById(processTypeId).subscribe()
+  }
+
+  getProcessInstances(processTypeId: string | number) {
+    this.apiServices.getProcessInstanceIdsByProcessTypeId(processTypeId).subscribe(
+      (response) => {
+        this.selectedProcessInstances = response['data']
+      }
+    )
   }
 
 }

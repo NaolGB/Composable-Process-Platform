@@ -40,7 +40,6 @@ class ProcessStep:
     def is_valid(self):
         pass
 
-
 class ProcessType:
     def __init__(self) -> None:
         self._data = {}
@@ -138,10 +137,8 @@ class ProcessType:
 
         # udpate process status
         if self.is_valid():
-            self._data['design_status'] = 'VALIDATED_AND_PUBLISHED'
-            print(self._data)
-            # self.collection.update_one({"_id": id}, {"$set": self._data})
-        # TODO add final validation steps for process
+            self._data['design_status'].append('VALIDATED_AND_PUBLISHED')
+            self.put_process(id=process_id, data=self._data)
 
     def update_transition_requirement_to_put(self):
         # sanitize code

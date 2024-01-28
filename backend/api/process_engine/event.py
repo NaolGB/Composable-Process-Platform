@@ -11,20 +11,6 @@ class ProcessEvent:
         self._data = {}
         self.db = client['dev']
         self.collection = self.db.event
-    # event1: {
-	# 	name: "create sales order",
-	# 	type_of_event: "create",
-	# 	manual_actions: {
-	# 		user_name: "usera",
-	# 		timestamp: "01/03/2009 03:02:00.112"
-	# 		status: "applied on db"
-	# 	}
-	# 	automated_acitons: {
-	# 		timestamp: "01/03/2009 03:02:00.112"
-	# 		status: "applied on db"  // another option - "failed to apply on db"
-	# 	},
-	# 	process_id: "pr_a".
-	# }
         pass
 
     def create_process_instance(self, process_type_id):
@@ -36,7 +22,7 @@ class ProcessEvent:
         - current_step is the step within the given process, it is used for determining 
             which automated steps to take
         """
-        if process[current_step] == 'update':
+        if process[current_step][''] == 'update':
             # apply manual actions
             # apply automated actions
             # update process operations_status

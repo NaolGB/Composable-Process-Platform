@@ -23,6 +23,17 @@ class ProcessInstance:
         if self.is_valid():
             self.collection.insert_one(self._data)
     
+    def get_process_instances(self, process_type_id):
+        prcs_instances = self.collection.find({'process_type': process_type_id})
+        prcs_instances = json_util.loads(json_util.dumps(prcs_instances))
+        active_prcs_instances_list = []
+
+        for prcs_i in prcs_instances:
+            if prcs_i['operations_status'] != '01_PROCESS_COMPLETED':
+                active_prcs_instances_list.append(prcs_i['_id'])
+
+        return active_prcs_instances_list
+    
     def is_valid(self):
         # TODO add validation
         return True

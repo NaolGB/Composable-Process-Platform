@@ -87,4 +87,10 @@ export class DataService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, {}, { headers });
   }
+
+  getProcessInstanceIdsByProcessTypeId(processTypeId: string | number) {
+    const fullUrl = `${this.operationsBaseUrl}/process-instances/${processTypeId}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<any>(fullUrl);
+  }
 }
