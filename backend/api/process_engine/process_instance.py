@@ -18,10 +18,16 @@ class ProcessInstance:
         # assign id to new process instance
         prcs_count = self.collection.count_documents({'process_type': self._data['process_type']})
         prcs_id = (8 - len(str(prcs_count))) * '0' + str(prcs_count)
-        self._data['_id'] = helpers.separate_characters(prcs_id)
+        self._data['_id'] = f'{str(process_type_id)}_{helpers.separate_characters(prcs_id)}'
 
         if self.is_valid():
             self.collection.insert_one(self._data)
+    
+    def get_process_instance(self, process_instance_id):
+        prcs_instance = self.collection.find({'_id': process_instance_id})
+        prcs_instance = json_util.loads(json_util.dumps(prcs_instance))[0]
+
+        return prcs_instance
     
     def get_process_instances(self, process_type_id):
         prcs_instances = self.collection.find({'process_type': process_type_id})

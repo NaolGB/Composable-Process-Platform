@@ -12,7 +12,7 @@
 <div>
     <div *ngIf="(mainSectionFocus === 'processInformaiton') && (selectedProcessTypeId !== '')">
         <button (click)="createNewProcessInstance(selectedProcessTypeId)">new process instance</button>
-        <div *ngFor="let processInstance of selectedProcessInstances">
+        <div *ngFor="let processInstance of selectedProcessInstances" (click)="selectProcessInstance(processInstance)">
             {{processInstance}}
         </div>
     </div>

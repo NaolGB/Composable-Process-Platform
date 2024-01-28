@@ -28,8 +28,8 @@ class ProcessStep:
         }
         self._data["row"] = 0
         self._data["column"] = 0
-        self._data["event_type"] = 'read',
-        self._data["edge_status"] = '00_NOT_EDGE',
+        self._data["event_type"] = "read"
+        self._data["edge_status"] = "00_NOT_EDGE"
 
         self._data["fields"] = {
 
@@ -131,9 +131,9 @@ class ProcessType:
 
         for step in all_steps:
             if all_steps_progress_count[step]['goes_to'] == 0:
-                self._data['steps'][step]['edge_status'] = '02_END'
+                self._data['steps'][step]['edge_status'] = "02_END"
             if all_steps_progress_count[step]['comes_from'] == 0:
-                self._data['steps'][step]['edge_status'] = '01_START'
+                self._data['steps'][step]['edge_status'] = "01_START"
 
         # udpate process status
         if self.is_valid():

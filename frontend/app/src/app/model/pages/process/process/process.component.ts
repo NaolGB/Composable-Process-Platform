@@ -1,4 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
 import { DataService } from '../../../../services/data.service';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ProcessTypeParsedData } from '../../../../interfaces';
@@ -12,12 +16,12 @@ import { HttpResponse } from '@angular/common/http';
   styleUrl: './process.component.css',
 })
 export class ProcessComponent {
-  selectedTab: string | number = 'generate'
-  selectedProcessDocuments: {[key: string | number]: any} = {}
+  selectedTab: string | number = 'generate';
+  selectedProcessDocuments: { [key: string | number]: any } = {};
 
-  // Generate Process tab variables  
-  documentTypeIds: Array<String> = []
-  processTypeIds: (string|number)[] = []
+  // Generate Process tab variables
+  documentTypeIds: Array<String> = [];
+  processTypeIds: (string | number)[] = [];
   generateProcessForm = this.formBuilder.group({
     nameAndSteps: this.formBuilder.group({
       name: ['', Validators.required],
@@ -25,236 +29,304 @@ export class ProcessComponent {
     }),
     documents: this.formBuilder.array([
       this.formBuilder.group({
-        documentId: ['', Validators.required]
-      })
-    ])
-  })
+        documentId: ['', Validators.required],
+      }),
+    ]),
+  });
 
   // Connect Process tab variables
-  selectedProcessId: string | number = ''
-  selectedProcessObject: ProcessTypeParsedData = {}
-  allStepsObject: ProcessTypeParsedData = {}
-  selectedStepKey: string | number = ''
-  allStepsList: (string | number)[] = []
+  selectedProcessId: string | number = '';
+  selectedProcessObject: ProcessTypeParsedData = {};
+  allStepsObject: ProcessTypeParsedData = {};
+  selectedStepKey: string | number = '';
+  allStepsList: (string | number)[] = [];
 
   // Add Step Type and Fields tab variables
-  selectedEventType: string = 'read'
+  selectedEventType: string = 'read';
 
   // Transition Requirements tab variables
-  requirementsContentType: string = 'requirements'
+  requirementsContentType: string = 'requirements';
 
   // Action tab variables
-  actionsContentType: string = 'actions'
+  actionsContentType: string = 'actions';
 
-  constructor(private apiServices: DataService, private formBuilder: FormBuilder, private previewServices: ProcessPreviewService, private cd: ChangeDetectorRef) {}
+  constructor(
+    private apiServices: DataService,
+    private formBuilder: FormBuilder,
+    private previewServices: ProcessPreviewService,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     // Generate Process tab inits
-    this.apiServices.getDocumentTypeIds().subscribe(
-      (resposne) => {
-        this.documentTypeIds = resposne['ids']
-      }
-    )
-    this.apiServices.getProcessTypeIds().subscribe(
-      (response) => {
-        this.processTypeIds = response['ids']
-      }
-    )
+    this.apiServices.getDocumentTypeIds().subscribe((resposne) => {
+      this.documentTypeIds = resposne['ids'];
+    });
+    this.apiServices.getProcessTypeIds().subscribe((response) => {
+      this.processTypeIds = response['ids'];
+    });
   }
 
   selectTab(tabName: string | number) {
-    this.selectedTab = tabName
+    this.selectedTab = tabName;
   }
 
   putProcess() {
-    this.apiServices.putProcessById(this.selectedProcessId, this.selectedProcessObject).subscribe(
+    this.apiServices
+      .putProcessById(this.selectedProcessId, this.selectedProcessObject)
+      .subscribe
       // TODO refresh process type to get new design_status
-    )
+      ();
   }
 
   publishProcess() {
-    this.apiServices.putProcessByIdForPublishing(this.selectedProcessId, this.selectedProcessObject).subscribe(
+    this.apiServices
+      .putProcessByIdForPublishing(
+        this.selectedProcessId,
+        this.selectedProcessObject
+      )
+      .subscribe
       // TODO check if response is OK
-    )
+      ();
   }
 
   get processDesignStatus() {
     if (this.selectedProcessObject['design_status']) {
-      return this.selectedProcessObject['design_status']
-    }
-    else{
-      return ''
+      return this.selectedProcessObject['design_status'];
+    } else {
+      return '';
     }
   }
 
   // Generate Process tab functions
   get documents() {
-    return this.generateProcessForm.get("documents") as FormArray
+    return this.generateProcessForm.get('documents') as FormArray;
   }
 
   refreshProcessTypeIds() {
-    this.apiServices.getProcessTypeIds().subscribe(
-      (response) => {
-        this.processTypeIds = response['ids']
-      }
-    )
+    this.apiServices.getProcessTypeIds().subscribe((response) => {
+      this.processTypeIds = response['ids'];
+    });
   }
 
   addDocumentType() {
     this.documents.push(
       this.formBuilder.group({
-        documentId: ['', Validators.required]
+        documentId: ['', Validators.required],
       })
-    )
+    );
   }
 
   selectProcess(id: string | number) {
-    this.selectedProcessId = id
-    this.getSelectedProcessById()
-    this.selectTab('connect')
+    this.selectedProcessId = id;
+    this.getSelectedProcessById();
+    this.selectTab('connect');
   }
 
   getSelectedProcessById() {
     if (this.selectedProcessId !== '') {
-      this.apiServices.getProcessById(this.selectedProcessId).subscribe(
-        (response) => {
-            this.selectedProcessObject = response
-            this.allStepsObject = this.selectedProcessObject['steps']
-            this.allStepsList = this.previewServices.getAllStepsArray(this.allStepsObject)
-            
-            this.selectedProcessObject['documents'].forEach((element: string) => {
-              this.apiServices.getDocumentTypeById(element).subscribe(
-                (response) => {
-                  this.selectedProcessDocuments[element] = response
-                  console.log(this.selectedProcessDocuments)
-                }
-              )
-            });
+      this.apiServices
+        .getProcessById(this.selectedProcessId)
+        .subscribe((response) => {
+          this.selectedProcessObject = response;
+          this.allStepsObject = this.selectedProcessObject['steps'];
+          this.allStepsList = this.previewServices.getAllStepsArray(
+            this.allStepsObject
+          );
 
-        }
-      )
+          this.selectedProcessObject['documents'].forEach((element: string) => {
+            this.apiServices
+              .getDocumentTypeById(element)
+              .subscribe((response) => {
+                this.selectedProcessDocuments[element] = response;
+                console.log(this.selectedProcessDocuments);
+              });
+          });
+        });
     }
   }
-  
+
   onGenerateProcessSubmit() {
     const parsedPostData: ProcessTypeParsedData = {
-			name: this.generateProcessForm.get("nameAndSteps")?.get("name")?.value || "",
-			steps: this.generateProcessForm.get("nameAndSteps")?.get("steps")?.value || "",
-      documents: []
-		}
+      name:
+        this.generateProcessForm.get('nameAndSteps')?.get('name')?.value || '',
+      steps:
+        this.generateProcessForm.get('nameAndSteps')?.get('steps')?.value || '',
+      documents: [],
+    };
 
     for (let i = 0; i < this.documents.length; i++) {
-      parsedPostData['documents'].push(this.documents.controls[i].value["documentId"])
+      parsedPostData['documents'].push(
+        this.documents.controls[i].value['documentId']
+      );
     }
 
     this.apiServices.postProcessType(parsedPostData).subscribe(
       (response) => {
-        this.refreshProcessTypeIds()
+        this.refreshProcessTypeIds();
       },
       (error) => {
-        alert(error)
+        alert(error);
       }
-    )
+    );
   }
 
   // Connect Process tab functions
   selectStep(stepKey: string | number) {
     // only available after process is selected (selectedProcessId !== '')
-    this.selectedStepKey = stepKey
+    this.selectedStepKey = stepKey;
   }
 
   get connectedSteps() {
-    return this.previewServices.getConnectedStepsArray(this.allStepsObject, this.allStepsList)
+    return this.previewServices.getConnectedStepsArray(
+      this.allStepsObject,
+      this.allStepsList
+    );
   }
 
   get unconnectedSteps() {
-    return this.allStepsList.filter(step => !this.connectedSteps.includes(step))
+    return this.allStepsList.filter(
+      (step) => !this.connectedSteps.includes(step)
+    );
   }
 
   get ValidNextSteps() {
     // use step order's column function to disable loops in processes
-    this.allStepsObject = this.previewServices.getStepsOrder(this.allStepsObject)
-    let validNextSteps = this.allStepsList
+    this.allStepsObject = this.previewServices.getStepsOrder(
+      this.allStepsObject
+    );
+    let validNextSteps = this.allStepsList;
 
     // exculde next steps already included
-    let currenNextSteps: (string | number)[] = this.allStepsObject[this.selectedStepKey]['next_steps']['steps']
+    let currenNextSteps: (string | number)[] =
+      this.allStepsObject[this.selectedStepKey]['next_steps']['steps'];
     // NOTE the filter statement is not inline function, do not add filter statemetn in {}
-    validNextSteps = validNextSteps.filter(item => !currenNextSteps.includes(item))
+    validNextSteps = validNextSteps.filter(
+      (item) => !currenNextSteps.includes(item)
+    );
 
     // exculde current step
-    validNextSteps = validNextSteps.filter(item => item != this.selectedStepKey)
-    
+    validNextSteps = validNextSteps.filter(
+      (item) => item != this.selectedStepKey
+    );
+
     // excliude next steps alread before this step
-    let parentSteps: (string | number)[] = []
-    Object.keys(this.allStepsObject).forEach(step => {
+    let parentSteps: (string | number)[] = [];
+    Object.keys(this.allStepsObject).forEach((step) => {
       // unconnected steps will have larger column value so they need to be nopt excluded
-      if (validNextSteps.includes(step) && (this.connectedSteps.includes(step))) { 
-        if (this.allStepsObject[step]['column'] < this.allStepsObject[this.selectedStepKey]['column']) {
-          parentSteps.push(step)
+      if (validNextSteps.includes(step) && this.connectedSteps.includes(step)) {
+        if (
+          this.allStepsObject[step]['column'] <
+          this.allStepsObject[this.selectedStepKey]['column']
+        ) {
+          parentSteps.push(step);
         }
       }
-    })
+    });
 
-    validNextSteps = validNextSteps.filter(item => !parentSteps.includes(item))
+    validNextSteps = validNextSteps.filter(
+      (item) => !parentSteps.includes(item)
+    );
 
-    return validNextSteps
+    return validNextSteps;
   }
 
   addNextStep(nextStepKey: string | number) {
-    this.allStepsObject[this.selectedStepKey]['next_steps']['steps'].push(nextStepKey)
-    this.allStepsObject = {...this.selectedProcessObject['steps']}
-    this.allStepsObject = this.previewServices.getStepsOrder(this.allStepsObject)
+    this.allStepsObject[this.selectedStepKey]['next_steps']['steps'].push(
+      nextStepKey
+    );
+    this.allStepsObject = { ...this.selectedProcessObject['steps'] };
+    this.allStepsObject = this.previewServices.getStepsOrder(
+      this.allStepsObject
+    );
   }
 
   // Add Step Type and Fields tab functions
   selectEventType(eventTypeName: string) {
-    this.selectedEventType = eventTypeName
+    this.selectedEventType = eventTypeName;
   }
 
   addUpdateDocumentField(documentId: string, fieldId: any) {
-    const fullFieldId = `${documentId}.${fieldId}`
-    this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] = 'update'
+    const fullFieldId = `${documentId}.${fieldId}`;
+    this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] =
+      'update';
 
     // add to document_fields
-    if (Object.keys(this.selectedProcessObject['steps'][this.selectedStepKey]['fields']).includes(documentId)) {
-      if (!this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['document_fields'].includes(fullFieldId)) {
-        this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['document_fields'].push(fullFieldId)
+    if (
+      Object.keys(
+        this.selectedProcessObject['steps'][this.selectedStepKey]['fields']
+      ).includes(documentId)
+    ) {
+      if (
+        !this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][
+          documentId
+        ]['document_fields'].includes(fullFieldId)
+      ) {
+        this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][
+          documentId
+        ]['document_fields'].push(fullFieldId);
       }
-    }
-    else {
-      this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId] = {
-        'document_fields': [fullFieldId],
-        'lead_object_fields': []
-      }
+    } else {
+      this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][
+        documentId
+      ] = {
+        document_fields: [fullFieldId],
+        lead_object_fields: [],
+      };
     }
   }
 
   addUpdateSourceField(documentId: string, fieldId: any) {
-    const fullFieldId = `${documentId}.${this.selectedProcessDocuments[documentId]['lead_object']}.${fieldId}`
-    this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] = 'update'
+    const fullFieldId = `${documentId}.${this.selectedProcessDocuments[documentId]['lead_object']}.${fieldId}`;
+    this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] =
+      'update';
 
     // add to document_fields
-    if (Object.keys(this.selectedProcessObject['steps'][this.selectedStepKey]['fields']).includes(documentId)) {
-      if (!this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['lead_object_fields'].includes(fullFieldId)) {
-        this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId]['lead_object_fields'].push(fullFieldId)
+    if (
+      Object.keys(
+        this.selectedProcessObject['steps'][this.selectedStepKey]['fields']
+      ).includes(documentId)
+    ) {
+      if (
+        !this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][
+          documentId
+        ]['lead_object_fields'].includes(fullFieldId)
+      ) {
+        this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][
+          documentId
+        ]['lead_object_fields'].push(fullFieldId);
       }
+    } else {
+      this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][
+        documentId
+      ] = {
+        document_fields: [],
+        lead_object_fields: [fullFieldId],
+      };
     }
-    else {
+  }
+
+  addCreateDocumentField(documentId: string) {
+    this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] = 'create';
+
+    // add to document_fields, their corresponding extra attributes and source instances' editable fields
+    if (!Object.keys(this.selectedProcessObject['steps'][this.selectedStepKey]['fields']).includes(documentId)) {
       this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId] = {
-        'document_fields': [],
-        'lead_object_fields': [fullFieldId]
-      }
+        document_fields: Object.keys(this.selectedProcessDocuments[documentId]['extra_attributes']),
+        lead_object_fields: this.selectedProcessDocuments[documentId]['editable_fields'],
+      };
     }
   }
 
   // Add Transition Requirements tab functions
   onMonacoRequirementContentChagne($newContent: string) {
-    this.allStepsObject[this.selectedStepKey]['next_steps']['requirements'] = $newContent
+    this.allStepsObject[this.selectedStepKey]['next_steps']['requirements'] =
+      $newContent;
   }
 
   // Add Action tab functions
   onMonacoActionContentChagne($newContent: string) {
-    this.allStepsObject[this.selectedStepKey]['options']['save']['actions'] = $newContent
+    this.allStepsObject[this.selectedStepKey]['options']['save']['actions'] =
+      $newContent;
   }
-
 }

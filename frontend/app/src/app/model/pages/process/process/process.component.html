@@ -102,13 +102,23 @@
                         {{document.value.name}} -> {{document.value.lead_object}} -> {{field}}
                     </div>
                 </div>
-
             </div>
+
+            <div *ngIf="selectedEventType === 'create'">
+                documents to create
+                <div 
+                    *ngFor="let document of selectedProcessDocuments | keyvalue"
+                    (click)="addCreateDocumentField(document.key)"
+                >
+                    {{document.value.name}}
+                </div>
+            </div>
+
         </div>
     </div>
 
     <!-- Add Requirements -->
-    <div *ngIf="(selectedTab === 'requirement') && (processDesignStatus.includes('01_CONNECTED_NOT_REQUIREMENT_COMPLETED'))">
+    <div *ngIf="(selectedTab === 'requirement')">
         <!-- left section -->
         <div>
             <div *ngFor="let step of allStepsList">
@@ -134,7 +144,7 @@
         
     </div>
 
-    <!-- Tab 4 -->
+    <!-- Add Actions -->
     <div *ngIf="selectedTab === 'action'">
         <!-- left section -->
         <div>

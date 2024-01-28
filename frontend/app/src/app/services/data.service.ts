@@ -74,7 +74,10 @@ export class DataService {
     return this.http.put(fullUrl, data, { headers });
   }
 
-  putProcessByIdForPublishing(id: string | number, data: ProcessTypeParsedData) {
+  putProcessByIdForPublishing(
+    id: string | number,
+    data: ProcessTypeParsedData
+  ) {
     const fullUrl = `${this.modelBaseUrl}/process/publish/${id}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put(fullUrl, data, { headers });
@@ -86,6 +89,12 @@ export class DataService {
     const fullUrl = `${this.operationsBaseUrl}/process-instance/${processId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, {}, { headers });
+  }
+
+  getProcessInstanceById(processInstanceId: string | number) {
+    const fullUrl = `${this.operationsBaseUrl}/process-instance/${processInstanceId}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<any>(fullUrl);
   }
 
   getProcessInstanceIdsByProcessTypeId(processTypeId: string | number) {
