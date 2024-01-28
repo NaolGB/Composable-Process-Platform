@@ -152,6 +152,21 @@ class ProcessType:
             code_content = helpers.get_plain_text(code_content)
             self._data['steps'][step]['options']['save']['actions'] = code_content
 
+    def generate_process_instance_frame(self, process_type_id):
+        self.get_process(processId=process_type_id)
+
+        if self.is_valid():
+            instance_frame = {
+                '_id':'',
+                'process_type': self._data['_id'],
+                'organization': self._data['organization'],
+                'operations_status': '00_PROCESS_CREATED',
+                'documents': {k: '' for k in self._data['documents']},
+                'steps': self._data['steps']
+            }
+
+            return instance_frame
+        
 
     def is_valid(self):
         # TODO add validation

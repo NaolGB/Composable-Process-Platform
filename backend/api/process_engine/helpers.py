@@ -32,3 +32,15 @@ def get_plain_text(b64_text):
     plain_text = decoded_bytes.decode('utf-8')
 
     return plain_text
+
+def separate_characters(text):
+    modified_str = ""
+
+    for i, char in enumerate(text[::-1]):
+        if i > 0 and i % 3 == 0:
+            modified_str += '_'
+        modified_str += char
+
+    modified_str = modified_str[::-1]
+
+    return modified_str

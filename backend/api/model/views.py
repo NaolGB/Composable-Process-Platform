@@ -1,7 +1,6 @@
 from rest_framework.decorators import api_view
 from django.http import HttpResponse, JsonResponse
 from process_engine.master_dtype import MasterDtype
-from process_engine.transaction_type import TransactionType
 from process_engine.document_type import DocumentType
 from process_engine.process_type import ProcessType
 

@@ -1,11 +1,18 @@
 <!-- Navigation section -->
 <div>
-    nav
+    Processes
+    <div *ngFor="let processId of processTypeIds">
+        <div (click)="selectProcess(processId)">
+            {{processId}}
+        </div>
+    </div>
 </div>
 
 <!-- Main section -->
 <div>
-    main
+    <div *ngIf="(mainSectionFocus === 'processInformaiton') && (selectedProcessTypeId !== '')">
+        <button (click)="createNewProcessInstance(selectedProcessTypeId)">new process instance</button>
+    </div>
 </div>
 
 <!-- Auxiliary section -->
