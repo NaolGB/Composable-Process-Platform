@@ -28,7 +28,7 @@ class ProcessStep:
         }
         self._data["row"] = 0
         self._data["column"] = 0
-        self._data["event_type"] = '',
+        self._data["event_type"] = 'read',
         self._data["edge_status"] = '00_NOT_EDGE',
 
         self._data["fields"] = {
@@ -144,8 +144,6 @@ class ProcessType:
         # TODO add final validation steps for process
 
     def update_transition_requirement_to_put(self):
-        # TODO update design status
-        
         # sanitize code
         all_steps = [k for k, _ in self._data['steps'].items()]
 

@@ -64,15 +64,6 @@ export class ProcessComponent {
 
   selectTab(tabName: string | number) {
     this.selectedTab = tabName
-
-    if((tabName === 'connect') && (this.selectedProcessId !== '') ) {
-      this.apiServices.getProcessById(this.selectedProcessId).subscribe(
-        (response) => {
-          this.selectedProcessObject = response
-        }
-      )
-    }
-
   }
 
   putProcess() {
