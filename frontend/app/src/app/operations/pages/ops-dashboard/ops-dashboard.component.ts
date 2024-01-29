@@ -17,6 +17,9 @@ export class OpsDashboardComponent {
   selectedProcessInstances: string[] = [];
   selectedProcessInstance: any = {}
   selectedProcessInstanceCurrentOperationsStatus: string = ''
+  selectedStepEventType: string = ''
+  selectedStepObject: any = {}
+
   constructor(private apiServices: DataService) {}
 
   ngOnInit() {
@@ -50,8 +53,23 @@ export class OpsDashboardComponent {
       (response) => {
         this.selectedProcessInstance = response['data']
         this.selectedProcessInstanceCurrentOperationsStatus = this.selectedProcessInstance['operations_status']
+        this.mainSectionFocus = 'processOperationsSelectStep'
         console.log(this.selectedProcessInstanceCurrentOperationsStatus)
       }
     )
   }
+
+  getStartSteps() {
+    const allSteps = Object.keys(this.selectedProcessInstance['steps'])
+    const startSteps = allSteps.filter(step => this.selectedProcessInstance['steps'][step]['edge_status'] === '01_START')
+    return startSteps
+  }
+
+  selectOperationsStep(step: string) {
+    this.selectedStepObject = this.selectedProcessInstance['steps'][step]
+    this.selectedProcessInstance['operations_status'] = step
+    this.selectedStepEventType = this.selectedStepObject['event_type']
+    this.mainSectionFocus = 'processOperationsAction'
+  }
+
 }

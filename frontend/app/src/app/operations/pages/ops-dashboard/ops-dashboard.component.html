@@ -16,6 +16,35 @@
             {{processInstance}}
         </div>
     </div>
+
+    <!-- Select step -->
+    <!-- if new, select start step and continue; if not continue -->
+    <div *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstanceCurrentOperationsStatus === '00_PROCESS_CREATED')">
+        select start step
+        <div 
+            *ngFor="let startStep of getStartSteps()"
+            (click)="selectOperationsStep(startStep)"
+        >
+            {{startStep}}
+        </div>
+    </div>
+
+    <div
+        *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstanceCurrentOperationsStatus !== '00_PROCESS_CREATED')">
+        select start step
+        <div (click)="selectOperationsStep(selectedProcessInstanceCurrentOperationsStatus)">
+            {{selectedProcessInstanceCurrentOperationsStatus}}
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div *ngIf="mainSectionFocus === 'processOperationsAction'">
+        <span *ngIf="selectedStepEventType === 'create'">
+            <div *ngFor="let documentType of selectedStepObject.fields | keyvalue; let i=index">
+                <button>Cerate {{documentType.key}}</button>
+            </div>
+        </span>
+    </div>
 </div>
 
 <!-- Auxiliary section -->
