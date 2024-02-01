@@ -70,6 +70,11 @@ export class OpsDashboardComponent {
     this.selectedProcessInstance['operations_status'] = step
     this.selectedStepEventType = this.selectedStepObject['event_type']
     this.mainSectionFocus = 'processOperationsAction'
+    console.log(this.selectedProcessInstance)
+  }
+
+  check(sth: any) {
+    console.log(sth)
   }
 
 }

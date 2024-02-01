@@ -14,9 +14,6 @@ class DocumentType:
         if self.is_valid():
             self._data = data['data']
             self._data['_id'] = helpers.name_to_id(self._data['name'])
-
-            # add lead object container
-            self._data[f"{self._data['_id']}_{self._data['lead_object']}s"] = {}
             
             result = self.collection.insert_one(self._data)
         else:
@@ -32,9 +29,22 @@ class DocumentType:
         document_type = self.collection.find({'_id': documentId})
         document_type = json_util.loads(json_util.dumps(document_type))[0]
         self._data = document_type
-        print(self._data)
 
         return self._data
+    
+    def generate_document_instance_frame(self, document_id):
+        self.get_document_type(documentId=document_id)
+        if self.is_valid():
+            instance_frame = {
+                "name": self._data['name'],
+                "lead_object": self._data['lead_object'],
+                f"{self._data['lead_object']}s": {}
+            }
+        # print(self._data['extra_attributes'].items())
+            for k, dtype in self._data['extra_attributes'].items():
+                instance_frame[k] = ""
+
+            return instance_frame
 
     def is_valid(self):
         # TODO add validation

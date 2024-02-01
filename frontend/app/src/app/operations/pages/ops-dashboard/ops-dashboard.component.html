@@ -39,11 +39,21 @@
 
     <!-- Actions -->
     <div *ngIf="mainSectionFocus === 'processOperationsAction'">
-        <span *ngIf="selectedStepEventType === 'create'">
-            <div *ngFor="let documentType of selectedStepObject.fields | keyvalue; let i=index">
-                <button>Cerate {{documentType.key}}</button>
+        <!-- <div *ngFor="let documentInstance of selectedProcessInstance.documents | keyvalue; let i=index">
+            {{documentInstance.key}}
+
+            <button (click)="check(documentInstance)">{{documentInstance}}</button>
+            <button (click)="check(documentInstance)">{{documentInstance.value}}</button>
+            {{documentInstance.value.lead_object}}
+            <div *ngFor="let stepDocument of selectedStepObject.fields | keyvalue">
+                {{stepDocument.key}}
+                <div *ngIf="documentInstance.key === stepDocument.key">
+                    <div *ngFor="let documentInstanceField of documentInstance | keyvalue">
+                        {{documentInstanceField.key}}
+                    </div>
+                </div>
             </div>
-        </span>
+        </div> -->
     </div>
 </div>
 

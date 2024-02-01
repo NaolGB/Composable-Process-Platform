@@ -1,7 +1,7 @@
 import ast
 from bson import json_util
 from . import helpers, db_secrets
-from .process_instance import ProcessInstance as PI
+from .process_instance import ProcessInstance
 
 # TODO manage methods to create client better - maybe one client instance per org
 client = db_secrets.get_client()
@@ -14,7 +14,7 @@ class ProcessEvent:
         pass
 
     def create_process_instance(self, process_type_id):
-        PI().create(process_type_id=process_type_id)
+        ProcessInstance().create(process_type_id=process_type_id)
 
     def on_click_save(self, current_step, process):
         """

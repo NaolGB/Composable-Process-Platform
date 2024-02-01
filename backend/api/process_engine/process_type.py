@@ -1,6 +1,7 @@
 import ast
 from bson import json_util
 from . import helpers, db_secrets
+from .document_type import DocumentType
 
 # TODO manage methods to create client better - maybe one client instance per org
 client = db_secrets.get_client()
@@ -186,7 +187,7 @@ class ProcessType:
                 'process_type': self._data['_id'],
                 'organization': self._data['organization'],
                 'operations_status': '00_PROCESS_CREATED',
-                'documents': {k: '' for k in self._data['documents']},
+                'documents': {k: DocumentType().generate_document_instance_frame(k) for k in self._data['documents']},
                 'steps': self._data['steps']
             }
 
