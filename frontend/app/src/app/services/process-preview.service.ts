@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProcessTypeParsedData } from '../interfaces';
+import { ProcessStepInterface, ProcessTypeInterface } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +8,14 @@ export class ProcessPreviewService {
 
   constructor() { }
 
-  getAllStepsArray(allStepsObject: ProcessTypeParsedData | any) {
-    const allStepsArray: (string | number)[] = []
+  getAllStepsArray(allStepsObject: { [key: string]: ProcessStepInterface; }) {
+    const allStepsArray: string[] = []
     
     Object.keys(allStepsObject).forEach(step => {
       if(!allStepsArray.includes(step)) {
         allStepsArray.push(step)
       }
-      allStepsObject[step]['next_steps']['steps'].forEach((element: string | number) => {
+      allStepsObject[step]['next_steps']['steps'].forEach((element: string ) => {
         if (!allStepsArray.includes(element)) {
           allStepsArray.push(element)
         }
@@ -24,14 +24,14 @@ export class ProcessPreviewService {
     return allStepsArray
   }
 
-  getConnectedStepsArray(allStepsObject: ProcessTypeParsedData | any, allStepsArray: (string | number)[]) {
-    const allConnectedSteps: (string | number)[] = []
+  getConnectedStepsArray(allStepsObject: { [key: string]: ProcessStepInterface; }, allStepsArray: string []) {
+    const allConnectedSteps: string [] = []
     allStepsArray.forEach((step) => {
       if (allStepsObject[step]['next_steps']['steps'].length > 0) {
         if (!allConnectedSteps.includes(step)) {
           allConnectedSteps.push(step)
         }
-        allStepsObject[step]['next_steps']['steps'].forEach((element: string | number) => {
+        allStepsObject[step]['next_steps']['steps'].forEach((element: string ) => {
           if (!allConnectedSteps.includes(element)) {
             allConnectedSteps.push(element)
           }
@@ -42,15 +42,15 @@ export class ProcessPreviewService {
     return allConnectedSteps
   }
 
-  getTransitionLines(allStepsObject: ProcessTypeParsedData | any) {
+  getTransitionLines(allStepsObject: { [key: string]: ProcessStepInterface; }) {
     allStepsObject = this.getStepsOrder(allStepsObject)
     const lines: {[key: string]: any} = {}
     Object.keys(allStepsObject).forEach(step => {
-      allStepsObject[step]['next_steps']['steps'].forEach((nextStep: string | number) => {
-        let fromRow: (string | number) = allStepsObject[step]['row']
-        let toRow: (string | number) = allStepsObject[nextStep]['row']
-        let fromColumn: (string | number) = allStepsObject[step]['column']
-        let toColumn: (string | number) = allStepsObject[nextStep]['column']
+      allStepsObject[step]['next_steps']['steps'].forEach((nextStep: string ) => {
+        let fromRow: number  = allStepsObject[step]['row']
+        let toRow: number  = allStepsObject[nextStep]['row']
+        let fromColumn: number  = allStepsObject[step]['column']
+        let toColumn: number  = allStepsObject[nextStep]['column']
 
         lines[`${fromRow}${fromColumn}${toRow}${toColumn}`] = ({
           fromRow: allStepsObject[step]['row'],
@@ -64,7 +64,7 @@ export class ProcessPreviewService {
     return lines
   }
 
-  getStepsOrder(allStepsObject: ProcessTypeParsedData | any) {
+  getStepsOrder(allStepsObject: { [key: string]: ProcessStepInterface; }) {
     /**
      * Sorts steps into rows and columns for process preview. 
      * Step order is determined based on their next_step values. 
@@ -103,29 +103,29 @@ export class ProcessPreviewService {
      * 4. repeat step 4 until all connected steps are assigned row and column
      */
     
-    const allStepsArray: (string | number)[] = this.getAllStepsArray(allStepsObject)
-    const allConnectedSteps: (string | number)[] = this.getConnectedStepsArray(allStepsObject, allStepsArray)
-    const allUnconnectedSteps: (string | number)[] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
+    const allStepsArray: string [] = this.getAllStepsArray(allStepsObject)
+    const allConnectedSteps: string [] = this.getConnectedStepsArray(allStepsObject, allStepsArray)
+    const allUnconnectedSteps: string [] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
 
     // find the end steps
-    const endSteps: (string | number)[] = []
-    allConnectedSteps.forEach((step: string | number) => {
+    const endSteps: string [] = []
+    allConnectedSteps.forEach((step: string ) => {
       if (Object.keys(allStepsObject[step]['next_steps']['steps']).length == 0) {
         endSteps.push(step)
       }
     })
 
     // assign rows and columns to connected steps
-    let prevSteps: (string | number)[] = endSteps
+    let prevSteps: string [] = endSteps
     let currentColumn = 0
     while (prevSteps.length > 0) {
-      const newColumnSteps: (string | number)[] = []
+      const newColumnSteps: string [] = []
       let currentRow = 0
       prevSteps.forEach((currS) => {
         allStepsObject[currS]['row'] = currentRow
         allStepsObject[currS]['column'] = currentColumn
         allConnectedSteps.forEach((prevS) => {
-          let prevStep_sNextSteps: (string | number)[] = allStepsObject[prevS]['next_steps']['steps']
+          let prevStep_sNextSteps: string [] = allStepsObject[prevS]['next_steps']['steps']
           if (prevStep_sNextSteps.includes(currS)) {
             newColumnSteps.push(prevS)
           }

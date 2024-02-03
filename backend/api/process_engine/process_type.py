@@ -32,9 +32,7 @@ class ProcessStep:
         self._data["event_type"] = "read"
         self._data["edge_status"] = "00_NOT_EDGE"
 
-        self._data["fields"] = {
-
-        }
+        self._data["fields"] = {}
 
         return self._data
 

@@ -2,11 +2,11 @@
 <form [formGroup]="documentTypeForm" (ngSubmit)="postDocumentType()">
     <div formGroupName="requiredAttributes">
         <input type="text" formControlName="name" placeholder="Name"/>
-        <div>
+        <!-- <div>
             lead object type:
             <button type="button" (click)="setleadObjectType('master_dtype')">Master Data</button>
             <button type="button" (click)="setleadObjectType('Document')">Document</button>
-        </div>
+        </div> -->
 
         <div>
             lead object type:
@@ -28,7 +28,7 @@
             <input type="text" formControlName="name" placeholder="Attribute Name" />
             <select formControlName="dtype">
                 <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
-                    {{opt.typeName}}
+                    {{opt}}
                 </option>
             </select>
         </div>
@@ -38,6 +38,7 @@
 
 <!-- Sidebar -->
 <div >
+    add fields to edit
     <div *ngFor="let field of leadObjectFields">
         <span *ngIf="!editableFields.includes(field)" (click)="addEditableField(field)">{{field}}</span>
     </div>

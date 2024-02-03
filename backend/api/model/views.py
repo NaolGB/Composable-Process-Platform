@@ -10,10 +10,8 @@ ORGANIZATION = 'SC1'
 def master_dtype(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        MasterDtype().create(
-            organization=ORGANIZATION,
-            attributes=parsed_post_data,
-        )
+        parsed_post_data['organization']=ORGANIZATION
+        MasterDtype().create(data=parsed_post_data)
         return JsonResponse({'message':"success"})
     elif request.method == 'GET':
         parsed_response_data = MasterDtype().get_all_ids()
@@ -28,7 +26,7 @@ def single_master_dtype(request, id):
         return JsonResponse({})
     elif request.method == 'GET':
         parsed_response_data = MasterDtype().get_master_dtype(id)
-        return JsonResponse({'data': parsed_response_data})
+        return JsonResponse(parsed_response_data)
     else:
         return HttpResponse(status=405) # Method not allowed
     

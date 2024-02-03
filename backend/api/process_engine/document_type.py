@@ -41,7 +41,7 @@ class DocumentType:
                 f"{self._data['lead_object']}s": {}
             }
         # print(self._data['extra_attributes'].items())
-            for k, dtype in self._data['extra_attributes'].items():
+            for k, dtype in self._data['attributes'].items():
                 instance_frame[k] = ""
 
             return instance_frame

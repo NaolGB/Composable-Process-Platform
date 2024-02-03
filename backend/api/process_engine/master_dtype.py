@@ -6,42 +6,29 @@ client = db_secrets.get_client() #TODO manage methods to create client better - 
 class MasterDtype:
     def __init__(self) -> None:
         self._id = None
-        self._organization = None
-        self._attributes = None
+        self._data = {}
         self.db = client['dev']
         self.collection = self.db.master_dtype
 
+    def create(self, **data):
+        data = data['data']
 
-    def serialize(self):
-        serialized_data = {
-            '_id': self._id,
-            'organization': self._organization,
-            'attributes': self._attributes
+        self._data = {
+            '_id': helpers.name_to_id(data['name']),
+            'organization': data['organization'],
+            'name': data['name'],
+            'attributes': data['attributes']
         }
 
-        return serialized_data
+        print(self._data)
 
-
-    def deserialize(self,  **data):
-        if( data.get('organization') == None) or ( data.get('attributes') == None):
-            raise helpers.PEAttributeNotFoundError()
-        if len(list(data.keys())) > 2:
-            raise helpers.PETooManyAttributesError()
-            
-        self._id = helpers.name_to_id(data['attributes']['name']) # NOTE we are using name as _id
-        self._organization = data['organization']
-        self._attributes = data['attributes']
-
-
-    def create(self, **data):
-        self.deserialize(**data)
         if self.is_valid():
             # insert master dtype
-            result = self.collection.insert_one(self.serialize())
+            result = self.collection.insert_one(self._data)
 
             # insert the corresponding source instance collection
             if result.acknowledged:
-                result = self.db.create_collection(name=self._id)
+                result = self.db.create_collection(name=self._data['_id'])
 
         else:
             raise helpers.PEValidationError()

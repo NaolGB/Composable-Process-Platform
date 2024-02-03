@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MasterDtypeIdsRespose, MasterDtypeParsedPostData, DocumentTypeIdsRespose, ProcessTypeParsedData, ProcessTypeIdsResponse } from '../interfaces';
+import { IdsListInterface, MasterDataTypeInterface, DocumentTypeInterface, ProcessTypeInterface, ProcessInstanceInterface, NewProcessProcessTypeInterface } from '../interfaces';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -14,70 +14,64 @@ export class DataService {
 
   // Model
   // -----
-  postMasterDtype(data: MasterDtypeParsedPostData) {
+  postMasterDtype(data: MasterDataTypeInterface) {
     const fullUrl = `${this.modelBaseUrl}/master-data-type/`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, data, { headers });
   }
-
-  getMasterDtypeIds(): Observable<MasterDtypeIdsRespose> {
+  getMasterDtypeIds(): Observable<IdsListInterface> {
     const fullUrl = `${this.modelBaseUrl}/master-data-type/`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<MasterDtypeIdsRespose>(fullUrl);
+    return this.http.get<IdsListInterface>(fullUrl);
   }
-
-  getMasterDtypeById(id: string): Observable<any> {
+  getMasterDtypeById(id: string): Observable<MasterDataTypeInterface> {
     const fullUrl = `${this.modelBaseUrl}/master-data-type/${id}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<any>(fullUrl);
+    return this.http.get<MasterDataTypeInterface>(fullUrl);
   }
+  
 
-  postDocumentType(data: any) {
+  postDocumentType(data: DocumentTypeInterface) {
     const fullUrl = `${this.modelBaseUrl}/document-type/`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, data, { headers });
   }
-
-  getDocumentTypeIds(): Observable<DocumentTypeIdsRespose> {
+  getDocumentTypeIds(): Observable<IdsListInterface> {
     const fullUrl = `${this.modelBaseUrl}/document-type/`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<DocumentTypeIdsRespose>(fullUrl);
+    return this.http.get<IdsListInterface>(fullUrl);
   }
-
-  getDocumentTypeById(id: string): Observable<any> {
+  getDocumentTypeById(id: string): Observable<DocumentTypeInterface> {
     const fullUrl = `${this.modelBaseUrl}/document-type/${id}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<any>(fullUrl);
+    return this.http.get<DocumentTypeInterface>(fullUrl);
   }
 
-  postProcessType(data: ProcessTypeParsedData) {
+
+  getProcessTypeIds(): Observable<IdsListInterface> {
+    const fullUrl = `${this.modelBaseUrl}/process-type/`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IdsListInterface>(fullUrl);
+  }
+  
+
+  postNewProcessType(data: NewProcessProcessTypeInterface) {
     const fullUrl = `${this.modelBaseUrl}/process-type/`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, data, { headers });
   }
-
-  getProcessTypeIds(): Observable<ProcessTypeIdsResponse> {
-    const fullUrl = `${this.modelBaseUrl}/process-type/`;
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<ProcessTypeIdsResponse>(fullUrl);
-  }
-
-  getProcessById(id: string | number): Observable<ProcessTypeParsedData> {
+  getProcessById(id: string): Observable<ProcessTypeInterface> {
     const fullUrl = `${this.modelBaseUrl}/process/${id}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<ProcessTypeParsedData>(fullUrl);
+    return this.http.get<ProcessTypeInterface>(fullUrl);
   }
-
-  putProcessById(id: string | number, data: ProcessTypeParsedData) {
+  putProcessById(id: string, data: ProcessTypeInterface) {
     const fullUrl = `${this.modelBaseUrl}/process/${id}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put(fullUrl, data, { headers });
   }
 
-  putProcessByIdForPublishing(
-    id: string | number,
-    data: ProcessTypeParsedData
-  ) {
+  putProcessByIdForPublishing(id: string, data: ProcessTypeInterface) {
     const fullUrl = `${this.modelBaseUrl}/process/publish/${id}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put(fullUrl, data, { headers });
@@ -85,21 +79,21 @@ export class DataService {
 
   // Operations
   // ----------
-  postProcessInstanceById(processId: string | number) {
+  postProcessInstanceById(processId: string) {
     const fullUrl = `${this.operationsBaseUrl}/process-instance/${processId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, {}, { headers });
   }
 
-  getProcessInstanceById(processInstanceId: string | number) {
+  getProcessInstanceById(processInstanceId: string) {
     const fullUrl = `${this.operationsBaseUrl}/process-instance/${processInstanceId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<any>(fullUrl);
+    return this.http.get<ProcessInstanceInterface>(fullUrl);
   }
 
-  getProcessInstanceIdsByProcessTypeId(processTypeId: string | number) {
+  getProcessInstanceIdsByProcessTypeId(processTypeId: string) {
     const fullUrl = `${this.operationsBaseUrl}/process-instances/${processTypeId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<any>(fullUrl);
+    return this.http.get<IdsListInterface>(fullUrl);
   }
 }

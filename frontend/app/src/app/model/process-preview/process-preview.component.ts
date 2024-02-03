@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
-import { ProcessTypeParsedData } from '../../interfaces';
 import { ProcessPreviewService } from '../../services/process-preview.service';
+import { ProcessStepInterface, ProcessTypeInterface } from '../../interfaces';
 
 @Component({
   selector: 'app-process-preview',
@@ -12,15 +12,16 @@ export class ProcessPreviewComponent {
   @ViewChild('canvas') canvas!: ElementRef
   // needs to be set to ProcessTypeParsedData to access row and column values in the template
   // needs to be set to undefined because any trhrows an error when row and column are accessed in the template
-  @Input() allStepsObject: ProcessTypeParsedData | undefined 
+  @Input()
+  allStepsObject!: { [key: string]: ProcessStepInterface; };
 
   stepOrder: Object = {}
   transitionLines: {[key: string]: any} = {}
   canvasHeight: number = 0
   canvasWidth: number = 0
-  allStepsArray: (string | number)[] = []
-  allConnectedSteps: (string | number)[] = []
-  allUnconnectedSteps: (string | number)[] = []
+  allStepsArray: string [] = []
+  allConnectedSteps: string [] = []
+  allUnconnectedSteps: string [] = []
 
   constructor(private cd: ChangeDetectorRef, private processPreviewServices: ProcessPreviewService,) {}
 

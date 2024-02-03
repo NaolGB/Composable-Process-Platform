@@ -5,10 +5,8 @@ import {
 } from '@angular/core';
 import { DataService } from '../../../../services/data.service';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
-import { ProcessTypeParsedData } from '../../../../interfaces';
 import { ProcessPreviewService } from '../../../../services/process-preview.service';
-import { concat } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
+import { NewProcessProcessTypeInterface, ProcessStepInterface, ProcessTypeInterface } from '../../../../interfaces';
 
 @Component({
   selector: 'app-process',
@@ -16,12 +14,12 @@ import { HttpResponse } from '@angular/common/http';
   styleUrl: './process.component.css',
 })
 export class ProcessComponent {
-  selectedTab: string | number = 'generate';
-  selectedProcessDocuments: { [key: string | number]: any } = {};
+  selectedTab: string = 'generate';
+  selectedProcessDocuments: { [key: string]: any } = {};
 
   // Generate Process tab variables
-  documentTypeIds: Array<String> = [];
-  processTypeIds: (string | number)[] = [];
+  documentTypeIds: string[] = [];
+  processTypeIds: string[] = [];
   generateProcessForm = this.formBuilder.group({
     nameAndSteps: this.formBuilder.group({
       name: ['', Validators.required],
@@ -35,11 +33,11 @@ export class ProcessComponent {
   });
 
   // Connect Process tab variables
-  selectedProcessId: string | number = '';
-  selectedProcessObject: ProcessTypeParsedData = {};
-  allStepsObject: ProcessTypeParsedData = {};
-  selectedStepKey: string | number = '';
-  allStepsList: (string | number)[] = [];
+  selectedProcessId: string = '';
+  selectedProcessObject!: ProcessTypeInterface;
+  allStepsObject!: { [key: string]: ProcessStepInterface; };
+  selectedStepKey: string = '';
+  allStepsList: string[] = [];
 
   // Add Step Type and Fields tab variables
   selectedEventType: string = 'read';
@@ -67,7 +65,7 @@ export class ProcessComponent {
     });
   }
 
-  selectTab(tabName: string | number) {
+  selectTab(tabName: string) {
     this.selectedTab = tabName;
   }
 
@@ -117,7 +115,7 @@ export class ProcessComponent {
     );
   }
 
-  selectProcess(id: string | number) {
+  selectProcess(id: string) {
     this.selectedProcessId = id;
     this.getSelectedProcessById();
     this.selectTab('connect');
@@ -147,11 +145,9 @@ export class ProcessComponent {
   }
 
   onGenerateProcessSubmit() {
-    const parsedPostData: ProcessTypeParsedData = {
-      name:
-        this.generateProcessForm.get('nameAndSteps')?.get('name')?.value || '',
-      steps:
-        this.generateProcessForm.get('nameAndSteps')?.get('steps')?.value || '',
+    const parsedPostData: NewProcessProcessTypeInterface = {
+      name: this.generateProcessForm.get('nameAndSteps')?.get('name')?.value || '',
+      steps: this.generateProcessForm.get('nameAndSteps')?.get('steps')?.value || '',
       documents: [],
     };
 
@@ -161,7 +157,7 @@ export class ProcessComponent {
       );
     }
 
-    this.apiServices.postProcessType(parsedPostData).subscribe(
+    this.apiServices.postNewProcessType(parsedPostData).subscribe(
       (response) => {
         this.refreshProcessTypeIds();
       },
@@ -172,7 +168,7 @@ export class ProcessComponent {
   }
 
   // Connect Process tab functions
-  selectStep(stepKey: string | number) {
+  selectStep(stepKey: string) {
     // only available after process is selected (selectedProcessId !== '')
     this.selectedStepKey = stepKey;
   }
@@ -198,7 +194,7 @@ export class ProcessComponent {
     let validNextSteps = this.allStepsList;
 
     // exculde next steps already included
-    let currenNextSteps: (string | number)[] =
+    let currenNextSteps: (string)[] =
       this.allStepsObject[this.selectedStepKey]['next_steps']['steps'];
     // NOTE the filter statement is not inline function, do not add filter statemetn in {}
     validNextSteps = validNextSteps.filter(
@@ -211,7 +207,7 @@ export class ProcessComponent {
     );
 
     // excliude next steps alread before this step
-    let parentSteps: (string | number)[] = [];
+    let parentSteps: (string)[] = [];
     Object.keys(this.allStepsObject).forEach((step) => {
       // unconnected steps will have larger column value so they need to be nopt excluded
       if (validNextSteps.includes(step) && this.connectedSteps.includes(step)) {
@@ -231,7 +227,7 @@ export class ProcessComponent {
     return validNextSteps;
   }
 
-  addNextStep(nextStepKey: string | number) {
+  addNextStep(nextStepKey: string) {
     this.allStepsObject[this.selectedStepKey]['next_steps']['steps'].push(
       nextStepKey
     );
@@ -311,10 +307,14 @@ export class ProcessComponent {
 
     // add to document_fields, their corresponding extra attributes and source instances' editable fields
     if (!Object.keys(this.selectedProcessObject['steps'][this.selectedStepKey]['fields']).includes(documentId)) {
+
       this.selectedProcessObject['steps'][this.selectedStepKey]['fields'][documentId] = {
-        document_fields: Object.keys(this.selectedProcessDocuments[documentId]['extra_attributes']),
+        document_fields: Object.keys(this.selectedProcessDocuments[documentId]['attributes']),
         lead_object_fields: this.selectedProcessDocuments[documentId]['editable_fields'],
       };
+
+      console.log(this.selectedProcessObject)
+
     }
   }
 

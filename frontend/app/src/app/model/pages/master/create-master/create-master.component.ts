@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { MasterDtypeParsedPostData } from '../../../../interfaces';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { DataService } from '../../../../services/data.service';
+import { MasterDataTypeInterface } from '../../../../interfaces';
 
 @Component({
   selector: 'app-create-master',
@@ -51,15 +51,18 @@ export class CreateMasterComponent {
 
   	onSubmit() {
 		
-		const parsedPostData: MasterDtypeParsedPostData = {
-			name: this.masterDtypeForm.get("nameAndType")?.get("name")?.value || ""
+		const parsedPostData: MasterDataTypeInterface = {
+			name: this.masterDtypeForm.get("nameAndType")?.get("name")?.value || "",
+			_id: '',
+			organization: '',
+			attributes: {}
 		}
 
 		for (let i = 0; i < this.extraAttributes.length; i++) {
 			let attName: string = this.extraAttributes.at(i).value["name"]
 			if(attName != null) {
-				const dtypeTypeName: string = this.extraAttributes.at(i).value["dtype"]["typeName"];
-				parsedPostData[attName] = dtypeTypeName
+				const dtypeTypeName: string = this.extraAttributes.at(i).value["dtype"];
+				parsedPostData.attributes[attName] = dtypeTypeName
 			}
 		}
 

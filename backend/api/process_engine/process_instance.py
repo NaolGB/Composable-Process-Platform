@@ -29,7 +29,7 @@ class ProcessInstance:
 
         return prcs_instance
     
-    def get_process_instances(self, process_type_id):
+    def get_process_instance_ids(self, process_type_id):
         prcs_instances = self.collection.find({'process_type': process_type_id})
         prcs_instances = json_util.loads(json_util.dumps(prcs_instances))
         active_prcs_instances_list = []

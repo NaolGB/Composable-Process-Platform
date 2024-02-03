@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { DataService } from '../../../../services/data.service';
-import { DocumentTypeParsedPostData } from '../../../../interfaces';
+import { DocumentTypeInterface } from '../../../../interfaces';
 
 @Component({
   selector: 'app-create-document',
@@ -14,12 +14,7 @@ export class CreateDocumentComponent {
   leadObject: string = ''
   leadObjectFields: string[] = []
   editableFields: string[] = []
-  dtypeOptions = [
-		{typeName: 'string'},
-		{typeName: 'number'},
-		{typeName: 'datetime'},
-		{typeName: 'boolean'},
-	]
+  dtypeOptions = ['string', 'number', 'datetime', 'boolean',]
 
   documentTypeForm = this.formBuilder.group({
     requiredAttributes: this.formBuilder.group({
@@ -29,6 +24,10 @@ export class CreateDocumentComponent {
   })
 
   constructor(private formBuilder: FormBuilder, private apiServices: DataService) {}
+
+  ngOnInit() {
+    this.setleadObjectType('master_dtype')
+  }
 
   get extraAttributes() {
     return this.documentTypeForm.get("extraAttributes") as FormArray
@@ -49,7 +48,9 @@ export class CreateDocumentComponent {
     this.leadObject = selectedValue
     if (this.leadObjectType === 'master_dtype'){
       this.apiServices.getMasterDtypeById(selectedValue).subscribe(
-        (response) => {this.leadObjectFields = Object.keys(response['data']['attributes'])}
+        (response) => {
+          this.leadObjectFields = Object.keys(response.attributes)
+        }
       )
     }
   }
@@ -68,24 +69,23 @@ export class CreateDocumentComponent {
   }
 
   postDocumentType() {
-    const parsedPostData: any = {
-			name: this.documentTypeForm.get("requiredAttributes")?.get("name")?.value || "",
+    const parsedPostData: DocumentTypeInterface = {
+      _id: '',
+      name: this.documentTypeForm.get("requiredAttributes")?.get("name")?.value || "",
       lead_object_type: this.leadObjectType,
       lead_object: this.leadObject,
       editable_fields: this.editableFields,
-      extra_attributes: {}
-		}
+      attributes: {},
+    }
 
 		for (let i = 0; i < this.extraAttributes.length; i++) {
 			let attName: string = this.extraAttributes.at(i).value["name"]
 			if(attName != null) {
 				const dtype: string = this.extraAttributes.at(i).value["dtype"];
-				parsedPostData['extra_attributes'][attName] = dtype
+				parsedPostData['attributes'][attName] = dtype
 			}
 		}
 
     this.apiServices.postDocumentType(parsedPostData).subscribe()
-
-		
   }
 }

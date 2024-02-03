@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../../services/data.service';
-import { ProcessTypeParsedData } from '../../../interfaces';
+import { ProcessInstanceInterface, ProcessStepInterface } from '../../../interfaces';
 
 @Component({
   selector: 'app-ops-dashboard',
@@ -9,16 +9,16 @@ import { ProcessTypeParsedData } from '../../../interfaces';
 })
 export class OpsDashboardComponent {
   // Navigation section variables
-  processTypeIds: (string | number)[] = [];
-  selectedProcessTypeId: string | number = '';
+  processTypeIds: (string)[] = [];
+  selectedProcessTypeId: string = '';
 
   // Main section variables
   mainSectionFocus: string = 'processInformaiton';
   selectedProcessInstances: string[] = [];
-  selectedProcessInstance: any = {}
+  selectedProcessInstance!: ProcessInstanceInterface;
   selectedProcessInstanceCurrentOperationsStatus: string = ''
   selectedStepEventType: string = ''
-  selectedStepObject: any = {}
+  selectedStepObject!: ProcessStepInterface;
 
   constructor(private apiServices: DataService) {}
 
@@ -29,29 +29,29 @@ export class OpsDashboardComponent {
   }
 
   // Main section functions
-  selectProcess(id: string | number) {
+  selectProcess(id: string) {
     this.selectedProcessTypeId = id;
     this.getProcessInstances(id);
     // determine process from next_steps
     // present current steps's documents and their elements
   }
 
-  createNewProcessInstance(processTypeId: string | number) {
+  createNewProcessInstance(processTypeId: string) {
     this.apiServices.postProcessInstanceById(processTypeId).subscribe();
   }
 
-  getProcessInstances(processTypeId: string | number) {
+  getProcessInstances(processTypeId: string) {
     this.apiServices
       .getProcessInstanceIdsByProcessTypeId(processTypeId)
       .subscribe((response) => {
-        this.selectedProcessInstances = response['data'];
+        this.selectedProcessInstances = response['ids'];
       });
   }
 
-  selectProcessInstance(processInstanceId: string | number) {
+  selectProcessInstance(processInstanceId: string) {
     this.apiServices.getProcessInstanceById(processInstanceId).subscribe(
       (response) => {
-        this.selectedProcessInstance = response['data']
+        this.selectedProcessInstance = response
         this.selectedProcessInstanceCurrentOperationsStatus = this.selectedProcessInstance['operations_status']
         this.mainSectionFocus = 'processOperationsSelectStep'
         console.log(this.selectedProcessInstanceCurrentOperationsStatus)

@@ -19,7 +19,7 @@
 
     <!-- Select step -->
     <!-- if new, select start step and continue; if not continue -->
-    <div *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstanceCurrentOperationsStatus === '00_PROCESS_CREATED')">
+    <div *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstance.operations_status === '00_PROCESS_CREATED')">
         select start step
         <div 
             *ngFor="let startStep of getStartSteps()"
@@ -30,7 +30,7 @@
     </div>
 
     <div
-        *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstanceCurrentOperationsStatus !== '00_PROCESS_CREATED')">
+        *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstance.operations_status !== '00_PROCESS_CREATED')">
         select start step
         <div (click)="selectOperationsStep(selectedProcessInstanceCurrentOperationsStatus)">
             {{selectedProcessInstanceCurrentOperationsStatus}}

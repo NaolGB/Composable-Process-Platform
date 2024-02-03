@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { ProcessTypeParsedData } from '../../interfaces';
+import { ProcessStepInterface, ProcessTypeInterface } from '../../interfaces';
 
 /**
  * Monaco Editor integration: https://www.npmjs.com/package/ngx-monaco-editor-v2
@@ -12,7 +12,7 @@ import { ProcessTypeParsedData } from '../../interfaces';
 })
 export class MonacoEditorComponent {
   @Input() contentType!: string
-  @Input() allStepsObject!: ProcessTypeParsedData  
+  @Input() allStepsObject!: { [key: string]: ProcessStepInterface; }  
   @Input() selectedStepKey!: string | number 
   @Output() editorContentChange = new EventEmitter<string>()
 

@@ -86,7 +86,7 @@
                 document fields
                 <div *ngFor="let document of selectedProcessDocuments | keyvalue">
                     <div 
-                        *ngFor="let extraAttribute of document.value.extra_attributes | keyvalue"
+                        *ngFor="let extraAttribute of document.value.attributes | keyvalue"
                         (click)="addUpdateDocumentField(document.key, extraAttribute.key)"
                     >
                         {{document.value.name}} -> {{extraAttribute.key}}

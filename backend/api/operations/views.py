@@ -19,7 +19,8 @@ def process_instance(request, id):
 @api_view(['GET', 'POST'])
 def many_process_instances(request, process_type_id):
     if request.method == 'GET':
-        parsed_response_data = ProcessInstance().get_process_instances(process_type_id=process_type_id)
-        return JsonResponse({'data': parsed_response_data})
+        parsed_response_data = ProcessInstance().get_process_instance_ids(
+            process_type_id=process_type_id)
+        return JsonResponse({'ids': parsed_response_data})
     else:
         return HttpResponse(status=405)
