@@ -59,6 +59,6 @@ export interface ProcessInstanceInterface {
     process_type: string,
     organization: string,
     operations_status: string,
-    document_instances: DocumentInstanceInterface,
+    document_instances: {[key: string]: DocumentInstanceInterface},
     steps: {[key: string]: ProcessStepInterface}
 }

@@ -42,24 +42,26 @@
     <!-- Actions -->
     <div *ngIf="mainSectionFocus === 'processOperationsAction'">
         <span *ngIf="selectedStepObject.event_type === 'create'">
-            <span *ngFor="let stepDocument of selectedStepObject.fields | keyvalue">
 
-                <span *ngFor="let processDocument of selectedProcessInstance.document_instances | keyvalue">
-                    <span *ngIf="processDocument.key === stepDocument.key">
-                        <span *ngFor="let attribute of processDocument.value | keyvalue">
-                            <div *ngIf="stepDocument.value.document_fields.includes(attribute.key)">
-                                edit {{attribute.key}}: <input type="text" [(ngModel)]="attribute.value" />
-                            </div>
-                            <div *ngIf="!stepDocument.value.document_fields.includes(attribute.key)">
-                                cant edit {{attribute.key}}: {{attribute.value}}
-                            </div>
-                        </span>
-                    </span>
+            <span *ngFor="let stepDocument of selectedStepObject.fields | keyvalue; trackBy: trackByStepDocument">
+                <span *ngFor="let attribute of selectedProcessInstance.document_instances[stepDocument.key] | keyvalue; trackBy: trackByAttribute">
+            
+                    <div *ngIf="stepDocument.value.document_fields.includes(attribute.key)">
+                        edit {{attribute.key}}: 
+                        <input 
+                            type="text" 
+                            [(ngModel)]="selectedProcessInstance.document_instances[stepDocument.key][attribute.key]" 
+                        />
+                        <br>{{selectedProcessInstance.document_instances[stepDocument.key][attribute.key]}}
+                    </div>
+            
+                    <div *ngIf="!stepDocument.value.document_fields.includes(attribute.key)">
+                        cant edit {{attribute.key}}: {{attribute.value}}
+                    </div>
+                    <button (click)="check(selectedProcessInstance)">check</button>
                 </span>
-                
-                <button (click)="check(selectedProcessInstance)">check processinstance</button>
-
             </span>
+            
         </span>
 
     </div>

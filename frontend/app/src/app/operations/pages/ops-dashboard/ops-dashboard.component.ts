@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 import { ProcessInstanceInterface, ProcessStepInterface } from '../../../interfaces';
 
@@ -65,6 +65,16 @@ export class OpsDashboardComponent {
     this.selectedProcessInstance['operations_status'] = step
     this.selectedStepEventType = this.selectedStepObject['event_type']
     this.mainSectionFocus = 'processOperationsAction'
+  }
+
+
+  // Angular check functions
+  trackByStepDocument(index: number, item: any): string {
+    return item.key; 
+  }
+
+  trackByAttribute(index: number, item: any): string {
+      return item.key; 
   }
 
   check(sth: any) {
