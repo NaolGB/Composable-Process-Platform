@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 import { ProcessInstanceInterface, ProcessStepInterface } from '../../../interfaces';
 
@@ -14,13 +14,12 @@ export class OpsDashboardComponent {
 
   // Main section variables
   mainSectionFocus: string = 'processInformaiton';
-  selectedProcessInstances: string[] = [];
+  selectedProcessTypeInstanceIds: string[] = [];
   selectedProcessInstance!: ProcessInstanceInterface;
-  selectedProcessInstanceCurrentOperationsStatus: string = ''
   selectedStepEventType: string = ''
   selectedStepObject!: ProcessStepInterface;
 
-  constructor(private apiServices: DataService) {}
+  constructor(private apiServices: DataService, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.apiServices.getProcessTypeIds().subscribe((response) => {
@@ -31,20 +30,18 @@ export class OpsDashboardComponent {
   // Main section functions
   selectProcess(id: string) {
     this.selectedProcessTypeId = id;
-    this.getProcessInstances(id);
-    // determine process from next_steps
-    // present current steps's documents and their elements
+    this.getProcessTypeInstanceIds(id);
   }
 
   createNewProcessInstance(processTypeId: string) {
     this.apiServices.postProcessInstanceById(processTypeId).subscribe();
   }
 
-  getProcessInstances(processTypeId: string) {
+  getProcessTypeInstanceIds(processTypeId: string) {
     this.apiServices
       .getProcessInstanceIdsByProcessTypeId(processTypeId)
       .subscribe((response) => {
-        this.selectedProcessInstances = response['ids'];
+        this.selectedProcessTypeInstanceIds = response['ids'];
       });
   }
 
@@ -52,9 +49,7 @@ export class OpsDashboardComponent {
     this.apiServices.getProcessInstanceById(processInstanceId).subscribe(
       (response) => {
         this.selectedProcessInstance = response
-        this.selectedProcessInstanceCurrentOperationsStatus = this.selectedProcessInstance['operations_status']
         this.mainSectionFocus = 'processOperationsSelectStep'
-        console.log(this.selectedProcessInstanceCurrentOperationsStatus)
       }
     )
   }
@@ -70,7 +65,6 @@ export class OpsDashboardComponent {
     this.selectedProcessInstance['operations_status'] = step
     this.selectedStepEventType = this.selectedStepObject['event_type']
     this.mainSectionFocus = 'processOperationsAction'
-    console.log(this.selectedProcessInstance)
   }
 
   check(sth: any) {

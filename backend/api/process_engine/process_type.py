@@ -185,7 +185,7 @@ class ProcessType:
                 'process_type': self._data['_id'],
                 'organization': self._data['organization'],
                 'operations_status': '00_PROCESS_CREATED',
-                'documents': {k: DocumentType().generate_document_instance_frame(k) for k in self._data['documents']},
+                'document_instances': {k: DocumentType().generate_document_instance_frame(k) for k in self._data['documents']},
                 'steps': self._data['steps']
             }
 

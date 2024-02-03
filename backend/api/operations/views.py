@@ -12,7 +12,7 @@ def process_instance(request, id):
         return JsonResponse({'message':"pass"})
     elif request.method == 'GET': # GETs using process_instance_id
         parsed_response_data = ProcessInstance().get_process_instance(process_instance_id=id)
-        return JsonResponse({'data': parsed_response_data})
+        return JsonResponse(parsed_response_data)
     else:
         return HttpResponse(status=405)
     

@@ -12,7 +12,7 @@
 <div>
     <div *ngIf="(mainSectionFocus === 'processInformaiton') && (selectedProcessTypeId !== '')">
         <button (click)="createNewProcessInstance(selectedProcessTypeId)">new process instance</button>
-        <div *ngFor="let processInstance of selectedProcessInstances" (click)="selectProcessInstance(processInstance)">
+        <div *ngFor="let processInstance of selectedProcessTypeInstanceIds" (click)="selectProcessInstance(processInstance)">
             {{processInstance}}
         </div>
     </div>
@@ -20,7 +20,8 @@
     <!-- Select step -->
     <!-- if new, select start step and continue; if not continue -->
     <div *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstance.operations_status === '00_PROCESS_CREATED')">
-        select start step
+        hi ny!
+        01 - {{selectedProcessInstance.operations_status}}
         <div 
             *ngFor="let startStep of getStartSteps()"
             (click)="selectOperationsStep(startStep)"
@@ -31,33 +32,44 @@
 
     <div
         *ngIf="(mainSectionFocus === 'processOperationsSelectStep') && (selectedProcessInstance.operations_status !== '00_PROCESS_CREATED')">
-        select start step
-        <div (click)="selectOperationsStep(selectedProcessInstanceCurrentOperationsStatus)">
-            {{selectedProcessInstanceCurrentOperationsStatus}}
+        select step
+        <button (click)="check(selectedProcessInstance)">check PI</button>
+        <div (click)="selectOperationsStep(selectedStepObject._id)">
+            {{selectedStepObject._id}}
         </div>
     </div>
 
     <!-- Actions -->
     <div *ngIf="mainSectionFocus === 'processOperationsAction'">
-        <!-- <div *ngFor="let documentInstance of selectedProcessInstance.documents | keyvalue; let i=index">
-            {{documentInstance.key}}
+        <span *ngIf="selectedStepObject.event_type === 'create'">
+            <span *ngFor="let stepDocument of selectedStepObject.fields | keyvalue">
 
-            <button (click)="check(documentInstance)">{{documentInstance}}</button>
-            <button (click)="check(documentInstance)">{{documentInstance.value}}</button>
-            {{documentInstance.value.lead_object}}
-            <div *ngFor="let stepDocument of selectedStepObject.fields | keyvalue">
-                {{stepDocument.key}}
-                <div *ngIf="documentInstance.key === stepDocument.key">
-                    <div *ngFor="let documentInstanceField of documentInstance | keyvalue">
-                        {{documentInstanceField.key}}
-                    </div>
-                </div>
-            </div>
-        </div> -->
+                <span *ngFor="let processDocument of selectedProcessInstance.document_instances | keyvalue">
+                    <span *ngIf="processDocument.key === stepDocument.key">
+                        <span *ngFor="let attribute of processDocument.value | keyvalue">
+                            <div *ngIf="stepDocument.value.document_fields.includes(attribute.key)">
+                                edit {{attribute.key}}: <input type="text" [(ngModel)]="attribute.value" />
+                            </div>
+                            <div *ngIf="!stepDocument.value.document_fields.includes(attribute.key)">
+                                cant edit {{attribute.key}}: {{attribute.value}}
+                            </div>
+                        </span>
+                    </span>
+                </span>
+                
+                <button (click)="check(selectedProcessInstance)">check processinstance</button>
+
+            </span>
+        </span>
+
     </div>
 </div>
 
 <!-- Auxiliary section -->
 <div>
+    <br>
+    <br>
+    <br>
+    <br>
     aux
 </div>
