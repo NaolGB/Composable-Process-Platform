@@ -43,26 +43,56 @@
     <div *ngIf="mainSectionFocus === 'processOperationsAction'">
         <span *ngIf="selectedStepObject.event_type === 'create'">
 
-            <span *ngFor="let stepDocument of selectedStepObject.fields | keyvalue; trackBy: trackByStepDocument">
-                <span *ngFor="let attribute of selectedProcessInstance.document_instances[stepDocument.key] | keyvalue; trackBy: trackByAttribute">
-            
-                    <div *ngIf="stepDocument.value.document_fields.includes(attribute.key)">
-                        edit {{attribute.key}}: 
-                        <input 
-                            type="text" 
-                            [(ngModel)]="selectedProcessInstance.document_instances[stepDocument.key][attribute.key]" 
-                        />
-                        <br>{{selectedProcessInstance.document_instances[stepDocument.key][attribute.key]}}
-                    </div>
-            
-                    <div *ngIf="!stepDocument.value.document_fields.includes(attribute.key)">
-                        cant edit {{attribute.key}}: {{attribute.value}}
-                    </div>
-                    <button (click)="check(selectedProcessInstance)">check</button>
+            <div>
+                Create Document 
+                <span *ngFor="let stepDocument of selectedStepObject.fields | keyvalue; trackBy: trackByStepDocument">
+                    <span *ngFor="let attribute of selectedProcessInstance.document_instances[stepDocument.key] | keyvalue; trackBy: trackByAttribute">
+                
+                        <div *ngIf="stepDocument.value.document_fields.includes(attribute.key)">
+                            edit {{attribute.key}}: 
+                            <input 
+                                type="text" 
+                                [(ngModel)]="selectedProcessInstance.document_instances[stepDocument.key][attribute.key]" 
+                            />
+                            <br>{{selectedProcessInstance.document_instances[stepDocument.key][attribute.key]}}
+                        </div>
+                
+                        <div *ngIf="(!stepDocument.value.document_fields.includes(attribute.key)) && (attribute.key !== selectedProcessInstance.document_instances[stepDocument.key].lead_object + 's')">
+                            <!-- document_instance holds reference to master data with an additional 's' -->
+                            Can't edit {{ attribute.key }}: {{ attribute.value }}
+                        </div>
+                        
+                    </span>
                 </span>
-            </span>
+            </div>
+
+            <div>
+                Add master data to Document
+                <span *ngFor="let stepDocument of selectedStepObject.fields | keyvalue; trackBy: trackByStepDocument">
+                    <span *ngFor="let attribute of selectedProcessInstance.document_instances[stepDocument.key] | keyvalue; trackBy: trackByAttribute">
+                
+                        <div *ngIf="stepDocument.value.document_fields.includes(attribute.key)">
+                            edit {{attribute.key}}: 
+                            <input 
+                                type="text" 
+                                [(ngModel)]="selectedProcessInstance.document_instances[stepDocument.key][attribute.key]" 
+                            />
+                            <br>{{selectedProcessInstance.document_instances[stepDocument.key][attribute.key]}}
+                        </div>
+                
+                        <div *ngIf="(!stepDocument.value.document_fields.includes(attribute.key)) && (attribute.key !== selectedProcessInstance.document_instances[stepDocument.key].lead_object + 's')">
+                            <!-- document_instance holds reference to master data with an additional 's' -->
+                            Can't edit {{ attribute.key }}: {{ attribute.value }}
+                        </div>
+                        
+                    </span>
+                </span>
+            </div>
+            
             
         </span>
+        <button (click)="check(selectedProcessInstance)">check</button>
+
 
     </div>
 </div>
