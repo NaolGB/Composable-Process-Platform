@@ -20,7 +20,7 @@ def events_data_details(request, dtype, id):
     }
     """
     if request.method == 'GET':
-        response_data = ProcessEvent().get_data_details(dtype=dtype, id=id)
+        response_data = ProcessEvent(user_name=USERNAME).get_data_details(dtype=dtype, id=id)
         return JsonResponse({'data':response_data})
     if request.method == 'POST':
         request_data = request.data

@@ -15,6 +15,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { CreateMasterComponent } from './model/pages/master/create-master/create-master.component';
 import { OpsNavBarComponent } from './operations/ops-nav-bar/ops-nav-bar.component';
 import { OpsDashboardComponent } from './operations/pages/ops-dashboard/ops-dashboard.component';
+import { OpsMasterComponent } from './operations/pages/ops-master/ops-master/ops-master.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { OpsDashboardComponent } from './operations/pages/ops-dashboard/ops-dash
     MonacoEditorComponent,
     CreateMasterComponent,
     OpsNavBarComponent,
-    OpsDashboardComponent
+    OpsDashboardComponent,
+    OpsMasterComponent
   ],
   imports: [
     BrowserModule,

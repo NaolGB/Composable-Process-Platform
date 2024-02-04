@@ -1,0 +1,29 @@
+<!-- Navigation section -->
+<div>
+    Master Data
+    <div *ngIf="masterDtypeIdsList$ | async as masterDtypeIdsList; else loading">
+        <div *ngFor="let id of masterDtypeIdsList['ids']" (click)="selectMasterDataById(id)">
+            {{id}}
+        </div>
+    </div>
+</div>
+
+
+<!-- Main section -->
+<div>
+    <div *ngIf="masterDataById$ | async as masterDataById; else loading">
+        <div *ngFor="let masterDataEntry of masterDataById['data']">
+            {{masterDataEntry | json}}
+        </div>
+    </div>
+</div>
+
+
+<!-- Auxiliary section -->
+<div>
+
+</div>
+
+<ng-template #loading>
+    Loading...
+</ng-template>

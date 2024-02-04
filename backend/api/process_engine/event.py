@@ -20,8 +20,9 @@ class ProcessEvent:
         if dtype == 'master_instance':
             temp_collection = self.db[f'{id}']
 
-            result = temp_collection.find()
-            result = json_util.loads(json_util.dumps(result))
+            # HACK skip _id fields becasue sometimes they are BSON ObjectID which is not JSON serializable
+            result = temp_collection.find({}, {'_id': 0}) 
+            result = json_util.loads(json_util.dumps(result, default=str))
             temp_collection = None
 
             return result

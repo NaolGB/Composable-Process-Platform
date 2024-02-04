@@ -79,6 +79,13 @@ export class DataService {
 
   // Operations
   // ----------
+  getMasterDataById(masterDtypeId: string) {
+    const fullUrl = `${this.operationsBaseUrl}/operations-detail/master_instance/${masterDtypeId}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<any>(fullUrl);
+  }
+
+  
   postProcessInstanceById(processId: string) {
     const fullUrl = `${this.operationsBaseUrl}/process-instance/${processId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
