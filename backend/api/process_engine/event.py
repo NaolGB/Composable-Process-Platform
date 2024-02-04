@@ -1,3 +1,5 @@
+import uuid
+from datetime import datetime
 import ast
 from bson import json_util
 from . import helpers, db_secrets
@@ -7,32 +9,60 @@ from .process_instance import ProcessInstance
 client = db_secrets.get_client()
 
 class ProcessEvent:
-    def __init__(self) -> None:
+    def __init__(self, user_name) -> None:
         self._data = {}
+        self.user_name = user_name
         self.db = client['dev']
-        self.collection = self.db.event
+        self._collection = self.db.events
         pass
+
+    def get_data_details(self, dtype, id):
+        if dtype == 'master_instance':
+            temp_collection = self.db[f'{id}']
+
+            result = temp_collection.find()
+            result = json_util.loads(json_util.dumps(result))
+            temp_collection = None
+
+            return result
+        else:
+            raise helpers.PEPlaceholderError()
+        
+    def post_data_details(self, dtype, id, data):
+        if dtype == 'master_instance':
+            temp_collection = self.db[f'{id}']
+            data['_id'] = helpers.name_to_id(data['name'])
+            result = temp_collection.insert_one(data)
+            temp_collection = None
+
+            event_actions = {
+                "user_name": self.user_name,
+                "timestamp": datetime.utcnow(),
+                "status": "OK"
+            }
+            self.record_event(
+                event_name=f'create master instance', 
+                event_type='create', 
+                data_type='master_instance', 
+                data_id=id,
+                actions=event_actions
+            )
+        else:
+            raise helpers.PEPlaceholderError()
 
     def create_process_instance(self, process_type_id):
         ProcessInstance().create(process_type_id=process_type_id)
 
-    def on_click_save(self, current_step, process):
-        """
-        - process is the entire process as json, passed from the frontend
-        - current_step is the step within the given process, it is used for determining 
-            which automated steps to take
-        """
-        if process[current_step][''] == 'update':
-            # apply manual actions
-            # apply automated actions
-            # update process operations_status
-            # update event status
-            # put to db
-            # update event status
-            pass
-
-    def record_event(self):
-        pass
+    def record_event(self, event_name, event_type, data_type, data_id, actions):
+        event = {
+            "_id": str(uuid.uuid4()),
+            "name": event_name, 
+            "event_type": event_type,
+            "data_type": data_type,
+            "data_id": data_id,
+            "actions": actions
+        }
+        self._collection.insert_one(event)
 
     def is_valid(self):
         pass

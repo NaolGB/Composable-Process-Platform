@@ -20,8 +20,6 @@ class MasterDtype:
             'attributes': data['attributes']
         }
 
-        print(self._data)
-
         if self.is_valid():
             # insert master dtype
             result = self.collection.insert_one(self._data)
@@ -29,6 +27,11 @@ class MasterDtype:
             # insert the corresponding source instance collection
             if result.acknowledged:
                 result = self.db.create_collection(name=self._data['_id'])
+
+                # create the first entry of the master instance to provide easy access to fields for later operations
+                first_entry = {k: v for k, v in self._data['attributes'].items()}
+                first_entry['_id'] = str(uuid.uuid4())
+                self.db[f"{self._data['_id']}"].insert_one(first_entry)
 
         else:
             raise helpers.PEValidationError()

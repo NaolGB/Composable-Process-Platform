@@ -1,5 +1,10 @@
 import base64
 
+class PEPlaceholderError(Exception):
+    def __init__(self, messege="This is a palceholder error") -> None:
+        self.message = messege
+        super().__init__(self.message)
+
 class PEValidationError(Exception):
     def __init__(self, messege="Process Engine validation failed") -> None:
         self.message = messege

@@ -4,6 +4,30 @@ from process_engine.event import ProcessEvent
 from process_engine.process_instance import ProcessInstance
 
 ORGANIZATION = 'SC1'
+USERNAME = 'DEF_USNAM'
+
+@api_view(['GET', 'POST'])
+def events_data_details(request, dtype, id):
+    """
+    return details of the requested dtype instance with `id`
+        ex: if the client want to get master_dtype_instance_a's all fields, it would send this GET reqest
+                /api/operaitons/master_instance/master_dtype_instance_a
+            the client would then recieve this response
+                master_dtype_instance_a: {'field_1': 'value_1', 'field_2': 'value_2}
+    {
+        dtype: 'master_instance' | 'process_instance',
+        id: 'id',
+    }
+    """
+    if request.method == 'GET':
+        response_data = ProcessEvent().get_data_details(dtype=dtype, id=id)
+        return JsonResponse({'data':response_data})
+    if request.method == 'POST':
+        request_data = request.data
+        response_data = ProcessEvent(user_name=USERNAME).post_data_details(dtype=dtype, id=id, data=request_data)
+        return JsonResponse({'message':"temp_repsonse"})
+    else:
+        return HttpResponse(status=405)
 
 @api_view(['GET', 'POST'])
 def process_instance(request, id):
