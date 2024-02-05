@@ -12,6 +12,11 @@
 <!-- Main section -->
 <div>
     <div *ngIf="masterDataById$ | async as masterDataById; else loading">
+        <div>
+            <span *ngFor="let columnName of masterDataById['metadata']['columns']">
+                {{columnName}}
+            </span>
+        </div>
         <div *ngFor="let masterDataEntry of masterDataById['data']">
             {{masterDataEntry | json}}
         </div>

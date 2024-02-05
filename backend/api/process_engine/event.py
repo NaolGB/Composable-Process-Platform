@@ -24,8 +24,10 @@ class ProcessEvent:
             result = temp_collection.find({}, {'_id': 0}) 
             result = json_util.loads(json_util.dumps(result, default=str))
             temp_collection = None
-
-            return result
+            
+            metadata = {"columns": helpers.extract_unqiue_columns(result)}
+            
+            return {"data": result, "metadata": metadata}
         else:
             raise helpers.PEPlaceholderError()
         

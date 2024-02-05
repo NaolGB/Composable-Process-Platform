@@ -49,3 +49,11 @@ def separate_characters(text):
     modified_str = modified_str[::-1]
 
     return modified_str
+
+def extract_unqiue_columns(dict_list):
+    """
+    return a set of keys from the passed dict list
+    """
+    keys_set = list(set(key for d in dict_list for key in d.keys()))
+    
+    return keys_set

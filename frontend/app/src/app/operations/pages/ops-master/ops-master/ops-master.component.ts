@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data.service';
-import { Observable, of } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { IdsListInterface } from '../../../../interfaces';
 
 @Component({
@@ -18,6 +18,7 @@ export class OpsMasterComponent {
 
   masterDtypeIdsList$: Observable<IdsListInterface> | undefined;
   masterDataById$ :Observable<any> | undefined;
+  selectedMasterDataColumns: string[] = []
 
   constructor(private apiServices: DataService) {}
 
@@ -35,4 +36,5 @@ export class OpsMasterComponent {
   selectMasterDataById(id: string) {
     this.masterDataById$ = this.apiServices.getMasterDataById(id)
   }
+
 }
