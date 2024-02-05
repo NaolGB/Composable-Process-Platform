@@ -17,7 +17,8 @@
                 {{columnName}}
             </span>
         </div>
-        <div *ngFor="let masterDataEntry of masterDataById['data']">
+        <button (click)="showAuxiliarySection('create', {})">Add new</button>
+        <div *ngFor="let masterDataEntry of masterDataById['data']" (click)="showAuxiliarySection('read', masterDataEntry)">
             {{masterDataEntry | json}}
         </div>
     </div>
@@ -25,9 +26,12 @@
 
 
 <!-- Auxiliary section -->
-<div>
-
-</div>
+<app-ops-sidebar 
+    *ngIf="auxiliarySection"
+    [sidebarType]="sidebarType"
+    [sidebarData]="sidebarData"
+>
+</app-ops-sidebar>
 
 <ng-template #loading>
     Loading...

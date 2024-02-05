@@ -18,7 +18,9 @@ export class OpsMasterComponent {
 
   masterDtypeIdsList$: Observable<IdsListInterface> | undefined;
   masterDataById$ :Observable<any> | undefined;
-  selectedMasterDataColumns: string[] = []
+  auxiliarySection: boolean = false;
+  sidebarType: string = 'read'
+  sidebarData: any = {}
 
   constructor(private apiServices: DataService) {}
 
@@ -35,6 +37,16 @@ export class OpsMasterComponent {
 
   selectMasterDataById(id: string) {
     this.masterDataById$ = this.apiServices.getMasterDataById(id)
+  }
+
+  toggleAuxiliarySection() {
+    this.auxiliarySection = !this.auxiliarySection;
+  }
+
+  showAuxiliarySection(sidebarType: string, sidebarData: {}) {
+    this.sidebarType = sidebarType
+    this.sidebarData = sidebarData
+    this.auxiliarySection = true
   }
 
 }

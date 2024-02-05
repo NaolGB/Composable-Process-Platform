@@ -16,6 +16,7 @@ import { CreateMasterComponent } from './model/pages/master/create-master/create
 import { OpsNavBarComponent } from './operations/ops-nav-bar/ops-nav-bar.component';
 import { OpsDashboardComponent } from './operations/pages/ops-dashboard/ops-dashboard.component';
 import { OpsMasterComponent } from './operations/pages/ops-master/ops-master/ops-master.component';
+import { OpsSidebarComponent } from './operations/ops-sidebar/ops-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { OpsMasterComponent } from './operations/pages/ops-master/ops-master/ops
     CreateMasterComponent,
     OpsNavBarComponent,
     OpsDashboardComponent,
-    OpsMasterComponent
+    OpsMasterComponent,
+    OpsSidebarComponent
   ],
   imports: [
     BrowserModule,

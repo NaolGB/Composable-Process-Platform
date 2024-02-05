@@ -1,0 +1,13 @@
+<div *ngIf="sidebarType === 'create'">
+    <div *ngFor="let entry of sidebarData | keyvalue">
+        {{entry.key}}: <input type="text" [(ngModel)]="sidebarData[entry.key]" />
+    </div>
+</div>
+
+<div *ngIf="sidebarType === 'read'">
+    <div *ngFor="let entry of sidebarData | keyvalue">
+        {{entry.key}}: {{entry.value}}
+    </div>
+</div>
+
+
