@@ -22,10 +22,10 @@ def events_data_details(request, dtype, id):
     if request.method == 'GET':
         response_data = ProcessEvent(user_name=USERNAME).get_data_details(dtype=dtype, id=id)
         return JsonResponse(response_data)
+        # return JsonResponse({'message':"temp_repsonse"})
     elif request.method == 'POST':
         request_data = request.data
-        print(request_data)
-        response_data = ProcessEvent(user_name=USERNAME).post_data_details(dtype=dtype, id=id, data=request_data)
+        response_data = ProcessEvent(user_name=USERNAME).post_data_detail(dtype=dtype, id=id, data=request_data)
         return JsonResponse({'message':"temp_repsonse"})
     else:
         return HttpResponse(status=405)

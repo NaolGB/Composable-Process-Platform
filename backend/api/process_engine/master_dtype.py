@@ -30,7 +30,7 @@ class MasterDtype:
 
                 # create the first entry of the master instance to provide easy access to fields for later operations
                 first_entry = {k: v for k, v in self._data['attributes'].items()}
-                first_entry['_id'] = str(uuid.uuid4())
+                first_entry['_id'] = f'TEMPLATE---{str(uuid.uuid4())}'
                 self.db[f"{self._data['_id']}"].insert_one(first_entry)
 
         else:

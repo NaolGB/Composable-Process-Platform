@@ -1,4 +1,5 @@
 import ast
+import uuid
 from bson import json_util
 from . import helpers, db_secrets
 from .document_type import DocumentType
@@ -90,7 +91,9 @@ class ProcessType:
             self.update_actions_to_put()
 
             # TODO find a better way to updaete new adn existing updated fields only
-            self.collection.update_one({"_id": id}, {"$set": self._data})
+            result = self.collection.update_one({"_id": id}, {"$set": self._data})
+            return result
+        
 
     def update_process_design_status(self):
         # check if all steps are connected, but without all requirement added
@@ -137,7 +140,14 @@ class ProcessType:
         # udpate process status
         if self.is_valid():
             self._data['design_status'].append('VALIDATED_AND_PUBLISHED')
-            self.put_process(id=process_id, data=self._data)
+            result = self.put_process(id=process_id, data=self._data)
+            
+            if result.acknowledged:
+                # create the first entry of the process instance to provide easy access to fields for later operations
+                first_entry = self.generate_process_instance_frame(self._data['_id'])
+                first_entry['_id'] = f'TEMPLATE---{str(uuid.uuid4())}'
+                self.db.process_instance.insert_one(first_entry)
+
 
     def update_transition_requirement_to_put(self):
         # sanitize code
