@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data.service';
-import { Observable, map, of } from 'rxjs';
+import { Observable, every, map, of } from 'rxjs';
 import { IdsListInterface } from '../../../../interfaces';
 
 @Component({
@@ -9,18 +9,12 @@ import { IdsListInterface } from '../../../../interfaces';
   styleUrl: './ops-master.component.css'
 })
 export class OpsMasterComponent {
-  // Observable dtypes in component
-  // async pipe in template
-  // ng-template for `else` of the async pipe in the template
-  // switchMaps in component
-  // $ variable naming convention in component
-  // nullush coalescing (const dataToProcess = this.masterDtypeIdsList$?.someProperty ?? defaultValue;)
-
   masterDtypeIdsList$: Observable<IdsListInterface> | undefined;
   masterDataById$ :Observable<any> | undefined;
   auxiliarySection: boolean = false;
   sidebarType: string = 'read'
   sidebarData: any = {}
+  masterDataType: string = ''
 
   constructor(private apiServices: DataService) {}
 
@@ -36,6 +30,7 @@ export class OpsMasterComponent {
   }
 
   selectMasterDataById(id: string) {
+    this.masterDataType = id
     this.masterDataById$ = this.apiServices.getMasterDataById(id)
   }
 
@@ -43,10 +38,25 @@ export class OpsMasterComponent {
     this.auxiliarySection = !this.auxiliarySection;
   }
 
-  showAuxiliarySection(sidebarType: string, sidebarData: {}) {
+  showAuxiliarySection(sidebarType: string, sidebarData: {}, metaData: {}) {
+    // read ops-sidebar componenet docstrinng for input information
     this.sidebarType = sidebarType
     this.sidebarData = sidebarData
     this.auxiliarySection = true
   }
 
+  createSidebarData(columns: string[]) {
+    const data: {[key: string]: string} = {}
+    columns.forEach(element => {
+      data[element] = ''
+    })
+
+    return data
+  }
+
+  applySidebarEffects($event: any) {
+    if ($event.eventType === 'create') {
+      this.apiServices.postMasterData(this.masterDataType, $event.data).subscribe()
+    }
+  }
 }

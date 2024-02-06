@@ -1,7 +1,8 @@
 <div *ngIf="sidebarType === 'create'">
-    <div *ngFor="let entry of sidebarData | keyvalue">
+    <div *ngFor="let entry of sidebarData | keyvalue; trackBy: trackByEntry">
         {{entry.key}}: <input type="text" [(ngModel)]="sidebarData[entry.key]" />
     </div>
+    <button (click)="onClickSave()">Save</button>
 </div>
 
 <div *ngIf="sidebarType === 'read'">

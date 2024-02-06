@@ -25,7 +25,9 @@ class ProcessEvent:
             result = json_util.loads(json_util.dumps(result, default=str))
             temp_collection = None
             
-            metadata = {"columns": helpers.extract_unqiue_columns(result)}
+            metadata = {
+                "columns": helpers.extract_unqiue_columns(result)
+            }
             
             return {"data": result, "metadata": metadata}
         else:
@@ -34,7 +36,12 @@ class ProcessEvent:
     def post_data_details(self, dtype, id, data):
         if dtype == 'master_instance':
             temp_collection = self.db[f'{id}']
-            data['_id'] = helpers.name_to_id(data['name'])
+
+            if data.get('name', None):
+                data['_id'] = helpers.name_to_id(data['name'])
+            else:
+                data['_id'] = str(uuid.uuid4())
+
             result = temp_collection.insert_one(data)
             temp_collection = None
 

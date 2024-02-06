@@ -84,6 +84,11 @@ export class DataService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.get<any>(fullUrl);
   }
+  postMasterData(masterDtypeId: string, data: any) {
+    const fullUrl = `${this.operationsBaseUrl}/operations-detail/master_instance/${masterDtypeId}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(fullUrl, data, {headers})
+  }
 
   
   postProcessInstanceById(processId: string) {

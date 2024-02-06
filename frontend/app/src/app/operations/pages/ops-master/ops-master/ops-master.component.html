@@ -17,8 +17,8 @@
                 {{columnName}}
             </span>
         </div>
-        <button (click)="showAuxiliarySection('create', {})">Add new</button>
-        <div *ngFor="let masterDataEntry of masterDataById['data']" (click)="showAuxiliarySection('read', masterDataEntry)">
+        <button (click)="showAuxiliarySection('create', createSidebarData((masterDataById['metadata']['columns'])), {})">Add new</button>
+        <div *ngFor="let masterDataEntry of masterDataById['data']" (click)="showAuxiliarySection('read', masterDataEntry, {})">
             {{masterDataEntry | json}}
         </div>
     </div>
@@ -30,6 +30,7 @@
     *ngIf="auxiliarySection"
     [sidebarType]="sidebarType"
     [sidebarData]="sidebarData"
+    (dataEvent)="applySidebarEffects($event)"
 >
 </app-ops-sidebar>
 
