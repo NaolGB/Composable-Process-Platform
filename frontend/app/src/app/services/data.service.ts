@@ -79,7 +79,7 @@ export class DataService {
 
   // Operations
   // ----------
-  getMasterDataById(masterDtypeId: string) {
+  getMasterDataByDataType(masterDtypeId: string) {
     const fullUrl = `${this.operationsBaseUrl}/operations-detail/master_instance/${masterDtypeId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.get<any>(fullUrl);
@@ -90,17 +90,34 @@ export class DataService {
     return this.http.post(fullUrl, data, {headers})
   }
 
+  getProcessInstancesByProcessType(processType: string) {
+    const fullUrl = `${this.operationsBaseUrl}/operations-detail/process_instance/${processType}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<any>(fullUrl)
+  }
+  postProcessInstance(processType: string) {
+    const fullUrl = `${this.operationsBaseUrl}/operations-detail/process_instance/${processType}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(fullUrl, {}, {headers})
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   postProcessInstanceById(processId: string) {
     const fullUrl = `${this.operationsBaseUrl}/process-instance/${processId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, {}, { headers });
-  }
-
-  getProcessInstanceById(processInstanceId: string) {
-    const fullUrl = `${this.operationsBaseUrl}/process-instance/${processInstanceId}`;
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<ProcessInstanceInterface>(fullUrl);
   }
 
   getProcessInstanceIdsByProcessTypeId(processTypeId: string) {

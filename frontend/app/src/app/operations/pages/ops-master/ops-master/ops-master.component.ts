@@ -10,7 +10,7 @@ import { IdsListInterface } from '../../../../interfaces';
 })
 export class OpsMasterComponent {
   masterDtypeIdsList$: Observable<IdsListInterface> | undefined;
-  masterDataById$ :Observable<any> | undefined;
+  masterDataById$: Observable<any> | undefined;
   auxiliarySection: boolean = false;
   sidebarType: string = 'read'
   sidebarData: any = {}
@@ -20,18 +20,11 @@ export class OpsMasterComponent {
 
   ngOnInit() {
     this.masterDtypeIdsList$ = this.apiServices.getMasterDtypeIds()
-    
-    // get an initial master data selected
-    this.apiServices.getMasterDtypeIds().subscribe((ids: IdsListInterface) => {
-      if (ids.ids && ids.ids.length > 0) {
-        this.masterDataById$ = this.apiServices.getMasterDataById(ids.ids[0])
-      }
-    });
   }
 
   selectMasterDataById(id: string) {
     this.masterDataType = id
-    this.masterDataById$ = this.apiServices.getMasterDataById(id)
+    this.masterDataById$ = this.apiServices.getMasterDataByDataType(id)
   }
 
   toggleAuxiliarySection() {

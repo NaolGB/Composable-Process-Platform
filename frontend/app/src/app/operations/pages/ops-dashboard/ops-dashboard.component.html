@@ -2,7 +2,7 @@
 <div>
     Processes
     <div *ngIf="processTypeIdsList$ | async as processTypeIdsList; else loading">
-        <div *ngFor="let id of processTypeIdsList['ids']">
+        <div *ngFor="let id of processTypeIdsList['ids']" (click)="selectProcessType(id)">
             {{id}}
         </div>
     </div>
@@ -11,9 +11,34 @@
 
 <!-- Main section -->
 <div>
+    <span *ngIf="mainSectionView === 'SelectProcessInstance'">
+        <div *ngIf=" processInstancesByProcessType; else loading">
+            id, process_type, operations_status
+            <button (click)="createNewProcess(processType)">Add New</button>
+            <div *ngFor="let processInstanceEntry of processInstancesByProcessType" (click)="selectProcessInstance(processInstanceEntry._id)">
+                {{processInstanceEntry._id}}, {{processInstanceEntry.process_type}}, {{processInstanceEntry.operations_status}}
+            </div>
+        </div>
+    </span>
+
+    <span *ngIf="mainSectionView === 'SelectStartStep'">
+        select start step
+    </span>
+
+    <span *ngIf="mainSectionView === 'PerformOperations'">
+        perform ops
+    </span>
 
 </div>
 
+
+<!-- Auxiliary section -->
+<!-- <app-ops-sidebar
+    *ngIf="auxiliarySection"
+    [sidebarType]="sidebarType"
+    [sidebarData]="sidebarData"
+>
+</app-ops-sidebar> -->
 
 <!-- Optional templates -->
 <ng-template #loading>
