@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data.service';
-import { Observable, every, map, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IdsListInterface } from '../../../../interfaces';
 
 @Component({
