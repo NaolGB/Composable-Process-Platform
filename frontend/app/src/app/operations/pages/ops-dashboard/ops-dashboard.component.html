@@ -22,23 +22,53 @@
     </span>
 
     <span *ngIf="mainSectionView === 'SelectStartStep'">
-        select start step
+        <span *ngIf="processInstance">
+            <span *ngIf="processInstance.operations_status === '00_PROCESS_CREATED'">
+                Select Start Step
+                <div *ngFor="let step of startSteps">
+                    <span (click)="selectStartStep(step)">{{step}}</span>
+                </div>
+            </span>
+        </span>
     </span>
 
     <span *ngIf="mainSectionView === 'PerformOperations'">
-        perform ops
+        <span *ngIf="processInstance">
+            <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'create'">
+                Create Document
+                <div *ngFor="let document of processInstance.steps[processInstance.operations_status].fields | keyvalue">
+                    Documnet: {{document.key}}
+                    <button (click)="showAuxiliarySectionCreateDocumnent(document.key)">Create New</button>
+                    <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue">
+                        <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object'].includes(field.key)">
+                            {{field | json}}
+                        </span>
+                    </div>
+                </div>
+
+
+            </span>
+            
+            <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'update'">
+                update
+            </span>
+
+            <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'read'">
+                read
+            </span>
+        </span>
     </span>
 
 </div>
 
 
 <!-- Auxiliary section -->
-<!-- <app-ops-sidebar
+<app-ops-sidebar
     *ngIf="auxiliarySection"
-    [sidebarType]="sidebarType"
-    [sidebarData]="sidebarData"
+    [sidebarPackage]="sidebarPackage"
+    (dataEvent)="applySidebarEffectsCreateDocument($event)"
 >
-</app-ops-sidebar> -->
+</app-ops-sidebar>
 
 <!-- Optional templates -->
 <ng-template #loading>

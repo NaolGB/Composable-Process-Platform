@@ -38,6 +38,9 @@ export class OpsMasterComponent {
     this.auxiliarySection = true
   }
 
+  // destroyAuxiliarySection() {
+  // }
+
   createSidebarData(columns: string[]) {
     const data: {[key: string]: string} = {}
     columns.forEach(element => {

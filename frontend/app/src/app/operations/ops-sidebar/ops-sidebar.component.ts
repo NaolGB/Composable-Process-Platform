@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { SidebarPackage } from '../../interfaces';
 
 @Component({
   selector: 'app-ops-sidebar',
@@ -18,19 +19,14 @@ export class OpsSidebarComponent {
    * on create/update, sidebar emits the sidebarData on click `Save/Apply` through dataEvent 
    * and this is read by the parent
    */
-  @Input() sidebarType: string = 'read'
-  @Input() sidebarData: {[key: string]: string} = {}
-  @Input() metaData: {[key: string]: string} = {}
+  @Input() sidebarPackage: SidebarPackage | undefined
 
-  @Output() dataEvent = new EventEmitter<{[key: string]: any}>();
+  @Output() dataEvent = new EventEmitter<SidebarPackage>();
 
   constructor() {}
 
   onClickSave() {
-    this.dataEvent.emit({
-      data: this.sidebarData,
-      eventType: this.sidebarType
-    })
+    this.dataEvent.emit(this.sidebarPackage)
   }
 
   trackByEntry(index: number, item: any): string {

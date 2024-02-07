@@ -3,12 +3,6 @@ export interface IdsListInterface {
 }
 
 
-enum StepEdgeStatus {
-    NotEdge = '00_NOT_EDGE',
-    StartEdge = '01_START'
-}
-
-
 export interface MasterDataTypeInterface {
     _id: string,
     organization: string,
@@ -42,7 +36,7 @@ export interface ProcessStepInterface {
     options: {[key: string] : {label: string, actions: string}},
     next_steps: {steps: string[], requirements: string}
     event_type: string,
-    edge_status: StepEdgeStatus,
+    edge_status: string,
     fields: {[key: string]: {document_fields: string[], lead_object_fields: string[]}}
     row: number,
     column: number
@@ -61,4 +55,15 @@ export interface ProcessInstanceInterface {
     operations_status: string,
     document_instances: {[key: string]: DocumentInstanceInterface},
     steps: {[key: string]: ProcessStepInterface}
+}
+
+
+export interface SidebarPackage {
+    identifier: string,
+    sidebarType: string,
+    contentType: string,
+    sidebarData: {[key: string]: any},
+    metaData: {
+        editableFields: string[]
+    }
 }
