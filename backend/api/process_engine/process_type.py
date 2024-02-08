@@ -90,7 +90,7 @@ class ProcessType:
             self.update_transition_requirement_to_put()
             self.update_actions_to_put()
 
-            # TODO find a better way to updaete new adn existing updated fields only
+            # TODO find a better way to updaete new and existing updated fields only
             result = self.collection.update_one({"_id": id}, {"$set": self._data})
             return result
         
@@ -195,7 +195,9 @@ class ProcessType:
                 'process_type': self._data['_id'],
                 'organization': self._data['organization'],
                 'operations_status': '00_PROCESS_CREATED',
-                'document_instances': {k: DocumentType().generate_document_instance_frame(k) for k in self._data['documents']},
+                'document_instances': {
+                    k: DocumentType().generate_document_instance_frame(k) for k in self._data['documents']
+                },
                 'steps': self._data['steps']
             }
 

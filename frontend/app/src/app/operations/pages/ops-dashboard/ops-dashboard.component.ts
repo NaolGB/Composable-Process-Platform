@@ -27,7 +27,6 @@ export class OpsDashboardComponent {
 
   processType: string = ''
   startSteps: string[] = []
-  sidebarType: string = 'read'
   sidebarPackage: SidebarPackage | undefined
 
   auxiliarySection: boolean = false;
@@ -75,6 +74,14 @@ export class OpsDashboardComponent {
     }
   }
 
+  createNewProcess(processType: string) {
+    this.apiServices.postProcessInstance(processType).subscribe()
+  }
+
+  updateProcessInstance() {
+    this.apiServices.putProcessInstance(this.processType, this.processInstance).subscribe()
+  }
+
   toggleAuxiliarySection() {
     this.auxiliarySection = !this.auxiliarySection;
   }
@@ -87,27 +94,64 @@ export class OpsDashboardComponent {
   showAuxiliarySectionCreateDocumnent(documentName: string) {
     if (this.processInstance != undefined) {
       const data = this.processInstance.document_instances[documentName]
+      const allFields = Object.keys(this.processInstance.document_instances[documentName])
       const editableFields = this.processInstance.steps[this.processInstance.operations_status].fields[documentName].document_fields
       this.sidebarPackage = {
         identifier: documentName,
         sidebarType: 'create',
-        contentType: 'document',
+        selector: {selectorType: 'document_instance', selectorId: ''},
+        content: {
+          allFields: allFields,
+          editableFields: editableFields
+        },
         sidebarData: data,
-        metaData: {editableFields: editableFields}
       }
       this.auxiliarySection = true
     }
   }
 
-  applySidebarEffectsCreateDocument($event: SidebarPackage) {
+  showAuxiliarySectionCreateDocumentMasterData(documentId: string) {
     if (this.processInstance != undefined) {
-      this.processInstance.document_instances[$event.identifier] = $event.sidebarData as DocumentInstanceInterface
-      this.destroyAuxiliarySection()
+      const allFields = this.processInstance.document_instances[documentId].lead_object_fields
+      const editableFields = this.processInstance.steps[this.processInstance.operations_status].fields[documentId].lead_object_fields
+      this.sidebarPackage = {
+        identifier: documentId,
+        sidebarType: 'create_from_selector',
+        selector: {
+          selectorType: 'master_instance',
+          // identifies the document instance where the lead object is located (to save the corresponding master data entries)
+          selectorPath: {
+            'processInstanceId': this.processInstance._id,
+            'documentId': documentId,
+          },
+          // identifies the document instance's lead object (to fetch the corresponding master data entries)
+          selectorId: this.processInstance.document_instances[documentId].lead_object 
+        },
+        content: {
+          allFields: allFields,
+          editableFields: editableFields
+        },
+        sidebarData: undefined,
+      }
+      this.auxiliarySection = true
     }
-    console.log(this.processInstance)
   }
 
-  createNewProcess(processType: string) {
-    this.apiServices.postProcessInstance(processType).subscribe()
+  applySidebarEffects($event: SidebarPackage) {
+    if ((this.processInstance != undefined) && (this.sidebarPackage != undefined)) {
+      if ((this.sidebarPackage.sidebarType === 'create') || (this.sidebarPackage.sidebarType === 'create_from_selector')) {
+
+        if (this.sidebarPackage.selector.selectorType === 'document_instance') {
+          this.processInstance.document_instances[$event.identifier] = $event.sidebarData as DocumentInstanceInterface
+        }
+
+        else if (($event.selector.selectorType === 'master_instance') && ($event.sidebarData)) {
+          this.processInstance.document_instances[$event.selector.selectorPath!['documentId']][
+            $event.selector.selectorId+'s'][$event.sidebarData['_id']] = $event.sidebarData
+        }
+
+        this.destroyAuxiliarySection()
+      }
+    }
   }
 }

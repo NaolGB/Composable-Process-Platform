@@ -34,10 +34,17 @@ class DocumentType:
     
     def generate_document_instance_frame(self, document_id):
         self.get_document_type(documentId=document_id)
+
+        lead_object = self._data['lead_object']
+
+        columns = self.db[lead_object].find({'_id': {"$regex": "^TEMPLATE---"}})
+        columns = json_util.loads(json_util.dumps(columns, default=str))
+
         if self.is_valid():
             instance_frame = {
                 "name": self._data['name'],
-                "lead_object": self._data['lead_object'],
+                "lead_object": lead_object,
+                "lead_object_fields" : helpers.extract_unqiue_columns(columns),
                 f"{self._data['lead_object']}s": {}
             }
         # print(self._data['extra_attributes'].items())

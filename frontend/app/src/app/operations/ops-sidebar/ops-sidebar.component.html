@@ -1,5 +1,5 @@
 <span *ngIf="sidebarPackage">
-    <span *ngIf="sidebarPackage.sidebarType === 'create'">
+    <!-- <span *ngIf="sidebarPackage.sidebarType === 'create'">
         <div *ngIf="sidebarPackage.contentType === 'document'">
             <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
                 <span *ngIf="sidebarPackage.metaData.editableFields.includes(entry.key)">
@@ -12,11 +12,42 @@
         </div>
 
         <button (click)="onClickSave()">Save</button>
+    </span> -->
+    <span *ngIf="sidebarPackage.sidebarType === 'create'">
+        <span *ngIf="sidebarPackage.sidebarData">
+            <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
+                <span *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
+                    {{entry.key}}: <input type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                </span>
+                <span *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
+                    {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
+                </span>                
+            </div>
+        </span>
+        <button (click)="onClickSave()">Save</button>
+    </span>
+
+    <span *ngIf="sidebarPackage.sidebarType === 'create_from_selector'">
+        <div *ngIf="sidebarPackage.selector.selectorType === 'master_instance'">
+            <select name="create_selector" [(ngModel)]="selectorOptionValue" (change)="getSidebarPackageDataReplacement()">
+                <option *ngFor="let opt of selectorOptionsIds" [value]="opt">
+                    {{opt}}
+                </option>
+            </select>
+
+            <span *ngIf="sidebarPackage.sidebarData">
+                <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
+                    <span *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
+                        {{entry.key}}: <input type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                    </span>
+                    <span *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
+                        {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
+                    </span>                
+                </div>
+            </span>
+        </div>
+
+        <button (click)="onClickSave()">Save</button>
     </span>
     
-    <!-- <div *ngIf="sidebarType === 'read'">
-        <div *ngFor="let entry of sidebarData | keyvalue">
-            {{entry.key}}: {{entry.value}}
-        </div>
-    </div> -->
 </span>

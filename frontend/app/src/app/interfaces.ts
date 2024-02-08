@@ -46,7 +46,8 @@ export interface ProcessStepInterface {
 export interface DocumentInstanceInterface {
     name: string,
     lead_object: string,
-    [key: string]: {}
+    lead_object_fields: string[],
+    [key: string]: any
 }
 export interface ProcessInstanceInterface {
     _id: string,
@@ -61,9 +62,14 @@ export interface ProcessInstanceInterface {
 export interface SidebarPackage {
     identifier: string,
     sidebarType: string,
-    contentType: string,
-    sidebarData: {[key: string]: any},
-    metaData: {
+    selector: {
+        selectorType: string,
+        selectorPath?: {[key: string]: string}
+        selectorId: string,
+    },
+    content: {
+        allFields: string[],
         editableFields: string[]
-    }
+      },
+    sidebarData: {[key: string]: any} | undefined
 }

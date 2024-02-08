@@ -34,15 +34,26 @@
 
     <span *ngIf="mainSectionView === 'PerformOperations'">
         <span *ngIf="processInstance">
+
             <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'create'">
                 Create Document
                 <div *ngFor="let document of processInstance.steps[processInstance.operations_status].fields | keyvalue">
                     Documnet: {{document.key}}
-                    <button (click)="showAuxiliarySectionCreateDocumnent(document.key)">Create New</button>
+                    <button (click)="showAuxiliarySectionCreateDocumnent(document.key)">Document Create New / Update</button>
                     <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue">
                         <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object'].includes(field.key)">
                             {{field | json}}
                         </span>
+                    </div>
+
+                    Master data: {{processInstance.document_instances[document.key].lead_object}}
+                    <button (click)="showAuxiliarySectionCreateDocumentMasterData(document.key)">Master Create New</button>
+                    <div 
+                        *ngFor="let masterData of processInstance.document_instances[document.key][
+                                processInstance.document_instances[document.key].lead_object + 's'
+                            ] | keyvalue"
+                    >
+                        {{masterData.key}} | {{masterData.value | json}}
                     </div>
                 </div>
 
@@ -57,6 +68,7 @@
                 read
             </span>
         </span>
+        <button (click)="updateProcessInstance()">Save</button>
     </span>
 
 </div>
@@ -66,7 +78,7 @@
 <app-ops-sidebar
     *ngIf="auxiliarySection"
     [sidebarPackage]="sidebarPackage"
-    (dataEvent)="applySidebarEffectsCreateDocument($event)"
+    (dataEvent)="applySidebarEffects($event)"
 >
 </app-ops-sidebar>
 

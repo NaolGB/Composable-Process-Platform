@@ -24,4 +24,16 @@ export class OperationsHelperService {
     return foundInstance
   }
 
+  getMasterDataFromMasterDataList(masterDataId: string, masterDataList: any[]) {
+    let foundData: any;
+
+    masterDataList.forEach(element => {
+      if (element['_id'] === masterDataId) {
+        foundData = element
+      }
+    })
+
+    return foundData
+  }
+
 }

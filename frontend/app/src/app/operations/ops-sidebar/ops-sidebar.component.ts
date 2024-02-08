@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SidebarPackage } from '../../interfaces';
+import { Observable } from 'rxjs';
+import { DataService } from '../../services/data.service';
+import { OperationsHelperService } from '../../services/operations-helper.service';
 
 @Component({
   selector: 'app-ops-sidebar',
@@ -20,10 +23,40 @@ export class OpsSidebarComponent {
    * and this is read by the parent
    */
   @Input() sidebarPackage: SidebarPackage | undefined
-
   @Output() dataEvent = new EventEmitter<SidebarPackage>();
 
-  constructor() {}
+  selectorOptionsData: any | undefined
+  selectorOptionsIds: string[] = []
+  selectorOptionValue: string = ''
+
+  constructor(private apiServices: DataService, private helperServices: OperationsHelperService) {}
+
+  ngOnInit() {
+    if (this.sidebarPackage != undefined) {
+      if (this.sidebarPackage.sidebarType === 'create_from_selector') {
+        if (this.sidebarPackage.selector.selectorType === 'master_instance') {
+          this.apiServices.getMasterDataByDataType(this.sidebarPackage.selector.selectorId).subscribe(
+            response => {
+              this.selectorOptionsData = response
+
+              this.selectorOptionsData['data'].forEach((element: any)  => {
+                this.selectorOptionsIds.push(element._id)
+              });
+            }
+          )
+        }
+      }
+    }
+  }
+
+  getSidebarPackageDataReplacement() {
+    if (this.selectorOptionValue !== '') {
+      if (this.sidebarPackage) {
+        this.sidebarPackage.sidebarData = {...this.helperServices.getMasterDataFromMasterDataList(this.selectorOptionValue, this.selectorOptionsData['data'])}
+        console.log(this.sidebarPackage)
+      }
+    }
+  }
 
   onClickSave() {
     this.dataEvent.emit(this.sidebarPackage)

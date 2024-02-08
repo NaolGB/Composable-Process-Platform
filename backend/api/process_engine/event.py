@@ -67,12 +67,12 @@ class ProcessEvent:
     def post_data_detail(self, dtype, id, data):
         """
         POSTs data in `data` argument into the corresponding collection
-        In the case of GET the argument parameters reffer to
+        In the case of POST the argument parameters reffer to
             1. dtype: master_instance | process_instance
             2. id: 
                 - master data type (to get the collection of that master data) 
                 - process type (to get the `process_type` field in the process_instance collection)
-            3. data: the data to post (comes with fields passed through the GET's metadata.colummns)
+            3. data: the data to post (comes with fields passed through the GET)
         """
         if dtype == 'master_instance':
             temp_collection = self.db[f'{id}']
@@ -123,9 +123,38 @@ class ProcessEvent:
             )
         else:
             raise helpers.PEPlaceholderError()
+        
+    def put_event_detail(self, dtype, id, data):
+        """
+        PUTs data in `data` argument into the corresponding collection
+        In the case of PUT the argument parameters reffer to
+            1. dtype: master_instance | process_instance
+            2. id: 
+                - master data type (to get the collection of that master data) 
+                - process type (to get the `process_type` field in the process_instance collection)
+                    * the id of the process intance is passed within the `data` argument
+            3. data: the data to update (comes with fields passed through the GET)
+        """
+        if dtype == 'master_instance':
+            raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
+        elif dtype == 'process_instance':
+            temp_collection = self.db.process_instance
+            result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
+            temp_collection = None
 
-    def create_process_instance(self, process_type_id):
-        ProcessInstance().create(process_type_id=process_type_id)
+            event_actions = {
+                "user_name": self.user_name,
+                "timestamp": datetime.utcnow(),
+                "status": "OK"
+            }
+            self.record_event(
+                event_name=f'update process instance', 
+                event_type='update', 
+                data_type='process_instance', 
+                data_id=id,
+                actions=event_actions
+            )
+
 
     def record_event(self, event_name, event_type, data_type, data_id, actions):
         event = {

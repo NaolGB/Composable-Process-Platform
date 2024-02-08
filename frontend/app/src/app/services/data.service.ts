@@ -100,29 +100,9 @@ export class DataService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(fullUrl, {}, {headers})
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  postProcessInstanceById(processId: string) {
-    const fullUrl = `${this.operationsBaseUrl}/process-instance/${processId}`;
+  putProcessInstance(processType: string, data: any) {
+    const fullUrl = `${this.operationsBaseUrl}/operations-detail/process_instance/${processType}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post(fullUrl, {}, { headers });
-  }
-
-  getProcessInstanceIdsByProcessTypeId(processTypeId: string) {
-    const fullUrl = `${this.operationsBaseUrl}/process-instances/${processTypeId}`;
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<IdsListInterface>(fullUrl);
+    return this.http.put(fullUrl, data, {headers})
   }
 }

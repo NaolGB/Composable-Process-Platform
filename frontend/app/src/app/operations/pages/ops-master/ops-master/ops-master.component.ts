@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data.service';
 import { Observable } from 'rxjs';
-import { IdsListInterface } from '../../../../interfaces';
+import { IdsListInterface, SidebarPackage } from '../../../../interfaces';
 
 @Component({
   selector: 'app-ops-master',
@@ -12,8 +12,7 @@ export class OpsMasterComponent {
   masterDtypeIdsList$: Observable<IdsListInterface> | undefined;
   masterDataById$: Observable<any> | undefined;
   auxiliarySection: boolean = false;
-  sidebarType: string = 'read'
-  sidebarData: any = {}
+  sidebarPackage: SidebarPackage | undefined
   masterDataType: string = ''
 
   constructor(private apiServices: DataService) {}
@@ -31,15 +30,25 @@ export class OpsMasterComponent {
     this.auxiliarySection = !this.auxiliarySection;
   }
 
-  showAuxiliarySection(sidebarType: string, sidebarData: {}, metaData: {}) {
+  showAuxiliarySectionCreateMasterData(all_fields: string[], editable_fields: string[]) {
     // read ops-sidebar componenet docstrinng for input information
-    this.sidebarType = sidebarType
-    this.sidebarData = sidebarData
+    this.sidebarPackage = {
+        identifier: '',
+        sidebarType: 'create',
+        selector: {selectorType: '', selectorId: ''},
+        content: {
+          allFields: all_fields,
+          editableFields: editable_fields
+        },
+        sidebarData: this.createSidebarData(all_fields),
+    }
     this.auxiliarySection = true
   }
 
-  // destroyAuxiliarySection() {
-  // }
+  destroyAuxiliarySection() {
+    this.sidebarPackage = undefined
+    this.auxiliarySection = false
+  }
 
   createSidebarData(columns: string[]) {
     const data: {[key: string]: string} = {}
@@ -50,9 +59,9 @@ export class OpsMasterComponent {
     return data
   }
 
-  applySidebarEffects($event: any) {
-    if ($event.eventType === 'create') {
-      this.apiServices.postMasterData(this.masterDataType, $event.data).subscribe()
+  applySidebarEffects($event: SidebarPackage) {
+    if ($event.sidebarType === 'create') {
+      this.apiServices.postMasterData(this.masterDataType, $event.sidebarData).subscribe()
     }
   }
 }
