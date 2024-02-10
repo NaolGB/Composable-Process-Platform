@@ -28,7 +28,9 @@ class ProcessEvent:
         """
         if dtype == 'master_instance':
             # DEBUG --------
-            MasterDataApi(master_data_type_id="material").get_master_data_dict()
+            MasterDataApi(master_data_type_id="material").set_master_data(
+                master_data_id='Mac_Book_Air', data={'qty': 2500}
+            )
             # DEBUG --------
             temp_collection = self.db[f'{id}']
 

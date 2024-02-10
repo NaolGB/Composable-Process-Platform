@@ -32,6 +32,17 @@ class DocumentApi:
         document_instance = {self.document_id: document_instance}
         return document_instance
 
+    def set_document(self, data):
+        """
+        updates specific fields of a process_instance's document_intances' document_instance
+        data must conform to {[key: string]: [value: string]} and be of only document_instance
+        """
+        result = self.db.process_instance.update_one(
+            {'_id': self.process_id},
+            {'$set': {f'document_instances.{self.document_id}.{k}': v for k, v in data.items()}}
+        )
+        
+
     def is_valid(self):
         return True
     
@@ -63,6 +74,18 @@ class DocumentMasterDataApi:
             document_master_data = document_instance[f'{document_instance["lead_object"]}s']
         
         return document_master_data
+    
+    def set_document_master_data(self, document_lead_object, master_data_id, data):
+        """
+        updates specific fields of a process_instance's document_intances' document_instance's master_data
+        data must conform to {[key: string]: [value: string]} and be of only document-instance master_data
+        """
+        result = self.db.process_instance.update_one(
+            {'_id': self.process_id},
+            {'$set': {
+                f'document_instances.{self.document_id}.{document_lead_object}s.{master_data_id}.{k}': v for k, v in data.items()}
+            }
+        )
 
     def is_valid(self):
         return True
@@ -86,6 +109,18 @@ class MasterDataApi:
         all_master_data_instances = {inst['_id']: inst for inst in all_master_data_instances}
 
         return all_master_data_instances
+    
+    def set_master_data(self, master_data_id, data):
+        """
+        updates specific fields of a master_data
+        data must conform to {[key: string]: [value: string]} and be of only master_data
+        """
+        result = self.db[f'{self.master_data_type_id}'].update_one(
+            {'_id': master_data_id},
+            {'$set': {
+                f'{k}': v for k, v in data.items()}
+            }
+        )
 
     def is_valid(self):
         return True
