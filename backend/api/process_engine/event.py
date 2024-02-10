@@ -5,6 +5,7 @@ from bson import json_util
 from . import helpers, db_secrets
 from .process_instance import ProcessInstance
 from .process_type import ProcessType
+from .scripts.data_api import DocumentApi, DocumentMasterDataApi, MasterDataApi
 
 # TODO manage methods to create client better - maybe one client instance per org
 client = db_secrets.get_client()
@@ -26,6 +27,9 @@ class ProcessEvent:
                 - process type (to get the `process_type` field in the process_instance collection)
         """
         if dtype == 'master_instance':
+            # DEBUG --------
+            MasterDataApi(master_data_type_id="material").get_master_data_dict()
+            # DEBUG --------
             temp_collection = self.db[f'{id}']
 
             # HACK skip _id fields becasue sometimes they are BSON ObjectID which is not JSON serializable
@@ -126,6 +130,7 @@ class ProcessEvent:
         
     def put_event_detail(self, dtype, id, data):
         """
+        applies effects / updated fields from process step after clicking `Save`
         PUTs data in `data` argument into the corresponding collection
         In the case of PUT the argument parameters reffer to
             1. dtype: master_instance | process_instance
@@ -154,6 +159,12 @@ class ProcessEvent:
                 data_id=id,
                 actions=event_actions
             )
+
+    def patch_event_detail(self, dtype, id, data):
+        """
+        applies effects of `actions` from process instance on clicking `Save`
+        """
+        pass
 
 
     def record_event(self, event_name, event_type, data_type, data_id, actions):
