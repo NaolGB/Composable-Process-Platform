@@ -1,3 +1,4 @@
+import os
 import base64
 
 class PEPlaceholderError(Exception):
@@ -57,3 +58,20 @@ def extract_unqiue_columns(dict_list):
     keys_set = list(set(key for d in dict_list for key in d.keys()))
     
     return keys_set
+
+def create_py_files(destination_folder, file_name, file_content):
+    full_file_path = os.path.join(destination_folder, f'{file_name}.py')
+    os.makedirs(destination_folder, exist_ok=True)
+    with open(full_file_path, 'w') as file:
+        file.write(file_content)
+        file.close()
+
+def read_py_files(destination_folder, file_name):
+    full_file_path = os.path.join(destination_folder, f'{file_name}.py')
+    try:
+        with open(full_file_path, 'r') as file:
+            content = file.read()
+            file.close()
+        return content
+    except:
+        return PEPlaceholderError('This is a placeholder error form helpers.read_py_files()')

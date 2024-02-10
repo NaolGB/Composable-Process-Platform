@@ -1,4 +1,5 @@
 import ast
+import os
 import uuid
 from bson import json_util
 from . import helpers, db_secrets
@@ -6,6 +7,7 @@ from .document_type import DocumentType
 
 # TODO manage methods to create client better - maybe one client instance per org
 client = db_secrets.get_client()
+CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 
 
 class ProcessStep:
@@ -48,9 +50,10 @@ class ProcessType:
 
     def create(self, **data):
         data = data['data']
+        _id = helpers.name_to_id(data['name'])
 
         self._data = {
-            '_id': helpers.name_to_id(data['name']),
+            '_id': _id,
             'organization': data['organization'],
             'documents': data['documents'],
             'design_status': data['design_status'],
@@ -63,7 +66,13 @@ class ProcessType:
             self._data['steps'][step] = ProcessStep().generate(step_name=step)
 
         if self.is_valid():
-            self.collection.insert_one(self._data)
+            result = self.collection.insert_one(self._data)
+
+            if result.acknowledged:
+                for step in parsed_steps:
+                    for script_type in ['requirements', 'actions']:
+                        output_folder = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{_id}")
+                        helpers.create_py_files(destination_folder=output_folder, file_name=f'{script_type}_{step}', file_content="")
 
     def get_all_ids(self):
         ids = self.collection.find({}, {'_id': 1})
@@ -75,26 +84,45 @@ class ProcessType:
         prcs = self.collection.find({'_id': processId})
         prcs = json_util.loads(json_util.dumps(prcs))[0]
         self._data = prcs
+        _id = self._data['_id']
 
-        self.update_transition_requirement_to_get()
-        self.update_actions_to_get()
+        # transfer script code to transition and action fields
+        input_folder = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{_id}")
+        for step in self._data['steps']:
+            requirement_script_content = helpers.read_py_files(destination_folder=input_folder, file_name=f'requirements_{step}')
+            self._data['steps'][step]['next_steps']['requirements'] = requirement_script_content
+
+            save_action_script_content = helpers.read_py_files(destination_folder=input_folder, file_name=f'actions_{step}')
+            self._data['steps'][step]['options']['save']['actions'] = save_action_script_content
 
         return self._data
 
     def put_process(self, id, **data):
         # data comes as a value of a dict with key of 'data'
         self._data = data['data']
+        _id = self._data['_id']
+
+        # transfer script code to scripts/src
+        output_folder = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{_id}")
+        for step in self._data['steps']:
+            requirement_script_content = self._data['steps'][step]['next_steps']['requirements']
+            helpers.create_py_files(destination_folder=output_folder, file_name=f'requirements_{step}', file_content=requirement_script_content)
+            # clean out code, do not save in db
+            self._data['steps'][step]['next_steps']['requirements'] = ""
+
+            save_action_script_content = self._data['steps'][step]['options']['save']['actions']
+            helpers.create_py_files(destination_folder=output_folder, file_name=f'actions_{step}', file_content=save_action_script_content)
+            # clean out code, do not save in db
+            self._data['steps'][step]['options']['save']['actions']
+
 
         if self.is_valid():
             self.update_process_design_status()
-            self.update_transition_requirement_to_put()
-            self.update_actions_to_put()
 
             # TODO find a better way to updaete new and existing updated fields only
             result = self.collection.update_one({"_id": id}, {"$set": self._data})
             return result
         
-
     def update_process_design_status(self):
         # check if all steps are connected, but without all requirement added
         all_steps = [k for k, _ in self._data['steps'].items()]
@@ -148,44 +176,6 @@ class ProcessType:
                 first_entry['_id'] = f'TEMPLATE---{str(uuid.uuid4())}'
                 self.db.process_instance.insert_one(first_entry)
 
-
-    def update_transition_requirement_to_put(self):
-        # sanitize code
-        all_steps = [k for k, _ in self._data['steps'].items()]
-
-        for step in all_steps:
-            next_steps = self._data['steps'][step]['next_steps']['steps']
-            if len(next_steps) != 0:
-                code_content = self._data['steps'][step]['next_steps']['requirements']
-                code_content = helpers.get_b64_text(code_content)
-                self._data['steps'][step]['next_steps']['requirements'] = code_content
-
-    def update_transition_requirement_to_get(self):
-        all_steps = [k for k, _ in self._data['steps'].items()]
-
-        for step in all_steps:
-            next_steps = self._data['steps'][step]['next_steps']['steps']
-            if len(next_steps) != 0:
-                code_content = self._data['steps'][step]['next_steps']['requirements']
-                code_content = helpers.get_plain_text(code_content)
-                self._data['steps'][step]['next_steps']['requirements'] = code_content
-
-    def update_actions_to_put(self):
-        all_steps = [k for k, _ in self._data['steps'].items()]
-
-        for step in all_steps:
-            code_content = self._data['steps'][step]['options']['save']['actions']
-            code_content = helpers.get_b64_text(code_content)
-            self._data['steps'][step]['options']['save']['actions'] = code_content
-
-    def update_actions_to_get(self):
-        all_steps = [k for k, _ in self._data['steps'].items()]
-
-        for step in all_steps:
-            code_content = self._data['steps'][step]['options']['save']['actions']
-            code_content = helpers.get_plain_text(code_content)
-            self._data['steps'][step]['options']['save']['actions'] = code_content
-
     def generate_process_instance_frame(self, process_type_id):
         self.get_process(processId=process_type_id)
 
@@ -206,3 +196,4 @@ class ProcessType:
     def is_valid(self):
         # TODO add validation
         return True
+ 
