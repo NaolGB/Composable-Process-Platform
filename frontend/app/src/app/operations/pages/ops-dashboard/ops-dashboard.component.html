@@ -34,6 +34,9 @@
 
     <span *ngIf="mainSectionView === 'PerformOperations'">
         <span *ngIf="processInstance">
+            <div>
+                Step: {{processInstance.operations_status}}
+            </div>
 
             <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'create'">
                 Create Document

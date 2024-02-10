@@ -27,11 +27,6 @@ class ProcessEvent:
                 - process type (to get the `process_type` field in the process_instance collection)
         """
         if dtype == 'master_instance':
-            # DEBUG --------
-            MasterDataApi(master_data_type_id="material").set_master_data(
-                master_data_id='Mac_Book_Air', data={'qty': 2500}
-            )
-            # DEBUG --------
             temp_collection = self.db[f'{id}']
 
             # HACK skip _id fields becasue sometimes they are BSON ObjectID which is not JSON serializable
@@ -145,10 +140,14 @@ class ProcessEvent:
         if dtype == 'master_instance':
             raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
         elif dtype == 'process_instance':
+            # apply manual actions: PUT process instance
             temp_collection = self.db.process_instance
             result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
             temp_collection = None
 
+            if result.acknowledged != True: 
+                raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
+            
             event_actions = {
                 "user_name": self.user_name,
                 "timestamp": datetime.utcnow(),
@@ -161,6 +160,13 @@ class ProcessEvent:
                 data_id=id,
                 actions=event_actions
             )
+
+            # apply automated action effects: execute actions -> PATCH process
+
+            # determine next steps: execute transitions -> PATCH process
+            
+
+
 
     def patch_event_detail(self, dtype, id, data):
         """
