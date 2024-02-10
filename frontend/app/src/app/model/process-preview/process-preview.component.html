@@ -1,0 +1,41 @@
+{{canvasWidth}}
+{{rectSize}}
+{{numMaxRows}}
+{{numMaxColumns}}
+<svg #canvas xmlns="http://www.w3.org/2000/svg" style=" height: 100%; width: 100%; padding: 15px; background-color: #f3ff68">
+    <!-- rectangles -->
+    <g *ngFor="let step of allStepsObject | keyvalue">
+        <rect 
+            [attr.width]="rectSize" 
+            [attr.height]="rectSize" 
+            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize)" 
+            [attr.y]="(step.value.row+0.5) * (rectSize*1.25)" 
+            rx="5"
+            fill="none"
+            [attr.stroke]="allConnectedSteps.includes(step.key) ? 'black' : 'red'"
+            stroke-width="2"
+        >
+        </rect>
+        <text 
+            [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize) + (rectSize/3)" 
+            [attr.y]="(step.value.row+0.5) * (rectSize*1.25) + (rectSize/2)" 
+            fill="black"
+        >
+            {{step.key}}
+            {{step.value.row}}
+            {{step.value.column}}
+        </text>
+    </g>
+    <!-- transition lines -->
+    <g *ngFor="let line of transitionLines | keyvalue">
+        <polygon [attr.points]="getArrowHeadPoints(line.value)" fill="blue" />
+        <line  
+            [attr.x1]="canvasWidth/(numMaxColumns+1) * line.value.fromColumn + ((line.value.fromColumn + 2)*rectSize)" 
+            [attr.y1]="(line.value.fromRow+1)*(rectSize)" 
+            [attr.x2]="canvasWidth/(numMaxColumns+1) * line.value.toColumn + (rectSize)" 
+            [attr.y2]="(line.value.toRow+1)*(rectSize)" 
+            stroke="black" 
+            stroke-width="2" 
+        />
+    </g>
+</svg>

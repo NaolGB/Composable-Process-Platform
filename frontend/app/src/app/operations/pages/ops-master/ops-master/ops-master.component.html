@@ -1,0 +1,40 @@
+<!-- Navigation section -->
+<div>
+    Master Data
+    <div *ngIf="masterDtypeIdsList$ | async as masterDtypeIdsList; else loading">
+        <div *ngFor="let id of masterDtypeIdsList['ids']" (click)="selectMasterDataById(id)">
+            {{id}}
+        </div>
+    </div>
+</div>
+
+
+<!-- Main section -->
+<div>
+    <div *ngIf="masterDataById$ | async as masterDataById; else loading">
+        <div>
+            <span *ngFor="let columnName of masterDataById['metadata']['columns']">
+                {{columnName}}
+            </span>
+        </div>
+        <button (click)="showAuxiliarySectionCreateMasterData(masterDataById['metadata']['columns'], masterDataById['metadata']['columns'])">Add new</button>
+        <div *ngFor="let masterDataEntry of masterDataById['data']" (click)="showAuxiliarySectionCreateMasterData(masterDataById['metadata']['columns'], masterDataById['metadata']['columns'])">
+            {{masterDataEntry | json}}
+        </div>
+    </div>
+</div>
+
+
+<!-- Auxiliary section -->
+<app-ops-sidebar 
+    *ngIf="auxiliarySection"
+    [sidebarPackage]="sidebarPackage"
+    (dataEvent)="applySidebarEffects($event)"
+>
+</app-ops-sidebar>
+
+
+<!-- Optional templates -->
+<ng-template #loading>
+    Loading...
+</ng-template>

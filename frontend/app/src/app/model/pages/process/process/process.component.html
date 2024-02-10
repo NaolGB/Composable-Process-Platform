@@ -1,0 +1,181 @@
+<!-- Select tabs -->
+<div>
+    <button (click)="selectTab('generate')">generate</button>
+    <button (click)="selectTab('connect')">connect</button>
+    <button (click)="selectTab('fields')">Add step type</button>
+    <button (click)="selectTab('requirement')">add transition requirement</button>
+    <button (click)="selectTab('action')">Tab4</button>
+</div>
+
+<!-- Tabs -->
+<div>
+    <!-- Tab 1/Generate Process -->
+    <div *ngIf="selectedTab === 'generate'">
+        <!-- left section -->
+        <div>
+            <button (click)="addDocumentType()">+</button>
+            <form [formGroup]="generateProcessForm" (ngSubmit)="onGenerateProcessSubmit()">
+                <div formGroupName="nameAndSteps">
+                    <input type="text" formControlName="name" placeholder="Name"/>
+                    <input type="text" formControlName="steps" placeholder="All steps separated by comma"/>
+                </div>
+    
+                <div formArrayName="documents">
+                    <div *ngFor="let doc of documents.controls; let i=index" [formGroupName]="i">
+                        <select formControlName="documentId">
+                            <option *ngFor="let opt of documentTypeIds" [ngValue]="opt">
+                                {{opt}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <!-- right section -->
+        <div *ngFor="let processId of processTypeIds">
+            <div (click)="selectProcess(processId)">{{processId}}</div>
+
+        </div>
+       
+    </div>
+
+    <!-- Tab 2 -->
+    <div *ngIf="(selectedTab === 'connect') && (processDesignStatus.includes('00_GENERATED_NOT_CONNECTION_ADDED'))">
+        <!-- left section -->
+        <div>
+            <div *ngFor="let step of allStepsList">
+                <div (click)="selectStep(step)">
+                    Step: {{step}} | next steps: 
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                            {{nextStep}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- right section -->
+        <div>
+            <div *ngIf="selectedStepKey !== ''">
+                Valid Next Steps
+                <div *ngFor="let validNextStep of ValidNextSteps" (click)="addNextStep(validNextStep)">
+                    {{validNextStep}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Step Type and Fields -->
+    <div *ngIf="selectedTab === 'fields'">
+        <!-- left section -->
+        <div>
+            <div *ngFor="let step of allStepsList">
+                <div (click)="selectStep(step)">
+                    Step: {{step}}
+                </div>
+            </div>
+        </div>
+        <!-- right section -->
+        <div>
+            <div *ngIf="selectedStepKey !== ''">
+                <button (click)="selectEventType('create')">Create</button>
+                <button (click)="selectEventType('read')">Read</button>
+                <button (click)="selectEventType('update')">Update</button>
+            </div>
+
+            <div *ngIf="selectedEventType === 'update'">
+                document fields
+                <div *ngFor="let document of selectedProcessDocuments | keyvalue">
+                    <div 
+                        *ngFor="let extraAttribute of document.value.attributes | keyvalue"
+                        (click)="addUpdateDocumentField(document.key, extraAttribute.key)"
+                    >
+                        {{document.value.name}} -> {{extraAttribute.key}}
+                    </div>
+                </div>
+
+                source data fields
+                <div *ngFor="let document of selectedProcessDocuments | keyvalue">
+                    <div 
+                        *ngFor="let field of document.value.editable_fields"
+                        (click)="addUpdateSourceField(document.key, field)"
+                    >
+                        {{document.value.name}} -> {{document.value.lead_object}} -> {{field}}
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="selectedEventType === 'create'">
+                documents to create
+                <div 
+                    *ngFor="let document of selectedProcessDocuments | keyvalue"
+                    (click)="addCreateDocumentField(document.key)"
+                >
+                    {{document.value.name}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Add Requirements -->
+    <div *ngIf="(selectedTab === 'requirement')">
+        <!-- left section -->
+        <div>
+            <div *ngFor="let step of allStepsList">
+                <div (click)="selectStep(step)">
+                    Step: {{step}} | next steps: 
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                            {{nextStep}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- right section -->
+        <div>
+            <div *ngIf="selectedStepKey !== ''">
+                <app-monaco-editor
+                    [allStepsObject]="allStepsObject"
+                    [selectedStepKey]="selectedStepKey"
+                    [contentType]="requirementsContentType"
+                    (editorContentChange)="onMonacoRequirementContentChagne($event)"
+                ></app-monaco-editor>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Add Actions -->
+    <div *ngIf="selectedTab === 'action'">
+        <!-- left section -->
+        <div>
+            <div *ngFor="let step of allStepsList">
+                <div (click)="selectStep(step)">
+                    Step: {{step}} | next steps: 
+                    <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                            {{nextStep}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- right section -->
+        <div>
+            <div *ngIf="selectedStepKey !== ''">
+                <app-monaco-editor
+                    [allStepsObject]="allStepsObject"
+                    [selectedStepKey]="selectedStepKey"
+                    [contentType]="actionsContentType"
+                    (editorContentChange)="onMonacoActionContentChagne($event)"
+                ></app-monaco-editor>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Section -->
+<div style=" max-height: 40vh; min-height: 400px; position: fixed; width: 100%; height: 100%; bottom: 0; left: 0; background-color: #e0e0e0;">
+    <button (click)="putProcess()">Save</button>
+    <button (click)="publishProcess()">Validate and Publish</button>
+    <app-process-preview
+        [allStepsObject]="allStepsObject"
+    ></app-process-preview>
+</div>

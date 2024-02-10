@@ -163,7 +163,8 @@ cython_debug/
 *.json
 
 # playground
-test.ipynb
-try.py
-try.ipynb
+try.*
 trash/
+
+# secrets
+*secret*

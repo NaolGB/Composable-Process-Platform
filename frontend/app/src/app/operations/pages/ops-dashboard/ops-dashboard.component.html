@@ -1,0 +1,88 @@
+<!-- Navigation section -->
+<div>
+    Processes
+    <div *ngIf="processTypeIdsList$ | async as processTypeIdsList; else loading">
+        <div *ngFor="let id of processTypeIdsList['ids']" (click)="selectProcessType(id)">
+            {{id}}
+        </div>
+    </div>
+</div>
+
+
+<!-- Main section -->
+<div>
+    <span *ngIf="mainSectionView === 'SelectProcessInstance'">
+        <div *ngIf=" processInstancesByProcessType; else loading">
+            id, process_type, operations_status
+            <button (click)="createNewProcess(processType)">Add New</button>
+            <div *ngFor="let processInstanceEntry of processInstancesByProcessType" (click)="selectProcessInstance(processInstanceEntry._id)">
+                {{processInstanceEntry._id}}, {{processInstanceEntry.process_type}}, {{processInstanceEntry.operations_status}}
+            </div>
+        </div>
+    </span>
+
+    <span *ngIf="mainSectionView === 'SelectStartStep'">
+        <span *ngIf="processInstance">
+            <span *ngIf="processInstance.operations_status === '00_PROCESS_CREATED'">
+                Select Start Step
+                <div *ngFor="let step of startSteps">
+                    <span (click)="selectStartStep(step)">{{step}}</span>
+                </div>
+            </span>
+        </span>
+    </span>
+
+    <span *ngIf="mainSectionView === 'PerformOperations'">
+        <span *ngIf="processInstance">
+
+            <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'create'">
+                Create Document
+                <div *ngFor="let document of processInstance.steps[processInstance.operations_status].fields | keyvalue">
+                    Documnet: {{document.key}}
+                    <button (click)="showAuxiliarySectionCreateDocumnent(document.key)">Document Create New / Update</button>
+                    <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue">
+                        <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object'].includes(field.key)">
+                            {{field | json}}
+                        </span>
+                    </div>
+
+                    Master data: {{processInstance.document_instances[document.key].lead_object}}
+                    <button (click)="showAuxiliarySectionCreateDocumentMasterData(document.key)">Master Create New</button>
+                    <div 
+                        *ngFor="let masterData of processInstance.document_instances[document.key][
+                                processInstance.document_instances[document.key].lead_object + 's'
+                            ] | keyvalue"
+                    >
+                        {{masterData.key}} | {{masterData.value | json}}
+                    </div>
+                </div>
+
+
+            </span>
+            
+            <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'update'">
+                update
+            </span>
+
+            <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'read'">
+                read
+            </span>
+        </span>
+        <button (click)="updateProcessInstance()">Save</button>
+    </span>
+
+</div>
+
+
+<!-- Auxiliary section -->
+<app-ops-sidebar
+    *ngIf="auxiliarySection"
+    [sidebarPackage]="sidebarPackage"
+    (dataEvent)="applySidebarEffects($event)"
+>
+</app-ops-sidebar>
+
+<!-- Optional templates -->
+<ng-template #loading>
+    Loading...
+</ng-template>
