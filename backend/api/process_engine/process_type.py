@@ -72,7 +72,7 @@ class ProcessType:
                 for step in parsed_steps:
                     for script_type in ['requirements', 'actions']:
                         output_folder = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{_id}")
-                        helpers.create_py_files(destination_folder=output_folder, file_name=f'{script_type}_{step}', file_content="")
+                        helpers.generate_scripts_folder(destination_folder=output_folder, file_name=f'{script_type}_{step}', file_content="")
 
     def get_all_ids(self):
         ids = self.collection.find({}, {'_id': 1})
@@ -106,12 +106,12 @@ class ProcessType:
         output_folder = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{_id}")
         for step in self._data['steps']:
             requirement_script_content = self._data['steps'][step]['next_steps']['requirements']
-            helpers.create_py_files(destination_folder=output_folder, file_name=f'requirements_{step}', file_content=requirement_script_content)
+            helpers.generate_scripts_folder(destination_folder=output_folder, file_name=f'requirements_{step}', file_content=requirement_script_content)
             # clean out code, do not save in db
             self._data['steps'][step]['next_steps']['requirements'] = ""
 
             save_action_script_content = self._data['steps'][step]['options']['save']['actions']
-            helpers.create_py_files(destination_folder=output_folder, file_name=f'actions_{step}', file_content=save_action_script_content)
+            helpers.generate_scripts_folder(destination_folder=output_folder, file_name=f'actions_{step}', file_content=save_action_script_content)
             # clean out code, do not save in db
             self._data['steps'][step]['options']['save']['actions']
 

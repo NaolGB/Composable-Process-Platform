@@ -1,5 +1,9 @@
 import os
+import shutil
 import base64
+import docker
+
+CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 
 class PEPlaceholderError(Exception):
     def __init__(self, messege="This is a palceholder error") -> None:
@@ -59,12 +63,16 @@ def extract_unqiue_columns(dict_list):
     
     return keys_set
 
-def create_py_files(destination_folder, file_name, file_content):
+def generate_scripts_folder(destination_folder, file_name, file_content):
     full_file_path = os.path.join(destination_folder, f'{file_name}.py')
+    data_api_source_path = CURRENT_DIRECTORY
     os.makedirs(destination_folder, exist_ok=True)
     with open(full_file_path, 'w') as file:
         file.write(file_content)
         file.close()
+    
+    # copy over data_api
+    shutil.copy(f'{data_api_source_path}/data_api.py', destination_folder)
 
 def read_py_files(destination_folder, file_name):
     full_file_path = os.path.join(destination_folder, f'{file_name}.py')
@@ -75,3 +83,10 @@ def read_py_files(destination_folder, file_name):
         return content
     except:
         return PEPlaceholderError('This is a placeholder error form helpers.read_py_files()')
+    
+def listen_to_docker_container_output(container):
+    output = []
+    for line in container.attach(stdout=True, stream=True, logs=True):
+        output.append(line.strip().decode('utf-8'))
+
+    return output

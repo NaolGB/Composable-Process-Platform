@@ -44,7 +44,7 @@
                     Documnet: {{document.key}}
                     <button (click)="showAuxiliarySectionCreateDocumnent(document.key)">Document Create New / Update</button>
                     <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue">
-                        <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object'].includes(field.key)">
+                        <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object', 'lead_object_fields'].includes(field.key)">
                             {{field | json}}
                         </span>
                     </div>
@@ -59,12 +59,27 @@
                         {{masterData.key}} | {{masterData.value | json}}
                     </div>
                 </div>
-
-
             </span>
             
             <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'update'">
-                update
+                Update
+                <div *ngFor="let document of processInstance.steps[processInstance.operations_status].fields | keyvalue">
+                    Documnet: {{document.key}}
+                    <button (click)="showAuxiliarySectionUpdateDocumnent(document.key)" [disabled]="document.value.document_fields.length == 0">Update Document</button>
+                    <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue">
+                        <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object', 'lead_object_fields'].includes(field.key)">
+                            {{field | json}}
+                        </span>
+                    </div>
+
+                    <!-- Master data: {{processInstance.document_instances[document.key].lead_object}}
+                    <div 
+                        *ngFor="let masterData of processInstance.document_instances[document.key][
+                                processInstance.document_instances[document.key].lead_object + 's'] | keyvalue"
+                    >
+                        {{masterData.key}} | {{masterData.value | json}}
+                    </div> -->
+                </div>
             </span>
 
             <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'read'">

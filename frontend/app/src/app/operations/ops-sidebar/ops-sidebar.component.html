@@ -1,18 +1,28 @@
 <span *ngIf="sidebarPackage">
-    <!-- <span *ngIf="sidebarPackage.sidebarType === 'create'">
-        <div *ngIf="sidebarPackage.contentType === 'document'">
+    <span *ngIf="sidebarPackage.sidebarType === 'read'">
+        <span *ngIf="sidebarPackage.sidebarData">
             <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
-                <span *ngIf="sidebarPackage.metaData.editableFields.includes(entry.key)">
-                    {{entry.key}}: <input type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
-                </span>
-                <span *ngIf="!sidebarPackage.metaData.editableFields.includes(entry.key)">
+                <span>
                     {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
                 </span>                
             </div>
-        </div>
+        </span>
+    </span>
 
+    <span *ngIf="sidebarPackage.sidebarType === 'update'">
+        <span *ngIf="sidebarPackage.sidebarData">
+            <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
+                <span *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
+                    {{entry.key}}: <input type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                </span>
+                <span *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
+                    {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
+                </span>                
+            </div>
+        </span>
         <button (click)="onClickSave()">Save</button>
-    </span> -->
+    </span>
+
     <span *ngIf="sidebarPackage.sidebarType === 'create'">
         <span *ngIf="sidebarPackage.sidebarData">
             <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
@@ -46,7 +56,6 @@
                 </div>
             </span>
         </div>
-
         <button (click)="onClickSave()">Save</button>
     </span>
     

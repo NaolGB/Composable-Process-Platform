@@ -1,14 +1,16 @@
-import uuid
+import os
+import uuid 
 from datetime import datetime
 import ast
+import docker
 from bson import json_util
 from . import helpers, db_secrets
 from .process_instance import ProcessInstance
 from .process_type import ProcessType
-from .scripts.data_api import DocumentApi, DocumentMasterDataApi, MasterDataApi
 
 # TODO manage methods to create client better - maybe one client instance per org
 client = db_secrets.get_client()
+CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 
 class ProcessEvent:
     def __init__(self, user_name) -> None:
@@ -140,7 +142,25 @@ class ProcessEvent:
         if dtype == 'master_instance':
             raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
         elif dtype == 'process_instance':
-            # apply manual actions: PUT process instance
+            current_step = data['operations_status']
+            # apply manual actions: already applied on `data`
+            # TODO: apply automated action effects: execute actions -> PATCH process
+
+            # determine next steps: execute transitions -> PATCH process
+            docker_client = docker.from_env()
+            script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
+            volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
+            command = f"python requirements_{data['operations_status']}.py"
+            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, detach=True, stdout=True)
+            docker_container_output = helpers.listen_to_docker_container_output(docker_container)
+            
+            if len(docker_container_output) > 1:
+                print(docker_container_output)
+                raise helpers.PEPlaceholderError('Morethan 1 next step returned')
+            else:
+                data['operations_status'] = docker_container_output[0]
+            
+            # update process intance with all changes
             temp_collection = self.db.process_instance
             result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
             temp_collection = None
@@ -160,20 +180,7 @@ class ProcessEvent:
                 data_id=id,
                 actions=event_actions
             )
-
-            # apply automated action effects: execute actions -> PATCH process
-
-            # determine next steps: execute transitions -> PATCH process
-            
-
-
-
-    def patch_event_detail(self, dtype, id, data):
-        """
-        applies effects of `actions` from process instance on clicking `Save`
-        """
-        pass
-
+                
 
     def record_event(self, event_name, event_type, data_type, data_id, actions):
         event = {

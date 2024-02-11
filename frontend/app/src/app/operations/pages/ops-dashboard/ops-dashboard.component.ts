@@ -137,6 +137,40 @@ export class OpsDashboardComponent {
     }
   }
 
+  showAuxiliarySectionUpdateDocumnent(documentId: string) {
+    if (this.processInstance != undefined) {
+      const data = this.processInstance.document_instances[documentId]
+      const allFields = Object.keys(this.processInstance.document_instances[documentId])
+      const editableFields = this.processInstance.steps[this.processInstance.operations_status].fields[documentId].document_fields
+      console.log(editableFields)
+      if (editableFields.length === 0) {
+        this.sidebarPackage = {
+          identifier: documentId,
+          sidebarType: 'read', // nothing to update
+          selector: {selectorType: 'document_instance', selectorId: ''},
+          content: {
+            allFields: allFields,
+            editableFields: editableFields
+          },
+          sidebarData: data,
+        }
+      }
+      else {
+        this.sidebarPackage = {
+          identifier: documentId,
+          sidebarType: 'update',
+          selector: {selectorType: 'document_instance', selectorId: ''},
+          content: {
+            allFields: allFields,
+            editableFields: editableFields
+          },
+          sidebarData: data,
+        }
+      }
+      this.auxiliarySection = true
+    }
+  }
+
   applySidebarEffects($event: SidebarPackage) {
     if ((this.processInstance != undefined) && (this.sidebarPackage != undefined)) {
       if ((this.sidebarPackage.sidebarType === 'create') || (this.sidebarPackage.sidebarType === 'create_from_selector')) {
@@ -149,9 +183,14 @@ export class OpsDashboardComponent {
           this.processInstance.document_instances[$event.selector.selectorPath!['documentId']][
             $event.selector.selectorId+'s'][$event.sidebarData['_id']] = $event.sidebarData
         }
-
-        this.destroyAuxiliarySection()
       }
+      else if (this.sidebarPackage.sidebarType === 'update') {
+        if (this.sidebarPackage.selector.selectorType === 'document_instance') {
+          this.processInstance.document_instances[$event.identifier] = $event.sidebarData as DocumentInstanceInterface
+        }
+      }
+
+      this.destroyAuxiliarySection()
     }
   }
 }

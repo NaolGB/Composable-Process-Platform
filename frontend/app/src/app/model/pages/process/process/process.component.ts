@@ -243,7 +243,7 @@ export class ProcessComponent {
   }
 
   addUpdateDocumentField(documentId: string, fieldId: any) {
-    const fullFieldId = `${documentId}.${fieldId}`;
+    const fullFieldId = `${fieldId}`;
     this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] =
       'update';
 
@@ -273,7 +273,7 @@ export class ProcessComponent {
   }
 
   addUpdateSourceField(documentId: string, fieldId: any) {
-    const fullFieldId = `${documentId}.${this.selectedProcessDocuments[documentId]['lead_object']}.${fieldId}`;
+    const fullFieldId = `${fieldId}`;
     this.selectedProcessObject['steps'][this.selectedStepKey]['event_type'] =
       'update';
 
