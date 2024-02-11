@@ -1,4 +1,4 @@
-from ...data_api import DocumentApi, DocumentMasterDataApi, MasterDataApi
+from data_api import DocumentApi, DocumentMasterDataApi, MasterDataApi
 
 def transition():
     delivery_block = DocumentApi(document_id='SO_Doc_-_3').get_document_dict()['Delivery block']

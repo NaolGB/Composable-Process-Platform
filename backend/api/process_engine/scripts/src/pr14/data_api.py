@@ -1,11 +1,22 @@
-from bson import json_util
-from process_engine import helpers, db_secrets
 
-client = db_secrets.get_client()
+# client = db_secrets.get_client()
+
+class DocumentWrapper:
+    """
+    returns a str(dict) that conforms to the fields of process_instance.document_instances
+    """
+    def __init__(self, process_id, document_id, data={}) -> None:
+        self.process_id = process_id
+        self.document_id = document_id
+        self.data = data
+        self.type = 'document_intance'
+
+    def __str__(self) -> str:
+        return str({'type': self.type, 'data': self.data})
 
 class DocumentApi:
     """
-    returns fields of document of a process instance as pandas DataFrame
+    affects the fields of document of a process instance as pandas DataFrame
     """
     def __init__(self, process_id, document_id):
         self._data = {}
@@ -15,22 +26,22 @@ class DocumentApi:
 
     def get_document_dict(self):
         """
-        returns the requested document instance as a pd.DataFrame
+        returns the requested document instance as a dict
         """
         all_document_instances = self.db.process_instance.find({'_id': self.process_id}, {'document_instances': 1})
-        all_document_instances = json_util.loads(json_util.dumps(all_document_instances))
+        # all_document_instances = json_util.loads(json_util.dumps(all_document_instances))
 
-        document_instance = None
-        for doc_inst in all_document_instances:
-            if list(doc_inst['document_instances'].keys())[0] == self.document_id:
-                document_instance = doc_inst['document_instances'][self.document_id]
+        # document_instance = None
+        # for doc_inst in all_document_instances:
+        #     if list(doc_inst['document_instances'].keys())[0] == self.document_id:
+        #         document_instance = doc_inst['document_instances'][self.document_id]
 
-                # remove lead_object related fields
-                for key in ['lead_object', 'lead_object_fields', f'{document_instance["lead_object"]}s']:
-                    document_instance.pop(key, None)
+        #         # remove lead_object related fields
+        #         for key in ['lead_object', 'lead_object_fields', f'{document_instance["lead_object"]}s']:
+        #             document_instance.pop(key, None)
 
-        document_instance = {self.document_id: document_instance}
-        return document_instance
+        # document_instance = {self.document_id: document_instance}
+        # return document_instance
 
     def set_document(self, data):
         """
@@ -61,19 +72,19 @@ class DocumentMasterDataApi:
         """
         returns the requested document instance as a pd.DataFrame
         """
-        all_document_instances = self.db.process_instance.find({'_id': self.process_id}, {'document_instances': 1})
-        all_document_instances = json_util.loads(json_util.dumps(all_document_instances))
+        # all_document_instances = self.db.process_instance.find({'_id': self.process_id}, {'document_instances': 1})
+        # all_document_instances = json_util.loads(json_util.dumps(all_document_instances))
 
-        document_instance = None
-        for doc_inst in all_document_instances:
-            if list(doc_inst['document_instances'].keys())[0] == self.document_id:
-                document_instance = doc_inst['document_instances'][self.document_id]
+        # document_instance = None
+        # for doc_inst in all_document_instances:
+        #     if list(doc_inst['document_instances'].keys())[0] == self.document_id:
+        #         document_instance = doc_inst['document_instances'][self.document_id]
         
-        if document_instance != None:
-            # use only lead_object related fields
-            document_master_data = document_instance[f'{document_instance["lead_object"]}s']
+        # if document_instance != None:
+        #     # use only lead_object related fields
+        #     document_master_data = document_instance[f'{document_instance["lead_object"]}s']
         
-        return document_master_data
+        # return document_master_data
     
     def set_document_master_data(self, document_lead_object, master_data_id, data):
         """
