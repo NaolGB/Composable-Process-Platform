@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+/* Sidebar styles */
+.main,
+.preview {
+  transition: filter 0.5s;
+}
+.sidebar {
+  width: 30%;
+  position: fixed;
+  top: 0;
+  right: -30%;
+  height: 100%;
+  background-color: #f8f9fa;
+  transition: right 0.5s;
+  z-index: 2;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(41, 41, 41, 0.088);
+  z-index: 1;
+}
+.active-sidebar {
+  right: 0;
+}
+.active-overlay {
+  display: block;
+}
+
+.showSidebarButton {
+    display: flex;
+    align-items: center; /* Vertically center align */
+    justify-content: flex-end; /* Horizontally right align */
+}
+
+
+/* Scroll styles */
+.scrollable {
+    max-width: 100%; /* Set a maximum width */
+    max-height: 100%; /* Set a maximum height */
+    overflow-x: auto; /* Enable horizontal scroll */
+    overflow-y: auto; /* Enable vertical scroll */
+  }

@@ -9,7 +9,8 @@ import { MasterDataTypeInterface } from '../../../../interfaces';
   styleUrl: './create-master.component.css'
 })
 export class CreateMasterComponent {
-  dtypeOptions = [ 'string', 'number', 'datetime', 'boolean',]
+  dtypeOptions = [ 'string', 'number', 'datetime', 'boolean']
+  showSidebar: boolean = false
 
 	masterDtypeForm = this.formBuilder.group({
 		nameAndType: this.formBuilder.group({
@@ -23,7 +24,7 @@ export class CreateMasterComponent {
 		])
 	})
 
-	masterDtypeInDB: Array<String> = []
+	masterDtypeInDB: string[] = []
 
 	constructor(private formBuilder: FormBuilder, private apiServices: DataService) {}
 
@@ -47,6 +48,10 @@ export class CreateMasterComponent {
 				dtype: [this.dtypeOptions[0], Validators.required]
 			}),
 		)
+	}
+
+	toggleSidebar(): void {
+		this.showSidebar = !this.showSidebar;
 	}
 
   	onSubmit() {
