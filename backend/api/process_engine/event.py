@@ -7,6 +7,7 @@ from bson import json_util
 from . import helpers, db_secrets
 from .process_instance import ProcessInstance
 from .process_type import ProcessType
+from .data_api import DocumentApi
 
 # TODO manage methods to create client better - maybe one client instance per org
 client = db_secrets.get_client()
@@ -29,6 +30,9 @@ class ProcessEvent:
                 - process type (to get the `process_type` field in the process_instance collection)
         """
         if dtype == 'master_instance':
+            # DEBUG ----------------
+            # print(DocumentApi(process_type='pr14', process_instance_id='pr14_00_000_010', document_id='SO_Doc_-_3').get_document_dict())
+            # DEBUG ----------------
             temp_collection = self.db[f'{id}']
 
             # HACK skip _id fields becasue sometimes they are BSON ObjectID which is not JSON serializable
