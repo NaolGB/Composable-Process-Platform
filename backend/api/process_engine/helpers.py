@@ -87,6 +87,7 @@ def read_py_files(destination_folder, file_name):
 def listen_to_docker_container_output(container):
     output = []
     for line in container.attach(stdout=True, stream=True, logs=True):
-        output.append(line.strip().decode('utf-8'))
+        for line_elem in line.strip().decode('utf-8').split('\n'):
+            output.append(line_elem)
 
     return output

@@ -1,5 +1,6 @@
 import os
 import uuid 
+import json
 from datetime import datetime
 import ast
 import docker
@@ -7,7 +8,7 @@ from bson import json_util
 from . import helpers, db_secrets
 from .process_instance import ProcessInstance
 from .process_type import ProcessType
-from .data_api import DocumentApi
+from .data_api import DocumentApi, DocumentMasterDataApi, MasterDataApi
 
 # TODO manage methods to create client better - maybe one client instance per org
 client = db_secrets.get_client()
@@ -31,11 +32,10 @@ class ProcessEvent:
         """
         if dtype == 'master_instance':
             # DEBUG ----------------
-            # print(DocumentApi(process_type='pr14', process_instance_id='pr14_00_000_010', document_id='SO_Doc_-_3').get_document_dict())
+            # print(DocumentMasterDataApi(process_type='pr14', process_instance_id='pr14_00_000_011', document_id='SO_Doc_-_3').get_document_master_data_dict())
             # DEBUG ----------------
             temp_collection = self.db[f'{id}']
 
-            # HACK skip _id fields becasue sometimes they are BSON ObjectID which is not JSON serializable
             result = temp_collection.find({}) 
             result = json_util.loads(json_util.dumps(result, default=str))
 
@@ -51,6 +51,9 @@ class ProcessEvent:
             
             return {"data": result, "metadata": metadata}
         elif dtype == 'process_instance':
+            # DEBUG ----------------
+            # print(MasterDataApi(master_data_type='material', master_data_id='Mac_Book_Air').get_master_data_dict())
+            # DEBUG ----------------
             temp_collection = self.db.process_instance
 
             result = temp_collection.find({'process_type': id}) 
@@ -148,7 +151,31 @@ class ProcessEvent:
         elif dtype == 'process_instance':
             current_step = data['operations_status']
             # apply manual actions: already applied on `data`
-            # TODO: apply automated action effects: execute actions -> PATCH process
+            # apply automated action effects: execute actions -> PATCH process
+            docker_client = docker.from_env()
+            script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
+            volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
+            command = f"python actions_{data['operations_status']}.py"
+            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, detach=True, stdout=True)
+            docker_container_output = helpers.listen_to_docker_container_output(docker_container)
+            
+            
+            for output in docker_container_output:
+                output = ast.literal_eval(output) # json.loads requires  double quoted key values but ast.literal_evel takes evalyuates the str(dict) as dict
+                
+                if output['metadata']['type'] == 'document_wrapper':
+                    for k, v in output['data'].items():
+                        document_id = output['document_id']
+                        self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
+                            '$set': {f'document_instances.{document_id}.{k}': v}
+                        })
+                elif output['metadata']['type'] == 'document_master_data_wrapper':
+                    pass
+                elif output['metadata']['type'] == 'master_data_wrapper':
+                    pass
+                else:
+                    raise helpers.PEPlaceholderError('Unknown wrapper type')
+
 
             # determine next steps: execute transitions -> PATCH process
             docker_client = docker.from_env()
