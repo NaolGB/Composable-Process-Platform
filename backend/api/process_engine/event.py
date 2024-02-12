@@ -172,7 +172,13 @@ class ProcessEvent:
                 elif output['metadata']['type'] == 'document_master_data_wrapper':
                     pass
                 elif output['metadata']['type'] == 'master_data_wrapper':
-                    pass
+                    for k, v in output['data'].items():
+                        master_data_id = output['metadata']['master_data_id']
+                        master_data_type = output['metadata']['master_data_type']
+                        temp_collection = self.db[f'{master_data_type}']
+                        temp_collection.update_one({'_id': master_data_id}, {
+                            '$set': {k: v}
+                        })
                 else:
                     raise helpers.PEPlaceholderError('Unknown wrapper type')
 
