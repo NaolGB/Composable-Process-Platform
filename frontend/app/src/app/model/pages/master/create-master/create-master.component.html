@@ -1,43 +1,63 @@
 <div class="container-fluid">
     Add Master Data Type
     <div class="row">
-        <div class="col-12" style="height: 70vh;">
+        <!-- Main section -->
+        <div class="col-12" [style.height]="getMainSectionHeight()">
             <div class="row" style="height: 100%;">
                 <div class="col-md scrollable">
-                    <button (click)="addAttribute()">+</button>
-                    <form [formGroup]="masterDtypeForm" (ngSubmit)="onSubmit()">
-                        <div formGroupName="nameAndType">
-                            <input type="text" formControlName="name" placeholder="Name"/>
-                            <select disabled="disabled">
-                                <option value="string">string</option>
-                            </select>
-                        </div>
-                        <div formArrayName="extraAttributes">
-                            <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i">
-                                <input type="text" formControlName="name" placeholder="Attribute Name" />
-                                <select formControlName="dtype">
-                                    <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
-                                        {{opt}}
-                                    </option>
+                    <form [formGroup]="masterDtypeForm">
+                        <div class="row input-container" formGroupName="nameAndType">
+                            <div class="col-4">
+                                <input class="input-field" type="text" formControlName="name" placeholder="Name"/>
+                            </div>
+                            <div class="col">
+                                <select class="select-field" disabled="disabled">
+                                    <option value="string">string</option>
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" [disabled]="!masterDtypeForm.valid">Submit</button>
+                        <div formArrayName="extraAttributes">
+                            <div class="row input-container" *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i">
+                                <div class="col-4">
+                                    <input class="input-field" type="text" formControlName="name" placeholder="Attribute Name" />
+                                </div>
+                                <div class="col">
+                                    <select class="select-field" formControlName="dtype">
+                                        <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
+                                            {{opt}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="button" (click)="addAttribute()">Add Field</button>
+                        <!-- <button type="submit" [disabled]="!masterDtypeForm.valid">Submit</button> -->
                     </form>
                 </div>
                 <div class="col-md-auto showSidebarButton">
-                    <button (click)="toggleSidebar()">show sidebar</button>
-                    <span class="icon-container">
+                    <span class="icon-container" (click)="toggleSidebar()">
                         <span class="material-symbols-outlined">
-                            done
-                            </span>
+                            keyboard_arrow_left
+                        </span>
                     </span>
                 </div>
             </div>            
         </div>
 
-        <div class="col-12" style="height: 30vh; background-color: gray;">
-            <div>Preview section takes the top 30% of the screen</div>
+        <!-- Preview section -->
+        <div class="col-12 preview-section" [style.height]="getPreviewSectionHeight()">
+            <div class="right-align">
+                <span class="icon-container" (click)="togglePreviewSection()">
+                    <button (click)="onSubmit()" [disabled]="!masterDtypeForm.valid">Submit</button>
+                    <span class="material-symbols-outlined" *ngIf="showPreviewSection">
+                        keyboard_arrow_down
+                    </span>
+                    <span class="material-symbols-outlined" *ngIf="!showPreviewSection">
+                        keyboard_arrow_up
+                    </span>
+                </span>
+            </div>
+            <div *ngIf="showPreviewSection">Preview section takes the bottom 30% of the screen</div>
         </div>
     </div>
 </div>

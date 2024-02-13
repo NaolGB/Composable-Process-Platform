@@ -1,3 +1,22 @@
+:root {
+  --bg-primary: #FFFFFF;
+  --bg-black-primary: #000000;
+  --bg-black-secondary: #3A3A3C;
+  --bg-secondary: #F2F2F7;
+  --overshadow-primary: rgba(120, 120, 128, 0.2); /* Using rgba to set opacity */
+  --overshadow-secondary: rgba(120, 120, 128, 0.16);
+  --red-primary: #F23B31;
+  --orange-primary: #F59604;
+  --yellow-primary: #F9CC01;
+  --green-primary: #49C759;
+  --blue-primary: #007AFF;
+  --red-secondary: #F2453C;
+  --orange-secondary: #F69F0D;
+  --yellow-secondary: #FAD60E;
+  --green-secondary: #4ED158;
+  --blue-secondary: #0A84FF;
+}
+
 body,
 html {
   font-family: "IBM Plex Sans", sans-serif;
@@ -5,9 +24,14 @@ html {
   margin: 0;
   display: flex;
   flex-direction: column;
-  margin: 0;
+  background-color: var(--bg-primary);
 }
 
+/* Containers */
+.no-right-margin {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
 
 /* Sidebar styles */
 .main,
@@ -31,7 +55,7 @@ html {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(41, 41, 41, 0.088);
+  background-color: var(--overshadow-primary);
   z-index: 1;
 }
 .active-sidebar {
@@ -65,10 +89,143 @@ html {
   'opsz' 24
 }
 
+.icon-container {
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
 .icon-container :hover {
   font-variation-settings:
   'FILL' 0,
-  'wght' 400,
+  'wght' 700,
   'GRAD' 200,
   'opsz' 24
 }
+
+/* Preview section */
+.right-align {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.preview-section {
+  background-color: var(--bg-secondary);
+}
+
+
+/* Input */
+.input-field {
+  border: 1px solid var(--bg-black-secondary); 
+  padding: 2%; 
+  width: 100%; 
+  box-sizing: border-box; 
+  border-radius: 0; 
+}
+
+.select-field {
+  background-color: var(--bg-secondary);
+  border: 1px solid #8d8d8d; 
+  padding: 1%; 
+  width: 20%; 
+  box-sizing: border-box; 
+  border-radius: 0; 
+}
+
+.input-field:focus, .select-field:focus {
+  outline: none; 
+  border-color: var(--blue-secondary);
+}
+
+.select-field {
+  -webkit-appearance: none; 
+  -moz-appearance: none; 
+  appearance: none; 
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="%23000" d="M5.707 7.293a1 1 0 0 1 1.414 0L10 10.172l2.879-2.879a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z"/></svg>'); 
+  background-repeat: no-repeat;
+  background-position: right 0.7em top 50%, 0 0; 
+  background-size: 12px 12px; 
+}
+
+.input-container {
+  margin-bottom: 1%; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Buttons */
+.button {
+  font-size: 0.875rem; 
+  font-weight: 400; 
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+  padding: 12px 24px;
+  border: 1px solid transparent;
+  border-radius: 0; 
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s; 
+  text-decoration: none; 
+  display: inline-block; 
+  user-select: none; 
+}
+
+
+.button-primary {
+  background-color: #0f62fe; 
+  color: #ffffff; 
+  border-color: #0f62fe; 
+}
+
+.button-primary:hover, .button-primary:focus {
+  background-color: #0353e9; 
+  border-color: #0353e9;
+}
+
+
+.button-secondary {
+  background-color: #ffffff; 
+  color: #0f62fe; 
+  border-color: #0f62fe; 
+}
+
+.button-secondary:hover, .button-secondary:focus {
+  background-color: #f4f4f4; 
+  border-color: #0353e9; 
+}
+
+
+.button-tertiary {
+  background-color: transparent; 
+  color: #0f62fe; 
+  border-color: transparent; 
+  padding: 12px; 
+}
+
+.button-tertiary:hover, .button-tertiary:focus {
+  background-color: transparent; 
+  color: #0353e9; 
+  text-decoration: underline; 
+}
+
+
+.button:focus {
+  outline: 2px solid #0f62fe; 
+  outline-offset: 2px; 
+}
+
