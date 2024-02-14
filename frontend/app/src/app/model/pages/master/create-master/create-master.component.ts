@@ -85,6 +85,6 @@ export class CreateMasterComponent {
 	}
 
 	getPreviewSectionHeight(): string {
-		return this.showPreviewSection ? '40vh' : '5vh';
+		return this.showPreviewSection ? '40vh' : '0vh';
 	}
 }
