@@ -9,16 +9,47 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
     <title>Document</title>
   </head>
   <body>
     <div class="container-fluid">
       <div class="row">
         <!-- Left column for navigation -->
-        <div class="col-md-auto nav-bar">
-          <!-- Adjusted width -->
-          <app-nav-bar></app-nav-bar>
+        <div class="col-md-auto nav-bar" [class.expanded]="expandNavbar">
+          <span class="icon-container">
+            <span
+              class="material-symbols-outlined"
+              (click)="toggleNavbar()"
+              *ngIf="!expandNavbar"
+            >
+              left_panel_open
+            </span>
+            <span
+              class="material-symbols-outlined"
+              (click)="toggleNavbar()"
+              *ngIf="expandNavbar"
+            >
+              right_panel_open
+            </span>
+          </span>
+          <div class="nav-bar-icon-container icon-container" (click)="navigateTo('/model/create-master-data-type')">
+            <span class="material-symbols-outlined"> variable_add </span> <span *ngIf="expandNavbar">Master Data Types</span>
+          </div>
+          <div class="nav-bar-icon-container icon-container"  (click)="navigateTo('/model/create-document')">
+            <span class="material-symbols-outlined"> post_add </span> <span *ngIf="expandNavbar">Document Types</span>
+          </div>
+          <div class="nav-bar-icon-container icon-container"  (click)="navigateTo('/model/process')">
+            <span class="material-symbols-outlined"> rebase_edit </span> <span *ngIf="expandNavbar">Design Process</span>
+          </div>
+          <div class="nav-bar-icon-container icon-container"  (click)="navigateTo('/model/create-master-data-type')">
+          
+          </div>
+          <div class="nav-bar-icon-container icon-container"  (click)="navigateTo('/model/create-master-data-type')"></div>
+          
           <app-ops-nav-bar></app-ops-nav-bar>
         </div>
 
