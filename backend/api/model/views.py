@@ -11,8 +11,11 @@ def master_dtype(request):
     if request.method == 'POST':
         parsed_post_data = request.data
         parsed_post_data['organization']=ORGANIZATION
-        MasterDtype().create(data=parsed_post_data)
-        return JsonResponse({'message':"success"})
+        try:
+            MasterDtype().create(data=parsed_post_data)
+            return JsonResponse({'status': True, 'message':"Master Data Type added succesfully"})
+        except:
+            return JsonResponse({'status': False, 'message':"Master Data Type failed to add succesfully"})
     elif request.method == 'GET':
         parsed_response_data = MasterDtype().get_all_ids()
         return JsonResponse({'ids': parsed_response_data})

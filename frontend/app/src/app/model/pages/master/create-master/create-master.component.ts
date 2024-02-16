@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { DataService } from '../../../../services/data.service';
-import { MasterDataTypeInterface } from '../../../../interfaces';
+import { AlertInterface, MasterDataTypeInterface } from '../../../../interfaces';
 
 @Component({
   selector: 'app-create-master',
@@ -13,6 +13,8 @@ export class CreateMasterComponent {
   dtypeOptionsExample: {[key: string]: any} = {'string': 'text', 'number': 603.19, 'datetime': new Date('1970-01-01'), 'boolean': true}
   showSidebar: boolean = false;
   showPreviewSection: boolean = true;
+  alerts: AlertInterface[] = []
+  nextId: number = 0
 
   masterDtypeForm = this.formBuilder.group({
     nameAndType: this.formBuilder.group({
@@ -38,6 +40,20 @@ export class CreateMasterComponent {
     this.apiServices.getMasterDtypeIds().subscribe((response) => {
       this.masterDtypeInDB = response['ids'];
     });
+  }
+
+  addAlert(alert: AlertInterface): void {
+    alert.id = this.nextId++
+    this.alerts.push(alert);
+
+    // Remove the alert after 3 seconds
+    setTimeout(() => {
+      this.removeAlert(alert.id);
+    }, 3000);
+  }
+
+  removeAlert(id: number): void {
+    this.alerts = this.alerts.filter(alert => alert.id !== id);
   }
 
   get extraAttributes() {

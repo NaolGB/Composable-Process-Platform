@@ -1,3 +1,10 @@
+export interface AlertInterface {
+    id: number,
+    status: boolean,
+    message: string
+}
+
+
 export interface IdsListInterface {
     ids: string[]
 }

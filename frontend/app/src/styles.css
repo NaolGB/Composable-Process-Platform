@@ -124,7 +124,15 @@ html {
 }
 .sidebar-item-read {
   cursor: default;
-  padding-top: 2%;
+  padding: 1%;
+}
+.sidebar-item-click {
+  cursor: default;
+  padding: 1%;
+}
+.sidebar-item-click:hover{
+  background-color: var(--blue-primary);
+  color: var(--bg-primary);
 }
 
 .showSidebarButton {
@@ -266,5 +274,16 @@ html {
   cursor: not-allowed; 
 }
 
+/* Preview section elements */
+.preview-section-row {
+  border-bottom: 1px solid #3a3a3c;
+  border-left: 1px solid #3a3a3c;
+  border-right: 1px solid #3a3a3c;
+  background-color: transparent;
+}
 
-
+.preview-section-top-row {
+  border-top: 1px solid #3a3a3c;
+  border-left: 1px solid #3a3a3c;
+  background-color: transparent;
+}

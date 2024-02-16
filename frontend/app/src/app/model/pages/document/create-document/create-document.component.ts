@@ -14,7 +14,13 @@ export class CreateDocumentComponent {
   leadObject: string = ''
   leadObjectFields: string[] = []
   editableFields: string[] = []
-  dtypeOptions = ['string', 'number', 'datetime', 'boolean',]
+  dtypeOptions = ['string', 'number', 'datetime', 'boolean']
+  dtypeOptionsExample: {[key: string]: any} = {'string': 'text', 'number': 603.19, 'datetime': new Date('1970-01-01'), 'boolean': true}
+
+
+  showSidebar: boolean = false;
+  showPreviewSection: boolean = true;
+  
 
   documentTypeForm = this.formBuilder.group({
     requiredAttributes: this.formBuilder.group({
@@ -50,6 +56,7 @@ export class CreateDocumentComponent {
       this.apiServices.getMasterDtypeById(selectedValue).subscribe(
         (response) => {
           this.leadObjectFields = Object.keys(response.attributes)
+          this.toggleSidebar()
         }
       )
     }
@@ -87,5 +94,55 @@ export class CreateDocumentComponent {
 		}
 
     this.apiServices.postDocumentType(parsedPostData).subscribe()
+  }
+
+  get tempPreviewDocumentData() {
+    const data: {[key: string]: string} = {}
+    data['name'] = this.documentTypeForm.get('nameAndType')?.get('name')?.value || 'Name field is required'
+
+    for (let i = 0; i < this.extraAttributes.length; i++) {
+      let attName: string = this.extraAttributes.at(i).value['name'];
+      if (attName != null) {
+        const dtypeTypeName: string = this.extraAttributes.at(i).value['dtype'];
+        if (attName.length > 0) {
+          data[attName] = this.dtypeOptionsExample[dtypeTypeName];
+        }
+      }
+    }
+
+    return data
+  }
+
+  get tempPreviewDocumentMasterDataData() {
+    const data: {[key: string]: string} = {}
+
+    for (let i = 0; i < this.leadObjectFields.length; i++) {
+        if (this.leadObjectFields[i].length > 0) {
+          if (this.editableFields.includes(this.leadObjectFields[i])) {
+            data[this.leadObjectFields[i]] = 'edited value';
+          }
+          else {
+            data[this.leadObjectFields[i]] = 'inherited value';
+          }
+        }
+    }
+
+    return data
+  }
+
+  togglePreviewSection(): void {
+    this.showPreviewSection = !this.showPreviewSection;
+  }
+  // Style functions
+	getMainSectionHeight(): string {
+		return this.showPreviewSection ? '60vh' : '100vh';
+	}
+
+	getPreviewSectionHeight(): string {
+		return this.showPreviewSection ? '40vh' : '0vh';
+	}
+
+  toggleSidebar(): void {
+    this.showSidebar = !this.showSidebar;
   }
 }

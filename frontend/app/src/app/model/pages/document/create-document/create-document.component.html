@@ -1,45 +1,148 @@
-<button (click)="addAttribute()">+</button>
-<form [formGroup]="documentTypeForm" (ngSubmit)="postDocumentType()">
-    <div formGroupName="requiredAttributes">
-        <input type="text" formControlName="name" placeholder="Name"/>
-        <!-- <div>
-            lead object type:
-            <button type="button" (click)="setleadObjectType('master_dtype')">Master Data</button>
-            <button type="button" (click)="setleadObjectType('Document')">Document</button>
-        </div> -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main section -->
+        <div class="col-12 main-section" [style.height]="getMainSectionHeight()">
+            <div class="scrollable-content-area">
+                <!-- scrollable content container -->
+                <h3>
+                    Add Document Type
+                </h3>
+                <div class="row">
+                    <div class="col-md scrollable">
+                        <form [formGroup]="documentTypeForm">
+                            <div class="row input-container" formGroupName="requiredAttributes">
+                                <div class="col-3">
+                                    <input class="input-field" type="text" formControlName="name" placeholder="Name"/>
+                                </div>
+                            </div>
+                            <div class="row input-container">
+                                <div class="row input-container">
+                                    <div class="col-2">
+                                        Lead Master Data Type:
+                                    </div>
+                                    <div class="col">
+                                        <select (change)="selectLeadObject($event)" class="select-field">
+                                            <option *ngFor="let opt of leadObjectOptions" [ngValue]="opt">
+                                                {{opt}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row input-container">
+                                <b>Master Data fields to edit in-process</b>
+                                <div *ngFor="let field of editableFields">{{field}}</div>
+                            </div>
 
-        <div>
-            lead object type:
-            <select (change)="selectLeadObject($event)">
-                <option *ngFor="let opt of leadObjectOptions" [ngValue]="opt">
-                    {{opt}}
-                </option>
-            </select>
+                            <div formArrayName="extraAttributes" class="row input-container">
+                                <b>Document fields</b>
+                                <div class="row input-container" *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i">
+                                    <div class="col-3">
+                                        <input type="text" formControlName="name" placeholder="Attribute Name" />
+                                    </div>
+                                    <div class="col">
+                                        <select class="select-field" formControlName="dtype">
+                                            <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
+                                                {{opt}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-auto showSidebarButton">
+                        <span class="icon-container" (click)="toggleSidebar()">
+                            <span class="material-symbols-outlined">
+                                keyboard_arrow_left
+                            </span>
+                        </span>
+                    </div>
+                </div>   
+            </div>
+           
+            <div class="button-bar" *ngIf="!showPreviewSection">
+                <!-- button bar -->
+                <div class="left-aligned">
+                    <button class="button button-secondary" (click)="addAttribute()">Add Field</button>
+                </div>
+                <span class="icon-container" (click)="togglePreviewSection()">
+                    <span class="material-symbols-outlined" *ngIf="!showPreviewSection">
+                        keyboard_arrow_up
+                    </span>
+                </span>
+                <div class="right-align">
+                    <button class="button button-primary" (click)="postDocumentType()" [disabled]="!documentTypeForm.valid">Submit</button>
+                </div>
+            </div>
         </div>
 
-        <div>
-            editable fields
-            <span *ngFor="let field of editableFields">{{field}}</span>
+        <!-- Preview section -->
+        <div *ngIf="showPreviewSection" class="col-12 preview-section" [style.height]="getPreviewSectionHeight()">
+            <div class="button-bar">
+                <div class="left-aligned">
+                    <button class="button button-secondary" (click)="addAttribute()">Add Field</button>
+                </div>
+                <div>
+                    <span class="icon-container" (click)="togglePreviewSection()">
+                        <span class="material-symbols-outlined" *ngIf="showPreviewSection">
+                            keyboard_arrow_down
+                        </span>
+                        <span class="material-symbols-outlined" *ngIf="!showPreviewSection">
+                            keyboard_arrow_up
+                        </span>
+                    </span>
+                </div>
+                <div class="right-align">
+                    <button class="button button-primary" (click)="postDocumentType()" [disabled]="!documentTypeForm.valid">Submit</button>
+                </div>         
+            </div>
+            <h6>Document</h6>
+            <div class="preview-section-preview-content" *ngIf="showPreviewSection">
+                <div class="row">
+                    <div class="col row" *ngFor="let field of tempPreviewDocumentData | keyvalue">
+                        <span class="preview-section-row preview-section-top-row">
+                            <b>{{field.key}}</b>
+                        </span>
+                        <span class="preview-section-row">
+                            {{field.value}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <h6>Document's Master Data</h6>
+            <div class="preview-section-preview-content" *ngIf="showPreviewSection">
+                <div class="row">
+                    <div class="col row" *ngFor="let field of tempPreviewDocumentMasterDataData | keyvalue">
+                        <span class="preview-section-row preview-section-top-row">
+                            <b *ngIf="editableFields.includes(field.key)">{{field.key}}</b>
+                            <p *ngIf="!editableFields.includes(field.key)">{{field.key}}</p>
+                        </span>
+                        <span class="preview-section-row">
+                            {{field.value}}
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div formArrayName="extraAttributes">
-        <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i">
-            <input type="text" formControlName="name" placeholder="Attribute Name" />
-            <select formControlName="dtype">
-                <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
-                    {{opt}}
-                </option>
-            </select>
-        </div>
-    </div>
-    <button type="submit">Submit</button>
-</form>
-
-<!-- Sidebar -->
-<div >
-    add fields to edit
-    <div *ngFor="let field of leadObjectFields">
-        <span *ngIf="!editableFields.includes(field)" (click)="addEditableField(field)">{{field}}</span>
     </div>
 </div>
+
+<!-- Sidebar -->
+<div class="sidebar" [class.active-sidebar]="showSidebar">
+    <h3>Add fields to edit in-process</h3>
+    <div *ngFor="let field of leadObjectFields" class="sidebar-item-container">
+        <span class="sidebar-item-click" *ngIf="!editableFields.includes(field)" (click)="addEditableField(field)">{{field}}</span>
+    </div>
+</div>
+<!-- Overlay -->
+<div class="overlay" [class.active-overlay]="showSidebar" (click)="toggleSidebar()"></div>
+
+
+
+
+
+
+
