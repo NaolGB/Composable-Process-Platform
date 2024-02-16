@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'model';
 
-  expandNavbar = true
+  expandNavbar = false
 
   constructor(private router: Router) {}
 

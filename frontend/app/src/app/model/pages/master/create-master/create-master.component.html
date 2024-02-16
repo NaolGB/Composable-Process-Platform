@@ -89,9 +89,9 @@
 
 <!-- Sidebar -->
 <div class="sidebar" [class.active-sidebar]="showSidebar">
-    Master Data List
-    <div *ngFor="let mDtype of masterDtypeInDB">
-        {{mDtype}}
+    <h3>Master Data List</h3>
+    <div *ngFor="let mDtype of masterDtypeInDB" class="sidebar-item-container">
+        <span class="sidebar-item-read">{{mDtype}}</span>
     </div>
 </div>
 <!-- Overlay -->

@@ -1,53 +1,63 @@
 <div class="row">
   <!-- Left column for navigation -->
   <div class="col-md-auto nav-bar" [class.expanded]="expandNavbar">
-    <span class="icon-container">
-      <span
-        class="material-symbols-outlined"
-        (click)="toggleNavbar()"
-        *ngIf="!expandNavbar"
-      >
-        left_panel_open
+    <div class="nav-bar-toggle-button-icon-container">
+      <span class="icon-container">
+        <span
+          class="material-symbols-outlined"
+          (click)="toggleNavbar()"
+          *ngIf="!expandNavbar"
+        >
+          left_panel_open
+        </span>
+        <span
+          class="material-symbols-outlined"
+          (click)="toggleNavbar()"
+          *ngIf="expandNavbar"
+        >
+          right_panel_open
+        </span>
       </span>
-      <span
-        class="material-symbols-outlined"
-        (click)="toggleNavbar()"
-        *ngIf="expandNavbar"
-      >
-        right_panel_open
-      </span>
-    </span>
+    </div>
+
+    <!-- Modelling -->
     <div
       class="nav-bar-icon-container icon-container"
       (click)="navigateTo('/model/create-master-data-type')"
     >
-      <span class="material-symbols-outlined"> variable_add </span>
-      <span *ngIf="expandNavbar">Master Data Types</span>
+      <span class="material-symbols-outlined"> add </span>
+      <span *ngIf="expandNavbar" class="nav-bar-text">Master Data Types</span>
     </div>
     <div
       class="nav-bar-icon-container icon-container"
       (click)="navigateTo('/model/create-document')"
     >
       <span class="material-symbols-outlined"> post_add </span>
-      <span *ngIf="expandNavbar">Document Types</span>
+      <span *ngIf="expandNavbar" class="nav-bar-text">Document Types</span>
     </div>
     <div
       class="nav-bar-icon-container icon-container"
       (click)="navigateTo('/model/process')"
     >
-      <span class="material-symbols-outlined"> rebase_edit </span>
-      <span *ngIf="expandNavbar">Design Process</span>
+      <span class="material-symbols-outlined"> network_node </span>
+      <span *ngIf="expandNavbar" class="nav-bar-text">Design Process</span>
+    </div>
+
+    <!-- Operations -->
+    <div
+      class="nav-bar-icon-container icon-container"
+      (click)="navigateTo('/operations/master-data')"
+    >
+      <span class="material-symbols-outlined"> barcode </span>
+      <span *ngIf="expandNavbar" class="nav-bar-text">Master Data</span>
     </div>
     <div
       class="nav-bar-icon-container icon-container"
-      (click)="navigateTo('/model/create-master-data-type')"
-    ></div>
-    <div
-      class="nav-bar-icon-container icon-container"
-      (click)="navigateTo('/model/create-master-data-type')"
-    ></div>
-
-    <app-ops-nav-bar></app-ops-nav-bar>
+      (click)="navigateTo('/operations/dashboard')"
+    >
+      <span class="material-symbols-outlined"> space_dashboard </span>
+      <span *ngIf="expandNavbar" class="nav-bar-text">Dashboard</span>
+    </div>
   </div>
 
   <!-- Right column for main content -->
