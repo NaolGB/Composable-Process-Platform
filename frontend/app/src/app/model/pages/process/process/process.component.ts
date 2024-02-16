@@ -48,6 +48,9 @@ export class ProcessComponent {
   // Action tab variables
   actionsContentType: string = 'actions';
 
+  showSidebar: boolean = false;
+  showPreviewSection: boolean = true;
+
   constructor(
     private apiServices: DataService,
     private formBuilder: FormBuilder,
@@ -328,5 +331,21 @@ export class ProcessComponent {
   onMonacoActionContentChagne($newContent: string) {
     this.allStepsObject[this.selectedStepKey]['options']['save']['actions'] =
       $newContent;
+  }
+
+  togglePreviewSection(): void {
+    this.showPreviewSection = !this.showPreviewSection;
+  }
+  // Style functions
+	getMainSectionHeight(): string {
+		return this.showPreviewSection ? '60vh' : '100vh';
+	}
+
+	getPreviewSectionHeight(): string {
+		return this.showPreviewSection ? '40vh' : '0vh';
+	}
+
+  toggleSidebar(): void {
+    this.showSidebar = !this.showSidebar;
   }
 }

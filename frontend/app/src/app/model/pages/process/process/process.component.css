@@ -1,0 +1,12 @@
+.tab-container {
+    display: flex;
+    flex-direction: row;
+}
+.tab {
+    padding: 1%;
+    width: 100%;
+}
+
+.select-field-process {
+    min-width: max-content;
+}

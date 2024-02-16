@@ -114,7 +114,7 @@ export class CreateDocumentComponent {
   }
 
   get tempPreviewDocumentMasterDataData() {
-    const data: {[key: string]: string} = {}
+    const data: {[key: string]: string} = {'name': 'select Lead Master Data'}
 
     for (let i = 0; i < this.leadObjectFields.length; i++) {
         if (this.leadObjectFields[i].length > 0) {

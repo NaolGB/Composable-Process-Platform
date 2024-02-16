@@ -287,3 +287,21 @@ html {
   border-left: 1px solid #3a3a3c;
   background-color: transparent;
 }
+
+/* Tabs */
+.tab-button-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content:space-evenly;
+  text-align: center;
+}
+.tab-button {
+  background-color: var(--bg-teritiary);
+  padding: 1% 0%;
+  width: 100%;
+}
+.tab-button:hover {
+  background-color: var(--blue-primary);
+  color: #ffffff;
+  cursor: default;
+}
