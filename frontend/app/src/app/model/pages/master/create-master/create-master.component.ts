@@ -10,6 +10,7 @@ import { MasterDataTypeInterface } from '../../../../interfaces';
 })
 export class CreateMasterComponent {
   dtypeOptions = ['string', 'number', 'datetime', 'boolean'];
+  dtypeOptionsExample: {[key: string]: any} = {'string': 'text', 'number': 603.19, 'datetime': new Date('1970-01-01'), 'boolean': true}
   showSidebar: boolean = false;
   showPreviewSection: boolean = true;
 
@@ -77,6 +78,23 @@ export class CreateMasterComponent {
     }
 
     this.apiServices.postMasterDtype(parsedPostData).subscribe();
+  }
+
+  get tempPreviewData() {
+    const data: {[key: string]: string} = {}
+    data['name'] = this.masterDtypeForm.get('nameAndType')?.get('name')?.value || 'Name field is required'
+
+    for (let i = 0; i < this.extraAttributes.length; i++) {
+      let attName: string = this.extraAttributes.at(i).value['name'];
+      if (attName != null) {
+        const dtypeTypeName: string = this.extraAttributes.at(i).value['dtype'];
+        if (attName.length > 0) {
+          data[attName] = this.dtypeOptionsExample[dtypeTypeName];
+        }
+      }
+    }
+
+    return data
   }
 
 	// Style functions

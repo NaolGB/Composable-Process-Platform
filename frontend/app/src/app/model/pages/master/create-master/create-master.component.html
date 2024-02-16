@@ -82,7 +82,18 @@
                     <button class="button button-primary" (click)="onSubmit()" [disabled]="!masterDtypeForm.valid">Submit</button>
                 </div>         
             </div>
-            <div *ngIf="showPreviewSection">Preview section takes the bottom 30% of the screen</div>
+            <div class="preview-section-preview-content" *ngIf="showPreviewSection">
+                <div class="row">
+                    <div class="col row" *ngFor="let field of tempPreviewData | keyvalue">
+                        <span class="preview-section-row preview-section-top-row">
+                            <b>{{field.key}}</b>
+                        </span>
+                        <span class="preview-section-row">
+                            {{field.value}}
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

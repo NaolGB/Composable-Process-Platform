@@ -1,0 +1,12 @@
+.preview-section-row {
+    border-bottom: 1px solid #3a3a3c;
+    border-left: 1px solid #3a3a3c;
+    border-right: 1px solid #3a3a3c;
+    background-color: transparent;
+}
+
+.preview-section-top-row {
+    border-top: 1px solid #3a3a3c;
+    border-left: 1px solid #3a3a3c;
+    background-color: transparent;
+}
