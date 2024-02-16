@@ -81,7 +81,7 @@ export class CreateMasterComponent {
 
 	// Style functions
 	getMainSectionHeight(): string {
-		return this.showPreviewSection ? '60vh' : '90vh';
+		return this.showPreviewSection ? '60vh' : '100vh';
 	}
 
 	getPreviewSectionHeight(): string {
