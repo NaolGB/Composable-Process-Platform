@@ -1,0 +1,17 @@
+.container-0-ops-master {
+    display: grid;
+    grid-template-columns: 3fr 9fr;
+}
+
+.table-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1%;
+}
+.table-row {
+    border-bottom: 1px solid #000;
+    width: 100%;
+    min-width: fit-content;
+    text-align: left;
+}

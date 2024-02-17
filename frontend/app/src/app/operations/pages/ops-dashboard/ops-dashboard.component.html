@@ -93,14 +93,17 @@
 
 
 <!-- Auxiliary section -->
+<div class="sidebar" [class.active-sidebar]="showSidebar">
 <app-ops-sidebar
     *ngIf="auxiliarySection"
     [sidebarPackage]="sidebarPackage"
     (dataEvent)="applySidebarEffects($event)"
 >
 </app-ops-sidebar>
+</div>
 
 <!-- Optional templates -->
 <ng-template #loading>
     Loading...
 </ng-template>
+<div class="overlay" [class.active-overlay]="showSidebar" (click)="toggleSidebar()"></div>

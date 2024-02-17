@@ -1,0 +1,10 @@
+.container-0-app {
+    display: grid;
+    grid-template-columns: auto 12fr;
+}
+
+/* Navbar */
+.nav-bar {
+    padding: 0px 10px 0px 10px;
+}
+

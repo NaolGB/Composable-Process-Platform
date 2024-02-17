@@ -336,14 +336,6 @@ export class ProcessComponent {
   togglePreviewSection(): void {
     this.showPreviewSection = !this.showPreviewSection;
   }
-  // Style functions
-	getMainSectionHeight(): string {
-		return this.showPreviewSection ? '60vh' : '100vh';
-	}
-
-	getPreviewSectionHeight(): string {
-		return this.showPreviewSection ? '40vh' : '0vh';
-	}
 
   toggleSidebar(): void {
     this.showSidebar = !this.showSidebar;

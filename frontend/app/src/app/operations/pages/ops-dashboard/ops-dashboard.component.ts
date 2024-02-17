@@ -30,6 +30,7 @@ export class OpsDashboardComponent {
   sidebarPackage: SidebarPackage | undefined
 
   auxiliarySection: boolean = false;
+  showSidebar: boolean = false;
   mainSectionView: MainSectionView = MainSectionView.SelectProcessInstance
 
   constructor(private apiServices: DataService, private opsHelper: OperationsHelperService) {}
@@ -107,6 +108,7 @@ export class OpsDashboardComponent {
         sidebarData: data,
       }
       this.auxiliarySection = true
+      this.toggleSidebar()
     }
   }
 
@@ -134,6 +136,7 @@ export class OpsDashboardComponent {
         sidebarData: undefined,
       }
       this.auxiliarySection = true
+      this.toggleSidebar()
     }
   }
 
@@ -168,6 +171,7 @@ export class OpsDashboardComponent {
         }
       }
       this.auxiliarySection = true
+      this.toggleSidebar()
     }
   }
 
@@ -192,5 +196,9 @@ export class OpsDashboardComponent {
 
       this.destroyAuxiliarySection()
     }
+  }
+
+  toggleSidebar(): void {
+    this.showSidebar = !this.showSidebar;
   }
 }

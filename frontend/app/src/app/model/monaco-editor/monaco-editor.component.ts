@@ -17,7 +17,7 @@ export class MonacoEditorComponent {
   @Output() editorContentChange = new EventEmitter<string>()
 
   // editorContent: string = 'this.requirementCode'
-  editorOptions = {theme: 'vs', language: 'python'};
+  editorOptions = {theme: 'vs-dark', language: 'python'};
   initialRequirementCode: string = '# insert code here'
   requirementCode: string = this.initialRequirementCode
 

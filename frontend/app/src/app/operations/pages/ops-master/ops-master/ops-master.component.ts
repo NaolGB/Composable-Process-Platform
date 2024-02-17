@@ -15,6 +15,8 @@ export class OpsMasterComponent {
   sidebarPackage: SidebarPackage | undefined
   masterDataType: string = ''
 
+  showSidebar: boolean = false;
+
   constructor(private apiServices: DataService) {}
 
   ngOnInit() {
@@ -43,6 +45,7 @@ export class OpsMasterComponent {
         sidebarData: this.createSidebarData(all_fields),
     }
     this.auxiliarySection = true
+    this.toggleSidebar()
   }
 
   destroyAuxiliarySection() {
@@ -63,5 +66,9 @@ export class OpsMasterComponent {
     if ($event.sidebarType === 'create') {
       this.apiServices.postMasterData(this.masterDataType, $event.sidebarData).subscribe()
     }
+  }
+
+  toggleSidebar(): void {
+    this.showSidebar = !this.showSidebar;
   }
 }

@@ -1,50 +1,33 @@
-<div class="container-fluid">
-    <div class="row">
-        <!-- Main section -->
-        <div class="col-12 main-section" [style.height]="getMainSectionHeight()">
-            <div class="scrollable-content-area">
-                <!-- scrollable content container -->
-                <div>
-                    <h3>Design Process</h3>
-                    <!-- Tabs -->
-                    <div class="tab-button-bar">
-                        <div class="tab-button" (click)="selectTab('generate')">Generate</div>
-                        <div class="tab-button" (click)="selectTab('connect')">Connect</div>
-                        <div class="tab-button" (click)="selectTab('fields')">Step Type</div>
-                        <div class="tab-button" (click)="selectTab('requirement')">Transition</div>
-                        <div class="tab-button" (click)="selectTab('action')">Action</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md scrollable tab-container">
-                        <ng-container *ngIf="selectedTab === 'generate'; then generate"></ng-container>
-                        <ng-container *ngIf="selectedTab === 'connect'; then connect"></ng-container>
-                        <ng-container *ngIf="selectedTab === 'fields'; then fields"></ng-container>
-                        <ng-container *ngIf="selectedTab === 'requirement'; then requirement"></ng-container>
-                        <ng-container *ngIf="selectedTab === 'action'; then action"></ng-container>
-                    </div>
-                    <div class="col-md-auto showSidebarButton">
-                        <span class="icon-container" (click)="toggleSidebar()">
-                            <span class="material-symbols-outlined">
-                                keyboard_arrow_left
-                            </span>
-                        </span>
-                    </div>
-                </div>   
-            </div>
-           
-            <ng-container *ngIf="!showPreviewSection; then buttonBar"></ng-container>
+<div class="container-0-model-process">
+    <div>
+        <h3>Design Process</h3>
+        <div class="container-1-model-process-tab-bar">
+            <div class="tab-button" (click)="selectTab('generate')">Generate</div>
+            <div class="tab-button" (click)="selectTab('connect')">Connect</div>
+            <div class="tab-button" (click)="selectTab('fields')">Step Type</div>
+            <div class="tab-button" (click)="selectTab('requirement')">Transition</div>
+            <div class="tab-button" (click)="selectTab('action')">Action</div>
         </div>
+    </div>
 
-        <!-- Preview section -->
-        <div *ngIf="showPreviewSection" class="col-12 preview-section" [style.height]="getPreviewSectionHeight()">
-            <ng-container *ngIf="showPreviewSection; then buttonBar"></ng-container>
-            <div class="preview-section-preview-content" *ngIf="showPreviewSection">
-                <app-process-preview
-                    [allStepsObject]="allStepsObject"
-                ></app-process-preview>
-            </div>
+    <div class="container-1-model-process-main-section">
+        <ng-container *ngIf="selectedTab === 'generate'; then generate"></ng-container>
+        <ng-container *ngIf="selectedTab === 'connect'; then connect"></ng-container>
+        <ng-container *ngIf="selectedTab === 'fields'; then fields"></ng-container>
+        <ng-container *ngIf="selectedTab === 'requirement'; then requirement"></ng-container>
+        <ng-container *ngIf="selectedTab === 'action'; then action"></ng-container>
+    </div>
 
+    <div>
+        <ng-container *ngIf="!showPreviewSection; then buttonBar"></ng-container>
+    </div>
+
+    <div *ngIf="showPreviewSection" class="container-1-model-process-preview-section preview-section" >
+        <ng-container *ngIf="showPreviewSection; then buttonBar"></ng-container>
+        <div *ngIf="showPreviewSection">
+            <app-process-preview
+                [allStepsObject]="allStepsObject"
+            ></app-process-preview>
         </div>
     </div>
 </div>
@@ -58,11 +41,9 @@
 
 
 <ng-template #buttonBar>
-    <div class="button-bar">
-        <div class="left-aligned">
-            <div *ngIf="selectedTab === 'generate'">
-                <button class="button button-secondary" (click)="addDocumentType()">Add Document Type</button>
-            </div>
+    <div class="container-0-button-bar">
+        <div *ngIf="selectedTab === 'generate'">
+            <button class="button button-secondary" (click)="addDocumentType()">Add Document Type</button>
         </div>
         <div>
             <span class="icon-container" (click)="togglePreviewSection()">
@@ -74,7 +55,7 @@
                 </span>
             </span>
         </div>
-        <div class="right-align">
+        <div>
             <div *ngIf="selectedTab === 'generate'">
                 <button class="button button-secondary" (click)="onGenerateProcessSubmit()">Generate</button>
                 <!-- <button class="button button-primary" (click)="publishProcess()">Publish</button> -->
@@ -85,37 +66,29 @@
 
 <ng-template #generate>
     <!-- left section -->
-    <div class="tab">
+    <div>
         <h6>Create New Process</h6>
         <form [formGroup]="generateProcessForm">
-            <div formGroupName="nameAndSteps" class="col input-container">
-                <div class="col-6">
-                    <input class="input-field" type="text" formControlName="name" placeholder="Name"/>
-                </div>
-                <div class="col-6">
-                    <input class="input-field" type="text" formControlName="steps" placeholder="All steps separated by comma"/>
-                </div>
+            <div formGroupName="nameAndSteps">
+                <input class="input-field" type="text" formControlName="name" placeholder="Name"/>
+                <input class="input-field" type="text" formControlName="steps" placeholder="All steps separated by comma"/>
             </div>
 
-            <div formArrayName="documents" class="row input-container">
-                <div *ngFor="let doc of documents.controls; let i=index" [formGroupName]="i" class="row">
-                    <div class="col-4">
-                        Document
-                    </div>
-                    <div class="col">
-                        <select formControlName="documentId" class="select-field select-field-process">
-                            <option *ngFor="let opt of documentTypeIds" [ngValue]="opt">
-                                {{opt}}
-                            </option>
-                        </select>
-                    </div>
+            <div formArrayName="documents">
+                <div *ngFor="let doc of documents.controls; let i=index" [formGroupName]="i">
+                    Document
+                    <select formControlName="documentId" class="select-field select-field-process">
+                        <option *ngFor="let opt of documentTypeIds" [ngValue]="opt">
+                            {{opt}}
+                        </option>
+                    </select>
                 </div>
             </div>
         </form>
     </div>
 
     <!-- right section -->
-    <div class="tab">
+    <div>
         <h6>Select Existing Process</h6>
         <div *ngFor="let processId of processTypeIds">
             <div (click)="selectProcess(processId)">{{processId}}</div>
@@ -198,7 +171,6 @@
 
     </div>
 </ng-template>
-
 
 <ng-template #requirement>
     <!-- left section -->
