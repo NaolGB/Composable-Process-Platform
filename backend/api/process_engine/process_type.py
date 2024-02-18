@@ -134,15 +134,6 @@ class ProcessType:
                 connected_steps.append(step)
                 connected_steps += next_steps
 
-        connected_steps = list(set(connected_steps))
-
-        if (len(connected_steps) == len(all_steps)):
-            self._data['design_status'].append(
-                '01_CONNECTED_NOT_REQUIREMENT_COMPLETED')
-        elif (len(connected_steps) != len(all_steps)):
-            self._data['design_status'].remove(
-                '01_CONNECTED_NOT_REQUIREMENT_COMPLETED')
-
     def validate_and_publish_process(self, process_id, **data):
         # if not unwrapped, data will be passed with a second 'data' wrap while put_process expents and unwraps only one 'data' wrap
         self.put_process(id=process_id, data=data['data'])  
