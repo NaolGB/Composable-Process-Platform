@@ -1,12 +1,17 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(_l%0ehm*p4z#u1n^0ksb2k$&%c0#qu%3esg)*#aybc28gzm%p'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG') == 'True'
 
 ALLOWED_HOSTS = ['host.docker.internal', 'localhost', '127.0.0.1']
 
@@ -22,6 +27,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'process_engine',
+    'secrets',
 
     'django.contrib.admin',
     'django.contrib.auth',

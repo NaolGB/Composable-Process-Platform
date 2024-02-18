@@ -113,7 +113,7 @@ class ProcessType:
             save_action_script_content = self._data['steps'][step]['options']['save']['actions']
             helpers.generate_scripts_folder(destination_folder=output_folder, file_name=f'actions_{step}', file_content=save_action_script_content)
             # clean out code, do not save in db
-            self._data['steps'][step]['options']['save']['actions']
+            self._data['steps'][step]['options']['save']['actions'] = ""
 
 
         if self.is_valid():
@@ -173,6 +173,7 @@ class ProcessType:
             if result.acknowledged:
                 # create the first entry of the process instance to provide easy access to fields for later operations
                 first_entry = self.generate_process_instance_frame(self._data['_id'])
+                first_entry['operations_status'] = '03_TEMPLATE' # to avoid templates in front end adn analytics
                 first_entry['_id'] = f'TEMPLATE---{str(uuid.uuid4())}'
                 self.db.process_instance.insert_one(first_entry)
 

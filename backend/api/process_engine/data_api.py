@@ -57,15 +57,17 @@ class DocumentMasterDataWrapper:
     """
     returns a str(dict) that conforms to the fields of process_instance.document_instances
     """
-    def __init__(self, process_instance_id, document_id, master_data_id, data={}) -> None:
+    def __init__(self, process_instance_id, document_id, lead_object, master_data_id, data={}) -> None:
         self.process_instance_id = process_instance_id
         self.document_id = document_id
+        self.lead_object = lead_object
         self.master_data_id = master_data_id
         self.data = data
         self.type = 'document_master_data_wrapper'
 
         self.metadata = {
             'process_instance_id': self.process_instance_id,
+            'lead_object': self.lead_object,
             'document_id': self.document_id,
             'master_data_id': self.master_data_id,
             'type': self.type

@@ -1,16 +1,19 @@
+import os
+from dotenv import load_dotenv
+
 from rest_framework.decorators import api_view
 from django.http import HttpResponse, JsonResponse
 from process_engine.master_dtype import MasterDtype
 from process_engine.document_type import DocumentType
 from process_engine.process_type import ProcessType
 
-ORGANIZATION = 'SC1'
+load_dotenv()
 
 @api_view(['GET', 'POST'])
 def master_dtype(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        parsed_post_data['organization']=ORGANIZATION
+        parsed_post_data['organization'] = os.environ.get('ORGANIZATION')
         try:
             MasterDtype().create(data=parsed_post_data)
             return JsonResponse({'status': True, 'message':"Master Data Type added succesfully"})
@@ -37,7 +40,7 @@ def single_master_dtype(request, id):
 def document_type(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        parsed_post_data['organization'] = ORGANIZATION
+        parsed_post_data['organization'] = os.environ.get('ORGANIZATION')
         DocumentType().create(data=parsed_post_data)
         return JsonResponse({'message':"success"})
     elif request.method == 'GET':
@@ -58,7 +61,7 @@ def single_document_type(request, id):
 def process(request):
     if request.method == 'POST':
         parsed_post_data = request.data
-        parsed_post_data['organization'] = ORGANIZATION
+        parsed_post_data['organization'] = os.environ.get('ORGANIZATION')
         parsed_post_data['design_status']=['00_GENERATED_NOT_CONNECTION_ADDED'] # creating a new process
         ProcessType().create(data=parsed_post_data)
         return JsonResponse({'message':"success"})

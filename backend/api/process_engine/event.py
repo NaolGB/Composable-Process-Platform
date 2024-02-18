@@ -149,7 +149,6 @@ class ProcessEvent:
         if dtype == 'master_instance':
             raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
         elif dtype == 'process_instance':
-            current_step = data['operations_status']
             # apply manual actions: already applied on `data`
             # apply automated action effects: execute actions -> PATCH process
             docker_client = docker.from_env()
@@ -170,7 +169,13 @@ class ProcessEvent:
                             '$set': {f'document_instances.{document_id}.{k}': v}
                         })
                 elif output['metadata']['type'] == 'document_master_data_wrapper':
-                    pass
+                    for k, v in output['data'].items():
+                        document_id = output['document_id']
+                        lead_object_key = f"{output['lead_object']}s"
+                        master_data_id = output['master_data_id']
+                        self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
+                            '$set': {f'document_instances.{document_id}.{lead_object_key}.{k}': v}
+                        })
                 elif output['metadata']['type'] == 'master_data_wrapper':
                     for k, v in output['data'].items():
                         master_data_id = output['metadata']['master_data_id']
@@ -182,7 +187,6 @@ class ProcessEvent:
                 else:
                     raise helpers.PEPlaceholderError('Unknown wrapper type')
 
-
             # determine next steps: execute transitions -> PATCH process
             docker_client = docker.from_env()
             script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
@@ -192,10 +196,14 @@ class ProcessEvent:
             docker_container_output = helpers.listen_to_docker_container_output(docker_container)
             
             if len(docker_container_output) > 1:
-                print(docker_container_output)
+                # print(docker_container_output)
                 raise helpers.PEPlaceholderError('Morethan 1 next step returned')
             else:
                 data['operations_status'] = docker_container_output[0]
+
+            # update operation_status if the process has ended
+            if data['steps'][data['operations_status']]['edge_status'] == '02_END':
+                data['operations_status'] = '02_END'
             
             # update process intance with all changes
             temp_collection = self.db.process_instance

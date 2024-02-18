@@ -1,10 +1,13 @@
+import os
+from dotenv import load_dotenv
+
 from rest_framework.decorators import api_view
 from django.http import HttpResponse, JsonResponse
 from process_engine.event import ProcessEvent
 from process_engine.process_instance import ProcessInstance
 
-ORGANIZATION = 'SC1'
-USERNAME = 'DEF_USNAM'
+load_dotenv()
+USERNAME = os.environ.get('DEFAULT_USER')
 
 @api_view(['GET', 'POST', 'PUT'])
 def events_data_details(request, dtype, id):
