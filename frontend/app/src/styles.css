@@ -59,3 +59,30 @@ html {
   box-shadow: inset 0 10px 10px -10px rgba(0, 0, 0, 0.2);
   padding: 1%;
 }
+
+
+/* Forms */
+input {
+  padding: 1%;
+}
+select {
+  padding: 1%;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  row-gap: 10px;
+  max-width: max-content;
+}
+.form-sub-container-0 {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  background-color: #985884;
+}
+.form-sub-container-1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
