@@ -16,6 +16,8 @@ html {
   background-color: beige;
   cursor: default;
 }
+
+/* Sidebar */
 .sidebar {
   width: 30%;
   position: fixed;
@@ -68,6 +70,32 @@ html {
   bottom: 50%; /* Keeps the button at the bottom-right of the viewport */
 }
 
+.ops-sidebar-container-0 {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+.ops-sidebar-container-1 {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1%;
+  background-color:darkcyan;
+  overflow-y: auto;
+  height: 100%;
+}
+.ops-sidebar-container-2 {
+  width: 100%;
+  background-color: #985884;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.ops-sidebar-container-3 {
+  display: flex;
+  justify-content: space-between;
+}
+
+
 /* Preview section */
 .preview-section {
   background-color: #323232;
@@ -110,3 +138,28 @@ form {
   flex-direction: row;
   justify-content: space-between;
 }
+
+/* Table */
+.table-container {
+  display: flex;
+  flex-direction: row; /* Change to column to stack rows vertically */
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 1%;
+  width: 100%; /* Ensure the table container fills its parent */
+}
+
+.table-row {
+  border-bottom: 1px solid #000;
+  min-width: 0; /* Allows the element to shrink below its content size if necessary */
+  text-align: left;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Prevents text from wrapping and ensures scrolling */
+  flex-grow: 1; /* Allows the row to grow to fill available space */
+  flex-shrink: 1; /* Allows the row to shrink if needed */
+  flex-basis: 0; /* Initial size of the flex item */
+  padding: 0.5%; /* Optional: Adds some padding inside each row */
+}
+
+

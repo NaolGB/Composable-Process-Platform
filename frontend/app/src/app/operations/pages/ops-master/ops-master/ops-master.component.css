@@ -1,17 +1,17 @@
 .container-0-ops-master {
     display: grid;
-    grid-template-columns: 3fr 9fr;
+    grid-template-columns: 1fr 3fr;
+    height: 100vh;
 }
 
-.table-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1%;
+.container-1-ops-master-left-section {
+    background-color: aqua;
+    height: 100%;
+    overflow-y: auto;
 }
-.table-row {
-    border-bottom: 1px solid #000;
-    width: 100%;
-    min-width: fit-content;
-    text-align: left;
+
+.container-1-ops-master-right-section {
+    background-color:darkcyan;
+    overflow-y: auto;
+    height: 100%;
 }

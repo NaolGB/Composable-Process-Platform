@@ -49,6 +49,23 @@ export class OpsSidebarComponent {
     }
   }
 
+  get formIsValid(): boolean {
+    let valid: boolean = true
+    if (this.sidebarPackage != undefined) {
+      if (this.sidebarPackage.sidebarData != undefined) {
+        Object.keys(this.sidebarPackage.sidebarData).forEach(element => {
+          if (this.sidebarPackage?.sidebarData![element] == undefined) {
+            valid = false
+          }
+          if (String(this.sidebarPackage?.sidebarData![element]).length == 0) {
+            valid = false
+          }
+        })
+      }
+    }
+    return valid
+  }
+
   getSidebarPackageDataReplacement() {
     if (this.selectorOptionValue !== '') {
       if (this.sidebarPackage) {

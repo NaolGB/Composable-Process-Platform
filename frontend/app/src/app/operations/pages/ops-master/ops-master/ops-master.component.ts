@@ -66,6 +66,7 @@ export class OpsMasterComponent {
     if ($event.sidebarType === 'create') {
       this.apiServices.postMasterData(this.masterDataType, $event.sidebarData).subscribe()
     }
+    this.toggleSidebar()
   }
 
   toggleSidebar(): void {

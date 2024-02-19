@@ -1,6 +1,6 @@
 <div class="container-0-ops-master">
     <!-- Navigation section -->
-    <div>
+    <div class="container-1-ops-master-left-section">
         <h3>Master Data</h3>
         <div *ngIf="masterDtypeIdsList$ | async as masterDtypeIdsList; else loading" >
             <div *ngFor="let id of masterDtypeIdsList['ids']" (click)="selectMasterDataById(id)" class="selectable-item">
@@ -11,23 +11,19 @@
     
     
     <!-- Main section -->
-    <div>
+    <div class="container-1-ops-master-right-section">
         <h5>{{masterDataType}}</h5>
-        
         <div *ngIf="masterDataById$ | async as masterDataById; else loading">
             <button (click)="showAuxiliarySectionCreateMasterData(masterDataById['metadata']['columns'], masterDataById['metadata']['columns'])">Add new</button>
-            
             <div class="table-container">
-                <span *ngFor="let columnName of masterDataById['metadata']['columns']" class="table-row">
+                <div *ngFor="let columnName of masterDataById['metadata']['columns']" class="table-row">
                     {{columnName}}
-                </span>
+                </div>
             </div>
-
-
             <div *ngFor="let masterDataEntry of masterDataById['data']" (click)="showAuxiliarySectionCreateMasterData(masterDataById['metadata']['columns'], masterDataById['metadata']['columns'])" class="table-container">
-                <span *ngFor="let columnName of masterDataById['metadata']['columns']" class="table-row" >
+                <div *ngFor="let columnName of masterDataById['metadata']['columns']" class="table-row" >
                     {{masterDataEntry[columnName]}}
-                </span>
+                </div>
             </div>
         </div>
     </div>
