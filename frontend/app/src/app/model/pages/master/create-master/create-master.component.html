@@ -1,97 +1,51 @@
-<div class="container-fluid">
-    <div class="row">
-        <!-- Main section -->
-        <div class="col-12 main-section" [style.height]="getMainSectionHeight()">
-            <div class="scrollable-content-area">
-                <!-- scrollable content container -->
-                <h3>
-                    Add Master Data Type
-                </h3>
-                <div class="row">
-                    <div class="col-md scrollable">
-                        <form [formGroup]="masterDtypeForm">
-                            <div class="row input-container" formGroupName="nameAndType">
-                                <div class="col-3">
-                                    <input class="input-field" type="text" formControlName="name" placeholder="Name"/>
-                                </div>
-                                <div class="col">
-                                    <select class="select-field" disabled="disabled">
-                                        <option value="string">string</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div formArrayName="extraAttributes">
-                                <div class="row input-container" *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i">
-                                    <div class="col-3">
-                                        <input class="input-field" type="text" formControlName="name" placeholder="Attribute Name" />
-                                    </div>
-                                    <div class="col">
-                                        <select class="select-field" formControlName="dtype">
-                                            <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
-                                                {{opt}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-auto showSidebarButton">
-                        <span class="icon-container" (click)="toggleSidebar()">
-                            <span class="material-symbols-outlined">
-                                keyboard_arrow_left
-                            </span>
-                        </span>
-                    </div>
-                </div>   
+<div class="container-0-model-master">
+    <div class="container-1-model-master-main-section">
+        <h3>
+            Add Master Data Type
+        </h3>
+        <form [formGroup]="masterDtypeForm">
+                <div formGroupName="nameAndType" class="form-sub-container-1">
+                    <input type="text" formControlName="name" placeholder="Name"/>
+                    <select disabled="disabled" >
+                        <option value="string">string</option>
+                    </select>
             </div>
-           
-            <div class="button-bar" *ngIf="!showPreviewSection">
-                <!-- button bar -->
-                <div class="left-aligned">
-                    <button class="button button-secondary" (click)="addAttribute()">Add Field</button>
-                </div>
-                <span class="icon-container" (click)="togglePreviewSection()">
-                    <span class="material-symbols-outlined" *ngIf="!showPreviewSection">
-                        keyboard_arrow_up
-                    </span>
-                </span>
-                <div class="right-align">
-                    <button class="button button-primary" (click)="onSubmit()" [disabled]="!masterDtypeForm.valid">Submit</button>
+            <div formArrayName="extraAttributes" class="form-sub-container-0">
+                <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i" class="form-sub-container-1">
+                    <input type="text" formControlName="name" placeholder="Attribute Name" />
+                    <select formControlName="dtype">
+                        <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
+                            {{opt}}
+                        </option>
+                    </select>
                 </div>
             </div>
-        </div>
+        </form>
+    </div>
 
-        <!-- Preview section -->
-        <div *ngIf="showPreviewSection" class="col-12 preview-section" [style.height]="getPreviewSectionHeight()">
-            <div class="button-bar">
-                <div class="left-aligned">
-                    <button class="button button-secondary" (click)="addAttribute()">Add Field</button>
-                </div>
-                <div>
-                    <span class="icon-container" (click)="togglePreviewSection()">
-                        <span class="material-symbols-outlined" *ngIf="showPreviewSection">
-                            keyboard_arrow_down
-                        </span>
-                        <span class="material-symbols-outlined" *ngIf="!showPreviewSection">
-                            keyboard_arrow_up
-                        </span>
+    <div class="col-md-auto showSidebarButton">
+        <span class="icon-container" (click)="toggleSidebar()">
+            <span class="material-symbols-outlined">
+                keyboard_arrow_left
+            </span>
+        </span>
+    </div>
+
+    <div>
+        <ng-container *ngIf="!showPreviewSection; then buttonBar"></ng-container>
+    </div>
+
+    <div *ngIf="showPreviewSection" class="container-1-master-preview-section preview-section" >
+        <ng-container *ngIf="showPreviewSection; then buttonBar"></ng-container>
+        <div *ngIf="showPreviewSection" class="container-1-master-preview-section-preview">
+            <div>
+                <div *ngFor="let field of tempPreviewData | keyvalue">
+                    <span>
+                        <b>{{field.key}}</b>
                     </span>
-                </div>
-                <div class="right-align">
-                    <button class="button button-primary" (click)="onSubmit()" [disabled]="!masterDtypeForm.valid">Submit</button>
-                </div>         
-            </div>
-            <div class="preview-section-preview-content" *ngIf="showPreviewSection">
-                <div class="row">
-                    <div class="col row" *ngFor="let field of tempPreviewData | keyvalue">
-                        <span class="preview-section-row preview-section-top-row">
-                            <b>{{field.key}}</b>
-                        </span>
-                        <span class="preview-section-row">
-                            {{field.value}}
-                        </span>
-                    </div>
+                    <span>
+                        {{field.value}}
+                    </span>
                 </div>
             </div>
         </div>
@@ -107,3 +61,24 @@
 </div>
 <!-- Overlay -->
 <div class="overlay" [class.active-overlay]="showSidebar" (click)="toggleSidebar()"></div>
+
+<ng-template #buttonBar>
+    <div class="container-0-button-bar">
+        <div class="left-aligned">
+            <button class="button button-secondary" (click)="addAttribute()">Add Field</button>
+        </div>
+        <div>
+            <span class="icon-container" (click)="togglePreviewSection()">
+                <span class="material-symbols-outlined" *ngIf="showPreviewSection">
+                    keyboard_arrow_down
+                </span>
+                <span class="material-symbols-outlined" *ngIf="!showPreviewSection">
+                    keyboard_arrow_up
+                </span>
+            </span>
+        </div>
+        <div class="right-align">
+            <button class="button button-primary" (click)="onSubmit()" [disabled]="!masterDtypeForm.valid">Submit</button>
+        </div>
+    </div> 
+</ng-template>

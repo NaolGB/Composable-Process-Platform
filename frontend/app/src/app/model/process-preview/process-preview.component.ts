@@ -22,10 +22,13 @@ export class ProcessPreviewComponent {
   allStepsArray: string [] = []
   allConnectedSteps: string [] = []
   allUnconnectedSteps: string [] = []
+  padding: number = 25; // padding value in pixels
+  internalPadding = 25 // padding between rectangles
 
   constructor(private cd: ChangeDetectorRef, private processPreviewServices: ProcessPreviewService,) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['allStepsObject']) {
@@ -40,13 +43,14 @@ export class ProcessPreviewComponent {
     const canvasElement = this.canvas.nativeElement
     this.canvasHeight = canvasElement.height.baseVal.value
     this.canvasWidth = canvasElement.width.baseVal.value
+    this.allStepsObject =  this.processPreviewServices.getStepsOrder(this.allStepsObject)
 
     this.cd.detectChanges() // detect changes manually because we changed the rectangles' height and width attribute 
   }
 
   getArrowHeadPoints(line:{[key: string]: number}) {
-    let x1 = (this.canvasWidth/(this.numMaxColumns+1)) * line['toColumn'] + this.rectSize - (this.rectSize/3)
-    let y1 = line['toRow'] + this.rectSize - (this.rectSize/3/2)
+    let x1 = (((this.canvasWidth/(this.numMaxColumns+1)) * (line['toColumn'])))- (this.rectSize/3)
+    let y1 = (((((this.canvasHeight/(this.numMaxRows+1)) * (line['toRow']))) + (this.rectSize/2))) - (this.rectSize/3/2)
     let y2 = y1 + (this.rectSize/3)
     let x3 = x1 + (this.rectSize/3)
     let y3 = y1 + ((y2 - y1) / 2)
@@ -55,14 +59,18 @@ export class ProcessPreviewComponent {
   }
 
   get rectSize() {
-    let rectSize = 0
-    if(this.numMaxColumns > this.numMaxRows){
-      rectSize = this.canvasWidth / ((this.numMaxColumns*2)+1)
-    }
-    else {
-      rectSize = this.canvasHeight / ((this.numMaxRows*2)+1)
-    }
-    return rectSize/1.25
+    console.log(this.numMaxRows, this.numMaxColumns)
+    console.log(this.allStepsObject)
+    // Calculate the maximum number of rectangles per row and column
+    const maxRectsPerRow = this.numMaxColumns; // Assuming numMaxColumns accounts for the layout correctly
+    const maxRectsPerColumn = this.numMaxRows; // Assuming numMaxRows accounts for the layout correctly
+
+    // Determine the available width and height per rectangle, considering some padding
+    const availableWidthPerRect = (this.canvasWidth / maxRectsPerRow )- (this.padding * 2);
+    const availableHeightPerRect = (this.canvasHeight / maxRectsPerColumn) - (this.padding * 2);
+
+    // Use the smaller of the two dimensions to ensure rectangles fit both ways
+    return Math.min(availableWidthPerRect, availableHeightPerRect);
   }
 
   get numMaxRows() {
@@ -70,7 +78,7 @@ export class ProcessPreviewComponent {
     for(const step in this.allStepsObject) {
       if(this.allStepsObject[step]['row'] > retVal){retVal=this.allStepsObject[step]['row']}
     }
-    return retVal+1
+    return retVal + 1
   }
 
   get numMaxColumns() {
@@ -78,6 +86,6 @@ export class ProcessPreviewComponent {
     for(const step in this.allStepsObject) {
       if(this.allStepsObject[step]['column'] > retVal){retVal=this.allStepsObject[step]['column']}
     }
-    return retVal+1
+    return retVal + 1
   }
 }

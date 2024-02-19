@@ -9,12 +9,13 @@
     display: grid;
     grid-template-columns: auto auto auto auto auto;
     background-color:bisque;
+    padding: 0.25%;
 }
 
 
 .container-1-model-process-main-section {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 1fr 1fr;
     background-color: aqua;
 }
 .container-2-model-process-main-section-left-tab {
@@ -24,11 +25,27 @@
 .container-2-model-process-main-section-right-tab {
     padding: 1%;
 }
+.container-2-model-process-main-section-left-tab-transition {
+    /* padding: 1%; */
+    background-color: cadetblue;
+}
+.container-2-model-process-main-section-right-tab-transition {
+    /* height: 100%; */
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background-color: aliceblue;
+}
+.container-2-model-process-main-section-right-tab-transition-monaco {
+    height: 100%;
+}
 
 
 .container-1-model-process-preview-section {
     display: grid;
     grid-template-rows: auto auto;
+}
+.container-1-model-process-preview-section-preview {
+    background-color: aliceblue;
 }
 .hidden {
     display: none !important;

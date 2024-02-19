@@ -46,6 +46,26 @@ html {
 .active-sidebar {
   right: 0;
 }
+.sidebar-item-container {
+  transition: background-color 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-item-container:hover,
+.sidebar-item-container:focus {
+  background-color: var(--bg-teritiary);
+  outline: none;
+}
+.showSidebarButton {
+  display: flex;
+  align-items: center; /* Vertically center align */
+  justify-content: flex-end; /* Horizontally right align */
+  /* position: absolute; */
+  /* right: 0; */
+  position: fixed;
+  right: 20px; /* Adjust based on your layout preference */
+  bottom: 50%; /* Keeps the button at the bottom-right of the viewport */
+}
 
 /* Preview section */
 .preview-section {
@@ -58,6 +78,9 @@ html {
   background-size: 30px 30px;
   box-shadow: inset 0 10px 10px -10px rgba(0, 0, 0, 0.2);
   padding: 1%;
+}
+.container-1-model-process-preview-section-preview {
+  margin: 1%;
 }
 
 

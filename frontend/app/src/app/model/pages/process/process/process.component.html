@@ -24,7 +24,7 @@
 
     <div *ngIf="showPreviewSection" class="container-1-model-process-preview-section preview-section" >
         <ng-container *ngIf="showPreviewSection; then buttonBar"></ng-container>
-        <div *ngIf="showPreviewSection">
+        <div *ngIf="showPreviewSection" class="container-1-model-process-preview-section-preview">
             <app-process-preview
                 [allStepsObject]="allStepsObject"
             ></app-process-preview>
@@ -82,7 +82,7 @@
             <div formArrayName="documents" class="form-sub-container-0">
                 <div *ngFor="let doc of documents.controls; let i=index" [formGroupName]="i" class="form-sub-container-1">
                     Document
-                    <select formControlName="documentId" class="select-field select-field-process">
+                    <select formControlName="documentId">
                         <option *ngFor="let opt of documentTypeIds" [ngValue]="opt">
                             {{opt}}
                         </option>
@@ -199,19 +199,24 @@
 
 <ng-template #requirement>
     <!-- left section -->
-    <div>
-        <div *ngFor="let step of allStepsList">
-            <div (click)="selectStep(step)">
-                Step: {{step}} | next steps: 
-                <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+    <div class="container-2-model-process-main-section-left-tab-transition">
+        <div *ngFor="let step of allStepsList" class="connect-steps-container-0">
+            <div (click)="selectStep(step)" class="connect-steps-container-1-steps">
+                {{step}}
+            </div>
+
+            <div class="connect-steps-container-1-next-steps">
+                Step:  | next steps: 
+                <div *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
                         {{nextStep}}
-                </span>
+                </div>
             </div>
         </div>
     </div>
     <!-- right section -->
-    <div>
-        <div *ngIf="selectedStepKey !== ''">
+    <div *ngIf="selectedStepKey !== ''" class="container-2-model-process-main-section-right-tab-transition">
+        Add Transition Logic
+        <div class="container-2-model-process-main-section-right-tab-transition-monaco">
             <app-monaco-editor
                 [allStepsObject]="allStepsObject"
                 [selectedStepKey]="selectedStepKey"
@@ -224,19 +229,25 @@
 
 <ng-template #action>
     <!-- left section -->
-    <div>
-        <div *ngFor="let step of allStepsList">
-            <div (click)="selectStep(step)">
-                Step: {{step}} | next steps: 
-                <span *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+    <div class="container-2-model-process-main-section-left-tab-transition">
+        <div *ngFor="let step of allStepsList" class="connect-steps-container-0">
+            <div (click)="selectStep(step)" class="connect-steps-container-1-steps">
+                {{step}}
+            </div>
+
+            <div class="connect-steps-container-1-next-steps">
+                Step:  | next steps: 
+                <div *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
                         {{nextStep}}
-                </span>
+                </div>
             </div>
         </div>
     </div>
+
     <!-- right section -->
-    <div>
-        <div *ngIf="selectedStepKey !== ''">
+    <div *ngIf="selectedStepKey !== ''" class="container-2-model-process-main-section-right-tab-transition">
+        Add Actions
+        <div class="container-2-model-process-main-section-right-tab-transition-monaco">
             <app-monaco-editor
                 [allStepsObject]="allStepsObject"
                 [selectedStepKey]="selectedStepKey"

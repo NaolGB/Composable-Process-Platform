@@ -64,6 +64,43 @@ export class ProcessPreviewService {
     return lines
   }
 
+  getStartAndEndSteps(allStepsObject: { [key: string]: ProcessStepInterface; }) {
+    // TODO: adopt to TS convention - translated from Python
+    const allStepsArray: string [] = this.getAllStepsArray(allStepsObject)
+    const allConnectedSteps: string [] = this.getConnectedStepsArray(allStepsObject, allStepsArray)
+    const allUnconnectedSteps: string [] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
+
+    const all_steps_progress_count: { [step: string]: { goes_to: number, comes_from: number } } = {};
+
+    for (const step of allStepsArray) {
+      all_steps_progress_count[step] = { goes_to: 0, comes_from: 0 };
+    }
+    
+    for (const step of allConnectedSteps) {
+        const next_steps = allStepsObject[step]['next_steps']['steps'];
+        all_steps_progress_count[step]['goes_to'] = next_steps.length;
+        
+        for (const n_step of next_steps) {
+            all_steps_progress_count[n_step]['comes_from'] += 1;
+        }
+    }
+
+    const startAndEndSteps: {[key: string]: string[]} = {'startSteps': [], 'endSteps': []}
+    for (const step of allConnectedSteps) {
+      if (all_steps_progress_count[step]['goes_to'] === 0) {
+        // allStepsObject[step]['edge_status'] = "02_END";
+            startAndEndSteps['endSteps'].push(step)
+        }
+        if (all_steps_progress_count[step]['comes_from'] === 0) {
+            // allStepsObject[step]['edge_status'] = "01_START";
+            startAndEndSteps['startSteps'].push(step)
+        }
+    }
+
+    console.log(startAndEndSteps)
+    return startAndEndSteps
+  }
+
   getStepsOrder(allStepsObject: { [key: string]: ProcessStepInterface; }) {
     /**
      * Sorts steps into rows and columns for process preview. 
@@ -107,46 +144,44 @@ export class ProcessPreviewService {
     const allConnectedSteps: string [] = this.getConnectedStepsArray(allStepsObject, allStepsArray)
     const allUnconnectedSteps: string [] = allStepsArray.filter(step => !allConnectedSteps.includes(step))
 
-    // find the end steps
-    const endSteps: string [] = []
-    allConnectedSteps.forEach((step: string ) => {
-      if (Object.keys(allStepsObject[step]['next_steps']['steps']).length == 0) {
-        endSteps.push(step)
-      }
-    })
+    // find start steps
+    const startAndEndSteps = this.getStartAndEndSteps(allStepsObject)
 
-    // assign rows and columns to connected steps
-    let prevSteps: string [] = endSteps
     let currentColumn = 0
-    while (prevSteps.length > 0) {
-      const newColumnSteps: string [] = []
-      let currentRow = 0
-      prevSteps.forEach((currS) => {
-        allStepsObject[currS]['row'] = currentRow
-        allStepsObject[currS]['column'] = currentColumn
-        allConnectedSteps.forEach((prevS) => {
-          let prevStep_sNextSteps: string [] = allStepsObject[prevS]['next_steps']['steps']
-          if (prevStep_sNextSteps.includes(currS)) {
-            newColumnSteps.push(prevS)
-          }
+    const startSteps = startAndEndSteps['startSteps']
+    let currentSteps = [...startSteps]
+    
+
+    while (currentSteps.length > 0) {
+      let nextSteps: string[] = []
+      console.log(currentSteps, currentColumn)
+      currentSteps.forEach(step => {
+        allStepsObject[step]['column'] = currentColumn
+
+        // collect next column steps
+        allStepsObject[step].next_steps.steps.forEach(element => {
+          nextSteps.push(element)
         })
+      })
+
+      let currentRow = 0
+      currentSteps.forEach(element => {
+        allStepsObject[element]['row'] = currentRow
         currentRow += 1
       })
-      prevSteps = newColumnSteps
-      currentColumn -= 1
-    }
-    const connectedColumns = Math.abs(currentColumn)
-    // if(connectedColumns > numMaxColumns) {numMaxColumns = connectedColumns}
-    allConnectedSteps.forEach((step) => { // reset columns to start from 0
-      allStepsObject[step]['column'] = allStepsObject[step]['column'] + connectedColumns - 1
-    })
 
-    // assign rows and columns to unconnected steps
+      currentColumn += 1
+      currentSteps = [...nextSteps]
+    }
+
+    const connectedColumns = Math.abs(currentColumn)
+
+    // assign (r, c) to unconnected steps
     if (allUnconnectedSteps.length > 0) {
       const numUnconnectedRows = Math.ceil(Math.sqrt(allUnconnectedSteps.length));
     
-      for (let r = 0; r < numUnconnectedRows; r++) {
-        for (let c = 0; c < numUnconnectedRows; c++) {
+      for (let r = 0; r <= numUnconnectedRows; r++) {
+        for (let c = 0; c <= numUnconnectedRows; c++) {
           const index = r * numUnconnectedRows + c;
     
           if (index < allUnconnectedSteps.length) {
@@ -156,7 +191,8 @@ export class ProcessPreviewService {
         }
       }
     }
-
+    
+    console.log(allStepsObject)
     return allStepsObject
   }
 
