@@ -5,15 +5,15 @@
         </h3>
         <form [formGroup]="masterDtypeForm">
             <div formGroupName="nameAndType" class="form-sub-container-1">
-                <input type="text" formControlName="name" placeholder="Name"/>
+                <input class="input" type="text" formControlName="name" placeholder="Name"/>
                 <select disabled="disabled" >
                     <option value="string">string</option>
                 </select>
             </div>
             <div formArrayName="extraAttributes" class="form-sub-container-0">
                 <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i" class="form-sub-container-1">
-                    <input type="text" formControlName="name" placeholder="Attribute Name" />
-                    <select formControlName="dtype">
+                    <input class="input" type="text" formControlName="name" placeholder="Attribute Name" />
+                    <select class="select" formControlName="dtype">
                         <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
                             {{opt}}
                         </option>

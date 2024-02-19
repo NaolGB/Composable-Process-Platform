@@ -2,13 +2,14 @@
     <div>
         <h3>Design Process</h3>
         <div class="container-1-model-process-tab-bar">
-            <div class="tab-button" (click)="selectTab('generate')">Generate</div>
-            <div class="tab-button" (click)="selectTab('connect')">Connect</div>
-            <div class="tab-button" (click)="selectTab('fields')">Step Type</div>
-            <div class="tab-button" (click)="selectTab('requirement')">Transition</div>
-            <div class="tab-button" (click)="selectTab('action')">Action</div>
+          <div class="tab-button" 
+               *ngFor="let tab of tabs; let i = index" 
+               (click)="selectTab(tab.value)" 
+               [class.tab-button-active]="selectedTab === tab.value">
+            {{ tab.label }}
+          </div>
         </div>
-    </div>
+      </div>
 
     <div class="container-1-model-process-main-section">
         <ng-container *ngIf="selectedTab === 'generate'; then generate"></ng-container>
@@ -60,7 +61,7 @@
         </div>
         <div>
             <div *ngIf="selectedTab === 'generate'">
-                <button class="button button-secondary" (click)="onGenerateProcessSubmit()" [disabled]="!generateProcessForm.valid">Generate</button>
+                <button class="button button-primary" (click)="onGenerateProcessSubmit()" [disabled]="!generateProcessForm.valid">Generate</button>
             </div>
             <div *ngIf="selectedTab !== 'generate'">
                 <button class="button button-primary" (click)="publishProcess()">Publish</button>
@@ -75,14 +76,14 @@
         <h6>Create New Process</h6>
         <form [formGroup]="generateProcessForm">
             <div formGroupName="nameAndSteps" class="form-sub-container-0">
-                <input class="input-field" type="text" formControlName="name" placeholder="Name"/>
-                <input class="input-field" type="text" formControlName="steps" placeholder="All steps separated by comma"/>
+                <input class="input" type="text" formControlName="name" placeholder="Name"/>
+                <input class="input" type="text" formControlName="steps" placeholder="All steps separated by comma"/>
             </div>
 
             <div formArrayName="documents" class="form-sub-container-0">
                 <div *ngFor="let doc of documents.controls; let i=index" [formGroupName]="i" class="form-sub-container-1">
                     Document
-                    <select formControlName="documentId">
+                    <select class="select" formControlName="documentId">
                         <option *ngFor="let opt of documentTypeIds" [ngValue]="opt">
                             {{opt}}
                         </option>
@@ -96,7 +97,7 @@
     <div class="container-2-model-process-main-section-right-tab">
         <h6>Select Existing Process</h6>
         <div *ngFor="let processId of processTypeIds">
-            <div (click)="selectProcess(processId)">{{processId}}</div>
+            <div class="clickable-div " (click)="selectProcess(processId)">{{processId}}</div>
         </div>
     </div>
 </ng-template>
@@ -106,11 +107,11 @@
     <div class="container-2-model-process-main-section-left-tab">
         Step
         <div *ngFor="let step of allStepsList" class="connect-steps-container-0">
-            <div (click)="selectStep(step)" class="connect-steps-container-1-steps">
+            <div  (click)="selectStep(step)" class="connect-steps-container-1-steps clickable-div">
                 {{step}}
             </div>
             <div class="connect-steps-container-1-next-steps">
-                <div *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                <div class="non-clickable-div" *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
                         {{nextStep}}
                 </div>
             </div>
@@ -121,7 +122,7 @@
     <div class="container-2-model-process-main-section-right-tab">
         <div *ngIf="selectedStepKey !== ''">
             Valid Next Steps
-            <div *ngFor="let validNextStep of ValidNextSteps" (click)="addNextStep(validNextStep)">
+            <div class="clickable-div" *ngFor="let validNextStep of ValidNextSteps" (click)="addNextStep(validNextStep)">
                 {{validNextStep}}
             </div>
         </div>

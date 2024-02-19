@@ -8,10 +8,12 @@
     background-color: aqua;
     height: 100%;
     overflow-y: auto;
+    padding: 1%;
 }
 
 .container-1-ops-master-right-section {
     background-color:darkcyan;
     overflow-y: auto;
     height: 100%;
+    padding: 1%;
 }

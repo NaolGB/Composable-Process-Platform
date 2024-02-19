@@ -1,8 +1,33 @@
+:root {
+  /* Primary Palette */
+  --ibm-color-blue-60: #0f62fe; /* Primary interactive color */
+  --ibm-color-gray-100: #161616; /* Used for primary text */
+  --ibm-color-gray-10: #f4f4f4; /* Used for page backgrounds */
+
+  /* Supporting Palette */
+  --ibm-color-red-50: #fa4d56; /* Error states */
+  --ibm-color-green-50: #42be65; /* Success states */
+  --ibm-color-yellow-30: #f1c21b; /* Warning states */
+
+  /* Additional UI Colors */
+  --ibm-color-blue-30: #78a9ff; /* Hover states */
+  --ibm-color-gray-50: #8d8d8d; /* Secondary text */
+  --ibm-color-gray-20: #c6c6c6; /* Borders and dividers */
+
+  --ibm-color-gray-80: #393939; /* Inactive tab text */
+  --ibm-color-white: #ffffff; /* Active tab text */
+  --ibm-color-gray-30: #c6c6c6; /* Hover background */
+}
+
+
 body,
 html {
   font-family: "IBM Plex Sans", sans-serif;
   height: 100%;
   margin: 0;
+  /* background-color: var(--ibm-color-gray-10); */
+  background-color: white;
+  color: var(--ibm-color-gray-100);
 }
 .container-0 {
   display: grid;
@@ -17,6 +42,19 @@ html {
   cursor: default;
 }
 
+/* Icons */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+}
+
+.icon-container {
+  cursor: pointer;
+  margin-bottom: 1%;
+}
+.icon-container :hover {
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 200, "opsz" 24;
+}
+
 /* Sidebar */
 .sidebar {
   width: 30%;
@@ -27,8 +65,9 @@ html {
   transition: right 0.5s;
   z-index: 2;
   padding: 1%;
-  background-color: white;
+  background-color: var(--ibm-color-gray-10); /* Light background for sidebar */
 }
+
 .overlay {
   display: block;
   position: fixed;
@@ -36,38 +75,54 @@ html {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: black;
+  background-color: var(--ibm-color-gray-100); /* Use IBM's gray for overlay */
   z-index: 1;
-  opacity: 0; /* Start with the overlay being transparent */
-  visibility: hidden; /* Start with the overlay not being visible */
-  transition: opacity 0.5s ease, visibility 0.5s; /* Smooth transition for opacity and visibility */
+  opacity: 0; /* Start transparent */
+  visibility: hidden; /* Start hidden */
+  transition: opacity 0.5s ease, visibility 0.5s;
 }
+
 .active-overlay {
-  opacity: 0.2; /* Fully visible when active */
-  visibility: visible; /* Make it visible when active */
+  opacity: 0.5; /* Visible, but not too dark */
+  visibility: visible; /* Make visible */
 }
+
 .active-sidebar {
-  right: 0;
+  right: 0; /* Slide in */
 }
+
+/* Sidebar Item Container Styles */
 .sidebar-item-container {
   transition: background-color 0.3s;
   display: flex;
   flex-direction: column;
 }
+
 .sidebar-item-container:hover,
 .sidebar-item-container:focus {
-  background-color: var(--bg-teritiary);
+  background-color: var(--ibm-color-gray-20); /* Slightly darker on hover/focus */
   outline: none;
 }
+
+.sidebar-item-read,
+.sidebar-item-click {
+  cursor: default;
+  padding: 1%;
+}
+
+.sidebar-item-click:hover {
+  background-color: var(--ibm-color-blue-60); /* Primary interactive color */
+  color: var(--ibm-color-gray-10); /* High contrast text */
+}
+
+/* Show Sidebar Button */
 .showSidebarButton {
   display: flex;
-  align-items: center; /* Vertically center align */
-  justify-content: flex-end; /* Horizontally right align */
-  /* position: absolute; */
-  /* right: 0; */
+  align-items: center;
+  justify-content: flex-end;
   position: fixed;
-  right: 20px; /* Adjust based on your layout preference */
-  bottom: 50%; /* Keeps the button at the bottom-right of the viewport */
+  right: 20px;
+  bottom: 50%;
 }
 
 .ops-sidebar-container-0 {
@@ -79,13 +134,13 @@ html {
   display: flex;
   flex-direction: column;
   row-gap: 1%;
-  background-color:darkcyan;
+  /* background-color:darkcyan; */
   overflow-y: auto;
   height: 100%;
 }
 .ops-sidebar-container-2 {
   width: 100%;
-  background-color: #985884;
+  /* background-color: #985884; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -98,14 +153,16 @@ html {
 
 /* Preview section */
 .preview-section {
-  background-color: #323232;
+  background-color: var(--ibm-color-gray-10);
+  /* Adjusting the pattern to fit IBM's aesthetic; consider a more subtle pattern or solid color */
   background-image: radial-gradient(
     circle,
-    #985884 1px,
+    var(--ibm-color-gray-50) 1px,
     transparent 1px
   );
   background-size: 30px 30px;
-  box-shadow: inset 0 10px 10px -10px rgba(0, 0, 0, 0.2);
+  /* Removing box-shadow for a cleaner look, consistent with IBM's design principles */
+  border-top: 1px solid var(--ibm-color-gray-20);
   padding: 1%;
 }
 .container-1-model-process-preview-section-preview {
@@ -131,7 +188,7 @@ form {
   display: flex;
   flex-direction: column;
   row-gap: 5px;
-  background-color: #985884;
+  /* background-color: #985884; */
 }
 .form-sub-container-1 {
   display: flex;
@@ -163,3 +220,96 @@ form {
 }
 
 
+/* Base Button Style */
+.button {
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 1px;
+  color: white;
+}
+
+/* Primary Button */
+.button-primary {
+  background-color: var(--ibm-color-blue-60);
+  border: 1px solid transparent;
+}
+
+.button-primary:hover,
+.button-primary:focus {
+  background-color: var(--ibm-color-blue-30);
+}
+
+/* Secondary Button */
+.button-secondary {
+  background-color: var(--ibm-color-gray-10);
+  color: var(--ibm-color-gray-100);
+  border: 1px solid var(--ibm-color-gray-50);
+}
+
+.button-secondary:hover,
+.button-secondary:focus {
+  background-color: var(--ibm-color-gray-20);
+}
+
+/* Danger Button */
+.button-danger {
+  background-color: var(--ibm-color-red-50);
+  border: 1px solid transparent;
+}
+
+.button-danger:hover,
+.button-danger:focus {
+  background-color: var(--ibm-color-red-60); /* Assuming --ibm-color-red-60 is a darker shade */
+}
+
+/* Disabled State for All Buttons */
+.button:disabled,
+.button[disabled] {
+  background-color: var(--ibm-color-gray-20); /* Disabled background */
+  color: var(--ibm-color-gray-50); /* Disabled text */
+  cursor: not-allowed; /* Cursor to indicate non-interactivity */
+  border: 1px solid transparent; /* Optionally, adjust the border for disabled state */
+  box-shadow: none; /* Remove any shadow to flatten the appearance */
+}
+
+/* Base Input and Select Style */
+.input,
+.select {
+  padding: 5px 10px;
+  /* background-color: var(--ibm-color-gray-10); */
+  border: 1px solid var(--ibm-color-gray-50);
+  border-radius: 1px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input:hover,
+.select:hover {
+  border-color: var(--ibm-color-gray-20);
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--ibm-color-blue-60);
+  box-shadow: 0 0 0 1px var(--ibm-color-blue-30);
+}
+
+/* Error State for Input and Select */
+.input-error,
+.select-error {
+  border-color: var(--ibm-color-red-50);
+  background-color: var(--ibm-color-red-10); /* Assuming --ibm-color-red-10 is a very light red */
+}
+
+.input-error:focus,
+.select-error:focus {
+  box-shadow: 0 0 0 1px var(--ibm-color-red-50);
+}
+
+/* Placeholder Style */
+::placeholder {
+  color: var(--ibm-color-gray-50);
+}

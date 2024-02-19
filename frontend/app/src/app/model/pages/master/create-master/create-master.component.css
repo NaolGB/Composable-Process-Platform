@@ -5,10 +5,11 @@
 }
 
 .container-1-model-master-main-section {
-    background-color: aqua;
+    /* background-color: aqua; */
     overflow-y: auto;
     overflow-x: hidden;
     margin-bottom: 2%;
+    padding: 1%;
 }
 
 .container-1-master-preview-section {
@@ -17,7 +18,7 @@
     height: 35vh;
 }
 .container-1-master-preview-section-preview {
-    background-color: aliceblue;
+    /* background-color: aliceblue; */
     height: 100%;
 }
 .hidden {
@@ -30,7 +31,9 @@
     grid-template-columns: 1fr auto 1fr;
     margin-top: 0.5%;
     margin-bottom: 0.5%;
-    background-color: darkolivegreen;
+    padding-left: 1%;
+    padding-right: 1%;
+    /* background-color: darkolivegreen; */
 }
 .container-0-button-bar > div:first-child {
     justify-self: start;

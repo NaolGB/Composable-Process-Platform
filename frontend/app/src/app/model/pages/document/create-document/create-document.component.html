@@ -5,11 +5,11 @@
         </h3>
         <form [formGroup]="documentTypeForm">
             <div formGroupName="requiredAttributes" class="form-sub-container-1"> 
-                <input class="input-field" type="text" formControlName="name" placeholder="Name"/>
+                <input class="input" type="text" formControlName="name" placeholder="Name"/>
             </div>
             <div class="form-sub-container-1">
-                Lead Master Data Type:
-                <select (change)="selectLeadObject($event)" class="select-field">
+                <h6>Lead Master Data Type</h6>
+                <select (change)="selectLeadObject($event)" class="select">
                     <option *ngFor="let opt of leadObjectOptions" [ngValue]="opt">
                         {{opt}}
                     </option>
@@ -24,8 +24,8 @@
             <div formArrayName="extraAttributes" class="form-sub-container-0">
                 <b>Document fields</b>
                 <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i" class="form-sub-container-1">
-                    <input type="text" formControlName="name" placeholder="Attribute Name" />
-                    <select formControlName="dtype">
+                    <input class="input" type="text" formControlName="name" placeholder="Attribute Name" />
+                    <select class="select" formControlName="dtype">
                         <option *ngFor="let opt of dtypeOptions" [ngValue]="opt">
                             {{opt}}
                         </option>
@@ -60,7 +60,7 @@
 <div class="sidebar" [class.active-sidebar]="showSidebar">
     <h3>Add fields to edit in-process</h3>
     <div *ngFor="let field of leadObjectFields" >
-        <span class="sidebar-item-click" *ngIf="!editableFields.includes(field)" (click)="addEditableField(field)">{{field}}</span>
+        <div class="sidebar-item-click" *ngIf="!editableFields.includes(field)" (click)="addEditableField(field)">{{field}}</div>
     </div>
 </div>
 <!-- Overlay -->

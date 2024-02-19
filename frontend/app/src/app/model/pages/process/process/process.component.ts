@@ -14,7 +14,16 @@ import { NewProcessProcessTypeInterface, ProcessStepInterface, ProcessTypeInterf
   styleUrl: './process.component.css',
 })
 export class ProcessComponent {
-  selectedTab: string = 'generate';
+  tabs = [
+    { label: 'Generate', value: 'generate' },
+    { label: 'Connect', value: 'connect' },
+    { label: 'Step Type', value: 'fields' },
+    { label: 'Transition', value: 'requirement' },
+    { label: 'Action', value: 'action' }
+  ];
+
+  selectedTab = this.tabs[0].value; // Default to first tab
+
   selectedProcessDocuments: { [key: string]: any } = {}; //  Object for documents as {id: document type data}
 
   // Generate Process tab variables
@@ -68,8 +77,11 @@ export class ProcessComponent {
     });
   }
 
-  selectTab(tabName: string) {
-    this.selectedTab = tabName;
+  // selectTab(tabName: string) {
+  //   this.selectedTab = tabName;
+  // }
+  selectTab(tab: any): void {
+    this.selectedTab = tab;
   }
 
   putProcess() {
