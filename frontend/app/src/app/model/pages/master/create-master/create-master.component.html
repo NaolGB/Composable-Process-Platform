@@ -4,11 +4,11 @@
             Add Master Data Type
         </h3>
         <form [formGroup]="masterDtypeForm">
-                <div formGroupName="nameAndType" class="form-sub-container-1">
-                    <input type="text" formControlName="name" placeholder="Name"/>
-                    <select disabled="disabled" >
-                        <option value="string">string</option>
-                    </select>
+            <div formGroupName="nameAndType" class="form-sub-container-1">
+                <input type="text" formControlName="name" placeholder="Name"/>
+                <select disabled="disabled" >
+                    <option value="string">string</option>
+                </select>
             </div>
             <div formArrayName="extraAttributes" class="form-sub-container-0">
                 <div *ngFor="let attribute of extraAttributes.controls; let i=index" [formGroupName]="i" class="form-sub-container-1">

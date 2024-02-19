@@ -6,8 +6,10 @@
 
 .container-1-model-master-main-section {
     background-color: aqua;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 2%;
 }
-
 
 .container-1-master-preview-section {
     display: grid;
