@@ -134,8 +134,9 @@ export class ProcessComponent {
 
           this.selectedProcessObject['documents'].forEach((element: string) => {
             this.apiServices.getDocumentTypeById(element).subscribe((response) => {
+                // console.log(response)
                 this.selectedProcessDocuments[element] = response;
-                console.log(this.selectedProcessDocuments);
+                // console.log(this.selectedProcessDocuments);
               });
           });
         });
@@ -182,27 +183,25 @@ export class ProcessComponent {
     this.allStepsObject = this.previewServices.getStepsOrder(this.allStepsObject);
     let validNextSteps = this.allStepsList;
 
-    // exculde next steps already included
+    // exculde next steps already included. NOTE the filter statement is not inline function, do not add filter statemetn in {}
     let currenNextSteps: (string)[] = this.allStepsObject[this.selectedStepKey]['next_steps']['steps'];
-
-    // NOTE the filter statement is not inline function, do not add filter statemetn in {}
     validNextSteps = validNextSteps.filter((item) => !currenNextSteps.includes(item));
 
     // exculde current step
     validNextSteps = validNextSteps.filter((item) => item != this.selectedStepKey);
 
+    // TODO: determine whether to allow loops
     // excliude next steps alread before this step
-    let parentSteps: (string)[] = [];
-    Object.keys(this.allStepsObject).forEach((step) => {
-      // unconnected steps will have larger column value so they need to be nopt excluded
-      if (validNextSteps.includes(step) && this.connectedSteps.includes(step)) {
-        if (this.allStepsObject[step]['column'] < this.allStepsObject[this.selectedStepKey]['column']) {
-          parentSteps.push(step);
-        }
-      }
-    });
-
-    validNextSteps = validNextSteps.filter((item) => !parentSteps.includes(item));
+    // let parentSteps: (string)[] = [];
+    // Object.keys(this.allStepsObject).forEach((step) => {
+    //   // unconnected steps will have larger column value so they need to be nopt excluded
+    //   if (validNextSteps.includes(step) && this.connectedSteps.includes(step)) {
+    //     if (this.allStepsObject[step]['column'] < this.allStepsObject[this.selectedStepKey]['column']) {
+    //       parentSteps.push(step);
+    //     }
+    //   }
+    // });
+    // validNextSteps = validNextSteps.filter((item) => !parentSteps.includes(item));
 
     return validNextSteps;
   }

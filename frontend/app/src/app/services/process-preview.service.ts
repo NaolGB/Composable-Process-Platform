@@ -97,7 +97,7 @@ export class ProcessPreviewService {
         }
     }
 
-    console.log(startAndEndSteps)
+    // console.log(startAndEndSteps)
     return startAndEndSteps
   }
 
@@ -154,7 +154,7 @@ export class ProcessPreviewService {
 
     while (currentSteps.length > 0) {
       let nextSteps: string[] = []
-      console.log(currentSteps, currentColumn)
+      // console.log(currentSteps, currentColumn)
       currentSteps.forEach(step => {
         allStepsObject[step]['column'] = currentColumn
 
@@ -192,7 +192,7 @@ export class ProcessPreviewService {
       }
     }
     
-    console.log(allStepsObject)
+    // console.log(allStepsObject)
     return allStepsObject
   }
 

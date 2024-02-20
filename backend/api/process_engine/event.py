@@ -149,13 +149,18 @@ class ProcessEvent:
         if dtype == 'master_instance':
             raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
         elif dtype == 'process_instance':
+            # set docker enviroment variables
+            docker_env_variables = {
+                'DATABASE_URL': 'mysql://user:password@hostname/database',
+                'OTHER_VARIABLE': 'value'
+            }
             # apply manual actions: already applied on `data`
             # apply automated action effects: execute actions -> PATCH process
             docker_client = docker.from_env()
             script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
             volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
             command = f"python actions_{data['operations_status']}.py"
-            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, detach=True, stdout=True)
+            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, environment=docker_env_variables, detach=True, stdout=True)
             docker_container_output = helpers.listen_to_docker_container_output(docker_container)
             
             
@@ -192,7 +197,7 @@ class ProcessEvent:
             script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
             volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
             command = f"python requirements_{data['operations_status']}.py"
-            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, detach=True, stdout=True)
+            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, environment=docker_env_variables, detach=True, stdout=True)
             docker_container_output = helpers.listen_to_docker_container_output(docker_container)
             
             if len(docker_container_output) > 1:

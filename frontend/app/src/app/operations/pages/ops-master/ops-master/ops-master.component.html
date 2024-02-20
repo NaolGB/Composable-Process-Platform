@@ -12,15 +12,17 @@
     
     <!-- Main section -->
     <div class="container-1-ops-master-right-section">
-        <h5>{{masterDataType}}</h5>
         <div *ngIf="masterDataById$ | async as masterDataById; else loading">
-            <button (click)="showAuxiliarySectionCreateMasterData(masterDataById['metadata']['columns'], masterDataById['metadata']['columns'])">Add new</button>
+            <div class="container-2-ops-master-top-bar">
+                <h5>{{masterDataType}}</h5>
+                <button class="button button-secondary" (click)="showAuxiliarySectionCreateMasterData(masterDataById['metadata']['columns'], masterDataById['metadata']['columns'])">Add new {{masterDataType}}</button>
+            </div>
             <div class="table-container">
                 <div *ngFor="let columnName of masterDataById['metadata']['columns']" class="table-row">
                     {{columnName}}
                 </div>
             </div>
-            <div *ngFor="let masterDataEntry of masterDataById['data']" (click)="showAuxiliarySectionCreateMasterData(masterDataById['metadata']['columns'], masterDataById['metadata']['columns'])" class="table-container">
+            <div *ngFor="let masterDataEntry of masterDataById['data']" class="table-container">
                 <div *ngFor="let columnName of masterDataById['metadata']['columns']" class="table-row" >
                     {{masterDataEntry[columnName]}}
                 </div>
@@ -44,7 +46,7 @@
 
 <!-- Optional templates -->
 <ng-template #loading>
-    Loading...
+    Select Master Data
 </ng-template>
 
 <div class="overlay" [class.active-overlay]="showSidebar" (click)="toggleSidebar()"></div>

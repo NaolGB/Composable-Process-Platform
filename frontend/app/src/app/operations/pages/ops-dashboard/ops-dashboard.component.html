@@ -39,10 +39,31 @@
 
 <ng-template #SelectProcessInstance>
     <div *ngIf=" processInstancesByProcessType; else loading">
-        id, process_type, operations_status
-        <button (click)="createNewProcess(processType)">Add New</button>
-        <div *ngFor="let processInstanceEntry of processInstancesByProcessType" (click)="selectProcessInstance(processInstanceEntry._id)">
-            {{processInstanceEntry._id}}, {{processInstanceEntry.process_type}}, {{processInstanceEntry.operations_status}}
+        <div class="container-2-ops-master-top-bar">
+            <h5>Select Process Instance</h5>
+            <button class="button button-secondary" (click)="createNewProcess(processType)">Add New  {{processType}} Process</button>
+        </div>
+        <div class="table-container">
+            <div class="table-row">
+                Process Instance ID
+            </div>
+            <div class="table-row">
+                Process Type
+            </div>
+            <div class="table-row">
+                Operation Status
+            </div>
+        </div>
+        <div *ngFor="let processInstanceEntry of processInstancesByProcessType" (click)="selectProcessInstance(processInstanceEntry._id)" class="table-container">
+            <div class="table-row">
+                {{processInstanceEntry._id}}
+            </div>
+            <div class="table-row">
+                {{processInstanceEntry.process_type}}
+            </div>
+            <div class="table-row">
+                {{processInstanceEntry.operations_status}}
+            </div>
         </div>
     </div>
 </ng-template>

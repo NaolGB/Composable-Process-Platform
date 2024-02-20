@@ -1,4 +1,4 @@
-<div style="height: 35vh;">
+<div style="height: 20vh;">
     <svg #canvas xmlns="http://www.w3.org/2000/svg">
         <!-- rectangles -->
         <g *ngFor="let step of allStepsObject | keyvalue">
@@ -35,13 +35,3 @@
         </g>
     </svg>
 </div>
-
-
-<!-- <line  
-[attr.x1]="canvasWidth/(numMaxColumns+1) * line.value.fromColumn + ((line.value.fromColumn + 2)*rectSize)" 
-[attr.y1]="(line.value.fromRow+1)*(rectSize)" 
-[attr.x2]="canvasWidth/(numMaxColumns+1) * line.value.toColumn + (rectSize)" 
-[attr.y2]="(line.value.toRow+1)*(rectSize)" 
-stroke="black" 
-stroke-width="2" 
-/> -->

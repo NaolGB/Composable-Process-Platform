@@ -59,8 +59,8 @@ export class ProcessPreviewComponent {
   }
 
   get rectSize() {
-    console.log(this.numMaxRows, this.numMaxColumns)
-    console.log(this.allStepsObject)
+    // console.log(this.numMaxRows, this.numMaxColumns)
+    // console.log(this.allStepsObject)
     // Calculate the maximum number of rectangles per row and column
     const maxRectsPerRow = this.numMaxColumns; // Assuming numMaxColumns accounts for the layout correctly
     const maxRectsPerColumn = this.numMaxRows; // Assuming numMaxRows accounts for the layout correctly

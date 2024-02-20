@@ -15,15 +15,15 @@
         <div *ngIf="sidebarPackage.sidebarData">
             <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
                 <div *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
-                    {{entry.key}}: <input type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                    {{entry.key}}: <input class="input" type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
                 </div>
                 <div *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
                     {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
                 </div>                
             </div>
         </div>
-        <div>
-            <button (click)="onClickSave()" [disabled]="!formIsValid">Save</button>
+        <div class="ops-sidebar-action-button-bar">
+            <button class="button button-primary" (click)="onClickSave()" [disabled]="!formIsValid">Save</button>
         </div>
     </div>
 
@@ -32,15 +32,15 @@
         <div *ngIf="sidebarPackage.sidebarData" class="ops-sidebar-container-1">
             <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry" class="ops-sidebar-container-2">
                 <div *ngIf="sidebarPackage.content.editableFields.includes(entry.key)" class="ops-sidebar-container-3">
-                    {{entry.key}}: <input type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                    {{entry.key}}: <input class="input" type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
                 </div>
                 <div *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
                     {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
                 </div>                
             </div>
         </div>
-        <div>
-            <button (click)="onClickSave()" [disabled]="!formIsValid">Save</button>
+        <div class="ops-sidebar-action-button-bar">
+            <button class="button button-primary" (click)="onClickSave()" [disabled]="!formIsValid">Save</button>
         </div>
     </div>
 
@@ -49,7 +49,7 @@
             Create New
         </h3>
         <div *ngIf="sidebarPackage.selector.selectorType === 'master_instance'">
-            <select name="create_selector" [(ngModel)]="selectorOptionValue" (change)="getSidebarPackageDataReplacement()">
+            <select class="select" name="create_selector" [(ngModel)]="selectorOptionValue" (change)="getSidebarPackageDataReplacement()">
                 <option *ngFor="let opt of selectorOptionsIds" [value]="opt">
                     {{opt}}
                 </option>
@@ -58,7 +58,7 @@
             <div *ngIf="sidebarPackage.sidebarData">
                 <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
                     <div *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
-                        {{entry.key}}: <input type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                        {{entry.key}}: <input class="input" type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
                     </div>
                     <div *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
                         {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
@@ -66,8 +66,8 @@
                 </div>
             </div>
         </div>
-        <div>
-            <button (click)="onClickSave()" [disabled]="!formIsValid">Save</button>
+        <div class="ops-sidebar-action-button-bar">
+            <button class="button button-primary" (click)="onClickSave()" [disabled]="!formIsValid">Save</button>
         </div>
     </div>
     

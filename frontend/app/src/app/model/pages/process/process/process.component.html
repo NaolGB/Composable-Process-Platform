@@ -97,7 +97,7 @@
     <div class="container-2-model-process-main-section-right-tab">
         <h6>Select Existing Process</h6>
         <div *ngFor="let processId of processTypeIds">
-            <div class="clickable-div " (click)="selectProcess(processId)">{{processId}}</div>
+            <div class="clickable-div" (click)="selectProcess(processId)">{{processId}}</div>
         </div>
     </div>
 </ng-template>
@@ -134,21 +134,17 @@
     <div class="container-2-model-process-main-section-left-tab">
         Step
         <div *ngFor="let step of allStepsList" class="field-types-container-0">
-            <div (click)="selectStep(step)" class="field-types-container-1-steps">
-                <div>
-                    {{step}}
-                </div>
-                <div>
-                    {{selectedProcessObject.steps[step].event_type}}
-                </div>
-                <div class="field-types-container-2-fields">
-                    <div *ngFor="let documentId of selectedProcessObject.steps[step].fields | keyvalue" class="field-types-container-3-fields">
-                        <div *ngFor="let field of selectedProcessObject.steps[step].fields[documentId.key].document_fields">
-                            {{field}}
-                        </div>
-                        <div *ngFor="let field of selectedProcessObject.steps[step].fields[documentId.key].lead_object_fields">
-                            {{field}}
-                        </div>
+            <div (click)="selectStep(step)" class="field-types-container-11 clickable-div">
+                {{step}}
+                [{{selectedProcessObject.steps[step].event_type}}]
+            </div>
+            <div class="field-types-container-12">
+                <div *ngFor="let documentId of selectedProcessObject.steps[step].fields | keyvalue" class="field-types-container-20">
+                    <div *ngFor="let field of selectedProcessObject.steps[step].fields[documentId.key].document_fields" class="non-clickable-div">
+                        {{field}}
+                    </div>
+                    <div *ngFor="let field of selectedProcessObject.steps[step].fields[documentId.key].lead_object_fields" class="non-clickable-div">
+                        {{field}}
                     </div>
                 </div>
             </div>
@@ -157,11 +153,11 @@
 
     <!-- right section -->
     <div class="container-2-model-process-main-section-right-tab">
-        Select Step Type
+        Select Step Type for <b>{{selectedStepKey}}</b>
         <div *ngIf="selectedStepKey !== ''" class="container-2-model-process-main-section-right-tab-button-bar">
-            <button (click)="selectEventType('create')">Create</button>
-            <button (click)="selectEventType('read')">Read</button>
-            <button (click)="selectEventType('update')">Update</button>
+            <button class="button button-secondary" (click)="selectEventType('create')">Create</button>
+            <button class="button button-secondary" (click)="selectEventType('read')">Read</button>
+            <button class="button button-secondary" (click)="selectEventType('update')">Update</button>
         </div>
 
         <div *ngIf="selectedEventType === 'update'">
@@ -170,9 +166,9 @@
                 <div 
                     *ngFor="let extraAttribute of document.value.attributes | keyvalue"
                     (click)="addUpdateDocumentField(document.key, extraAttribute.key)"
-                    class="connect-steps-container-1-steps"
+                    class="clickable-div"
                 >
-                    {{document.value.name}} -> {{extraAttribute.key}}
+                    {{extraAttribute.key}}
                 </div>
             </div>
             Update Master Data Fields
@@ -180,8 +176,9 @@
                 <div 
                     *ngFor="let field of document.value.editable_fields"
                     (click)="addUpdateSourceField(document.key, field)"
+                    class="clickable-div"
                 >
-                    {{document.value.lead_object}} -> {{field}}
+                    {{field}}
                 </div>
             </div>
         </div>
@@ -190,7 +187,7 @@
             <div 
                 *ngFor="let document of selectedProcessDocuments | keyvalue"
                 (click)="addCreateDocumentField(document.key)"
-                class="connect-steps-container-1-steps"
+                class="clickable-div"
             >
                 {{document.value.name}}
             </div>
@@ -200,22 +197,21 @@
 
 <ng-template #requirement>
     <!-- left section -->
-    <div class="container-2-model-process-main-section-left-tab-transition">
+    <div class="container-2-model-process-main-section-left-tab">
         <div *ngFor="let step of allStepsList" class="connect-steps-container-0">
-            <div (click)="selectStep(step)" class="connect-steps-container-1-steps">
+            <div (click)="selectStep(step)" class="connect-steps-container-1-steps clickable-div">
                 {{step}}
             </div>
 
             <div class="connect-steps-container-1-next-steps">
-                Step:  | next steps: 
-                <div *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                <div *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']" class="non-clickable-div">
                         {{nextStep}}
                 </div>
             </div>
         </div>
     </div>
     <!-- right section -->
-    <div *ngIf="selectedStepKey !== ''" class="container-2-model-process-main-section-right-tab-transition">
+    <div *ngIf="selectedStepKey !== ''" class="container-2-model-process-main-section-right-tab">
         Add Transition Logic
         <div class="container-2-model-process-main-section-right-tab-transition-monaco">
             <app-monaco-editor
@@ -230,15 +226,14 @@
 
 <ng-template #action>
     <!-- left section -->
-    <div class="container-2-model-process-main-section-left-tab-transition">
+    <div class="container-2-model-process-main-section-left-tab">
         <div *ngFor="let step of allStepsList" class="connect-steps-container-0">
-            <div (click)="selectStep(step)" class="connect-steps-container-1-steps">
+            <div (click)="selectStep(step)" class="connect-steps-container-1-steps clickable-div">
                 {{step}}
             </div>
 
             <div class="connect-steps-container-1-next-steps">
-                Step:  | next steps: 
-                <div *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']">
+                <div *ngFor="let nextStep of allStepsObject[step]['next_steps']['steps']" class="non-clickable-div">
                         {{nextStep}}
                 </div>
             </div>
@@ -246,7 +241,7 @@
     </div>
 
     <!-- right section -->
-    <div *ngIf="selectedStepKey !== ''" class="container-2-model-process-main-section-right-tab-transition">
+    <div *ngIf="selectedStepKey !== ''" class="container-2-model-process-main-section-right-tab">
         Add Actions
         <div class="container-2-model-process-main-section-right-tab-transition-monaco">
             <app-monaco-editor

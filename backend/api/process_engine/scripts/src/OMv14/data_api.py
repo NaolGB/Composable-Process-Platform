@@ -3,18 +3,7 @@ import requests
 BASE_URL = 'http://host.docker.internal:8000' 
 # BASE_URL = 'http://localhost:8000'
 
-# Set enviroment variables to use get process_instance_id and process_type
-    # set these values on the enviroment of the container from where ever data_api classes
-    # and/or their functions are called
 
-# =============== Caution ===============
-
-# NOTE: In order to avoid circular calls
-# 1. There should be no POST, PUT, PATCH requests made from this or it's child methods
-# 2. No method that has GET requests should use this file's classes or their methods
-# Unless extremely neccesary, respect these rules. If you need to break them, be careful not t cause infinite call stack
-
-# =============== Caution ===============
 class DocumentWrapper:
     """
     returns a str(dict) that conforms to the fields of process_instance.document_instances
