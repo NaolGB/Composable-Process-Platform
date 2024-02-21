@@ -149,62 +149,94 @@ class ProcessEvent:
         if dtype == 'master_instance':
             raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
         elif dtype == 'process_instance':
+            """
+            docker communication
+            1. create a unique folder in process_type/logs/process_instance with given uuid for folder name
+            2. mount the process_type/ folder
+            3. in the docker container, write every log into the unique folder
+            4. once the docker completes, read the unique folder in this method
+            """
+            process_instance_id = data['_id']
+            docker_instance_log_uuid = str(uuid.uuid4())
+            script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
+            log_path = f"{script_final_path}logs/{process_instance_id}/{docker_instance_log_uuid}/"
+            os.makedirs(log_path, exist_ok=True)
+
+            # Constructing the relative path for logs inside the Docker container
+            relative_log_path = f"logs/{process_instance_id}/{docker_instance_log_uuid}/"
+            docker_scope_log_path = os.path.join('/app', relative_log_path)
+            
             # set docker enviroment variables
             docker_env_variables = {
-                'DATABASE_URL': 'mysql://user:password@hostname/database',
-                'OTHER_VARIABLE': 'value'
+                'process_instance_id': process_instance_id,
+                'process_type': data['process_type'],
+                'log_path': docker_scope_log_path
             }
             # apply manual actions: already applied on `data`
             # apply automated action effects: execute actions -> PATCH process
-            docker_client = docker.from_env()
-            script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
-            volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
-            command = f"python actions_{data['operations_status']}.py"
-            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, environment=docker_env_variables, detach=True, stdout=True)
-            docker_container_output = helpers.listen_to_docker_container_output(docker_container)
+            # docker_client = docker.from_env()
+            # script_final_path = script_final_path
+            # volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
+            # command = f"python actions_{data['operations_status']}.py"
+            # docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, environment=docker_env_variables, detach=True, stdout=True)
+            # docker_container_output = helpers.listen_to_docker_container_output(docker_container)
             
             
-            for output in docker_container_output:
-                output = ast.literal_eval(output) # json.loads requires  double quoted key values but ast.literal_evel takes evalyuates the str(dict) as dict
+            # for output in docker_container_output:
+            #     output = ast.literal_eval(output) # json.loads requires  double quoted key values but ast.literal_evel takes evalyuates the str(dict) as dict
                 
-                if output['metadata']['type'] == 'document_wrapper':
-                    for k, v in output['data'].items():
-                        document_id = output['document_id']
-                        self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
-                            '$set': {f'document_instances.{document_id}.{k}': v}
-                        })
-                elif output['metadata']['type'] == 'document_master_data_wrapper':
-                    for k, v in output['data'].items():
-                        document_id = output['document_id']
-                        lead_object_key = f"{output['lead_object']}s"
-                        master_data_id = output['master_data_id']
-                        self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
-                            '$set': {f'document_instances.{document_id}.{lead_object_key}.{k}': v}
-                        })
-                elif output['metadata']['type'] == 'master_data_wrapper':
-                    for k, v in output['data'].items():
-                        master_data_id = output['metadata']['master_data_id']
-                        master_data_type = output['metadata']['master_data_type']
-                        temp_collection = self.db[f'{master_data_type}']
-                        temp_collection.update_one({'_id': master_data_id}, {
-                            '$set': {k: v}
-                        })
-                else:
-                    raise helpers.PEPlaceholderError('Unknown wrapper type')
+            #     if output['metadata']['type'] == 'document_wrapper':
+            #         for k, v in output['data'].items():
+            #             document_id = output['document_id']
+            #             self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
+            #                 '$set': {f'document_instances.{document_id}.{k}': v}
+            #             })
+            #     elif output['metadata']['type'] == 'document_master_data_wrapper':
+            #         for k, v in output['data'].items():
+            #             document_id = output['document_id']
+            #             lead_object_key = f"{output['lead_object']}s"
+            #             master_data_id = output['master_data_id']
+            #             self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
+            #                 '$set': {f'document_instances.{document_id}.{lead_object_key}.{k}': v}
+            #             })
+            #     elif output['metadata']['type'] == 'master_data_wrapper':
+            #         for k, v in output['data'].items():
+            #             master_data_id = output['metadata']['master_data_id']
+            #             master_data_type = output['metadata']['master_data_type']
+            #             temp_collection = self.db[f'{master_data_type}']
+            #             temp_collection.update_one({'_id': master_data_id}, {
+            #                 '$set': {k: v}
+            #             })
+            #     else:
+            #         raise helpers.PEPlaceholderError('Unknown wrapper type')
 
             # determine next steps: execute transitions -> PATCH process
-            docker_client = docker.from_env()
-            script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
-            volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
-            command = f"python requirements_{data['operations_status']}.py"
-            docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, environment=docker_env_variables, detach=True, stdout=True)
-            docker_container_output = helpers.listen_to_docker_container_output(docker_container)
+            transition_docker_client = docker.from_env()
+            transition_script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
+            transition_volumes = {transition_script_final_path: {'bind': '/app', 'mode': 'rw'}}
+            transition_command = f"python requirements_{data['operations_status']}.py"
+            docker_container = transition_docker_client.containers.run(
+                'scripts', 
+                command=transition_command,
+                volumes=transition_volumes, 
+                environment=docker_env_variables, 
+                detach=False,  # run syncronously because we are reading values form mounted volume in the next code blocks
+                stdout=True
+            )
             
-            if len(docker_container_output) > 1:
+            docker_container_output = ""
+            for filename in os.listdir(log_path):
+                file_path = os.path.join(log_path, filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, 'r') as file:
+                        docker_container_output += file.read()
+                    file.close()
+            
+            if len(docker_container_output) > 0:
                 # print(docker_container_output)
-                raise helpers.PEPlaceholderError('Morethan 1 next step returned')
+                data['operations_status'] = docker_container_output
             else:
-                data['operations_status'] = docker_container_output[0]
+                raise helpers.PEPlaceholderError('Morethan 1 next step returned')
 
             # update operation_status if the process has ended
             if data['steps'][data['operations_status']]['edge_status'] == '02_END':

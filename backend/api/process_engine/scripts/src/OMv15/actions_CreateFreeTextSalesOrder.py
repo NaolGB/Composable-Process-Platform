@@ -1,12 +1,12 @@
 import json
 from openai import OpenAI
-from data_api import DocumentWrapper, DocumentApi, DocumentMasterDataWrapper, DocumentMasterDataApi, MasterDataWrapper, MasterDataApi
+from data_api import DocumentApi, utils
 
 api_key='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'
 client = OpenAI(api_key=api_key)
 
 def action():
-    free_text = DocumentApi(process_type='OMv15', process_instance_id='')
+    free_text = DocumentApi(document_id='SOv15').get_document_dict()['FreeText']
     response = client.chat.completions.create(
     model="gpt-3.5-turbo-0125",
     response_format={ "type": "json_object" },
@@ -21,12 +21,12 @@ def action():
             },
             {
                 "role": "user",
-                "content": "Hey, its Jack Drove, please send me 35 bananas, 5 standing desks, and 2500 notebooks"
+                "content": f"{free_text}"
             }
     ]
     )
     json_response = json.loads(response.choices[0].message.content)
-    return json_response
+    utils().log(json_response)
 
 if __name__ == '__main__':
     action()

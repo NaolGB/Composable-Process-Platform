@@ -83,11 +83,12 @@ def read_py_files(destination_folder, file_name):
         return content
     except:
         return PEPlaceholderError('This is a placeholder error form helpers.read_py_files()')
-    
-def listen_to_docker_container_output(container):
-    output = []
-    for line in container.attach(stdout=True, stream=True, logs=True):
-        for line_elem in line.strip().decode('utf-8').split('\n'):
-            output.append(line_elem)
 
-    return output
+# DEPRECIATED use data_api.utils.log
+# def listen_to_docker_container_output(container):
+#     output = []
+#     for line in container.attach(stdout=True, stream=True, logs=True):
+#         for line_elem in line.strip().decode('utf-8').split('\n'):
+#             output.append(line_elem)
+
+#     return output

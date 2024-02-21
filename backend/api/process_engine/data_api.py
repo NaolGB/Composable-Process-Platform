@@ -1,7 +1,14 @@
+import os
+import uuid
 import requests
 
 BASE_URL = 'http://host.docker.internal:8000' 
 # BASE_URL = 'http://localhost:8000'
+
+# Access the environment variable by its name
+PROCESS_INSTANCE_ID = os.environ.get('process_instance_id')
+PROCESS_TYPE = os.environ.get('process_type')
+LOG_PATH = os.environ.get('log_path')
 
 # Set enviroment variables to use get process_instance_id and process_type
     # set these values on the enviroment of the container from where ever data_api classes
@@ -19,9 +26,9 @@ class DocumentWrapper:
     """
     returns a str(dict) that conforms to the fields of process_instance.document_instances
     """
-    def __init__(self, process_type, process_instance_id, document_id, data={}) -> None:
-        self.process_type = process_type
-        self.process_instance_id = process_instance_id
+    def __init__(self, document_id, data={}) -> None:
+        self.process_type = PROCESS_TYPE
+        self.process_instance_id = PROCESS_INSTANCE_ID
         self.document_id = document_id
         self.data = data
         self.type = 'document_wrapper'
@@ -35,15 +42,15 @@ class DocumentWrapper:
 
     def __str__(self) -> str:
         return str({'metadata': self.metadata, 'data': self.data})
-    
+
 class DocumentApi:
     """
     affects the fields of document of a process instance as pandas DataFrame
     """
-    def __init__(self, process_type, process_instance_id, document_id):
+    def __init__(self, document_id):
         self._data = {}
-        self.process_instance_id = process_instance_id
-        self.process_type = process_type
+        self.process_instance_id = PROCESS_INSTANCE_ID
+        self.process_type = PROCESS_TYPE
         self.document_id = document_id
         self.document = None
 
@@ -68,8 +75,8 @@ class DocumentMasterDataWrapper:
     """
     returns a str(dict) that conforms to the fields of process_instance.document_instances
     """
-    def __init__(self, process_instance_id, document_id, lead_object, master_data_id, data={}) -> None:
-        self.process_instance_id = process_instance_id
+    def __init__(self, document_id, lead_object, master_data_id, data={}) -> None:
+        self.process_instance_id = PROCESS_INSTANCE_ID
         self.document_id = document_id
         self.lead_object = lead_object
         self.master_data_id = master_data_id
@@ -91,10 +98,10 @@ class DocumentMasterDataApi:
     """
     returns fields of master data of document of a process instance as dict
     """
-    def __init__(self, process_type, process_instance_id, document_id):
+    def __init__(self, document_id):
         self._data = {}
-        self.process_type = process_type
-        self.process_instance_id = process_instance_id
+        self.process_type = PROCESS_TYPE
+        self.process_instance_id = PROCESS_INSTANCE_ID
         self.document_id = document_id
         self.document_master_data = None
 
@@ -159,3 +166,15 @@ class MasterDataApi:
                     self.master_data = master
         
         return self.master_data
+    
+
+class utils:
+    def __init__(self) -> None:
+        pass
+
+    def log(self, text):
+        """logs passed string value to the unique log folder"""
+        with open(f"{LOG_PATH}{str(uuid.uuid4())}.txt", "w") as file:
+            file.write(text)
+        file.close()
+
