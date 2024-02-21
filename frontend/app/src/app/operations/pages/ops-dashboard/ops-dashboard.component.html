@@ -73,7 +73,7 @@
         <span *ngIf="processInstance.operations_status === '00_PROCESS_CREATED'">
             Select Start Step
             <div *ngFor="let step of startSteps">
-                <span (click)="selectStartStep(step)">{{step}}</span>
+                <div (click)="selectStartStep(step)" class="clickable-div">{{step}}</div>
             </div>
         </span>
     </span>
@@ -81,19 +81,37 @@
 
 <ng-template #PerformOperations>
     <span *ngIf="processInstance">
-        <div>
-            Step: {{processInstance.operations_status}}
+        <div class="container-2-ops-master-top-bar">
+            <div>
+                Step: <b>{{processInstance.operations_status}}</b>
+            </div>
         </div>
 
         <span *ngIf="processInstance.steps[processInstance.operations_status].event_type === 'create'">
-            Create Document
-            <div *ngFor="let document of processInstance.steps[processInstance.operations_status].fields | keyvalue">
-                Documnet: {{document.key}}
-                <button (click)="showAuxiliarySectionCreateDocumnent(document.key)">Document Create New / Update</button>
-                <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue">
-                    <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object', 'lead_object_fields'].includes(field.key)">
-                        {{field | json}}
-                    </span>
+            <div class="container-2-ops-master-top-bar">
+                Create Document
+            </div>
+            
+            <div *ngFor="let document of processInstance.steps[processInstance.operations_status].fields | keyvalue" class="container-3-ops-dashboard-tables-container">
+                <div>
+                    <div class="container-2-ops-master-top-bar">
+                        <p>Documnet: <b>{{document.key}}</b></p>
+                        <button class="button button-secondary" (click)="showAuxiliarySectionCreateDocumnent(document.key)">Document Create New / Update</button>
+                    </div>
+                    <div class="table-container">
+                        <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue" class="table-row">
+                            <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object', 'lead_object_fields'].includes(field.key)">
+                                {{field.key}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <div *ngFor="let field of processInstance.document_instances[document.key] | keyvalue" class="table-row">
+                            <span *ngIf="![processInstance.document_instances[document.key].lead_object + 's', 'lead_object', 'lead_object_fields'].includes(field.key)">
+                                {{field.value}}
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 Master data: {{processInstance.document_instances[document.key].lead_object}}
@@ -119,13 +137,13 @@
                     </span>
                 </div>
 
-                <!-- Master data: {{processInstance.document_instances[document.key].lead_object}}
+                Master data: {{processInstance.document_instances[document.key].lead_object}}
                 <div 
                     *ngFor="let masterData of processInstance.document_instances[document.key][
                             processInstance.document_instances[document.key].lead_object + 's'] | keyvalue"
                 >
                     {{masterData.key}} | {{masterData.value | json}}
-                </div> -->
+                </div>
             </div>
         </span>
 

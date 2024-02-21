@@ -298,3 +298,46 @@ form {
 ::placeholder {
   color: var(--ibm-color-gray-50);
 }
+
+/* Clickable div */
+.clickable-div {
+  cursor: pointer;
+  padding: 1%;
+  width: max-content;
+  background-color: var(--ibm-color-gray-10); /* Light background for clickable div */
+  color: var(--ibm-color-gray-100); /* Dark text for readability */
+  border-radius: 1px;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.clickable-div:hover {
+  background-color: var(--ibm-color-gray-30); /* Slightly darker on hover for feedback */
+  color: var(--ibm-color-blue-60); /* Change text color to indicate interactivity */
+}
+
+.clickable-div:active {
+  transform: scale(0.98); /* Slight press effect */
+  background-color: var(--ibm-color-blue-60); /* More pronounced color change on active */
+  color: var(--ibm-color-white); /* Ensure text is readable on active state */
+}
+
+/* Non-clickable div */
+.non-clickable-div {
+  padding: 1%;
+  /* margin: 1%; */
+  width: max-content;
+  background-color: var(--ibm-color-gray-20); /* Light background for consistency */
+  border-radius: 1px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Optionally, if you want a slight visual difference to signify non-clickability */
+.non-clickable-div {
+  opacity: 0.8; /* Slightly faded appearance */
+}
+.non-clickable-div-container-group {
+  padding: 1%;
+  margin: 1%;
+  background-color: var(--ibm-color-gray-20); /* Slightly darker background for the group */
+  border-radius: 1px;
+}

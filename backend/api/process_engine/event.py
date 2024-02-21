@@ -150,38 +150,69 @@ class ProcessEvent:
             raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
         elif dtype == 'process_instance':
             """
+            Steps:
+                1. Put the data, as returned, first to provide for any subsequent docker runs that get the data 
+                2. run actions in docker
+                3. apply actions from docker's log
+                4. run transition in docker
+                5. apply transition in docker's log
+                6. check if operations_status is 02_END
+                7. put process
+
             docker communication
             1. create a unique folder in process_type/logs/process_instance with given uuid for folder name
             2. mount the process_type/ folder
             3. in the docker container, write every log into the unique folder
             4. once the docker completes, read the unique folder in this method
             """
+            # update process intance with all changes
+            temp_collection = self.db.process_instance
+            result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
+            temp_collection = None
+
+            if result.acknowledged != True: 
+                raise helpers.PEPlaceholderError('initial PUT failed')
+            
+
             process_instance_id = data['_id']
             docker_instance_log_uuid = str(uuid.uuid4())
             script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
-            log_path = f"{script_final_path}logs/{process_instance_id}/{docker_instance_log_uuid}/"
-            os.makedirs(log_path, exist_ok=True)
+
+            actions_log_path = f"{script_final_path}logs/{process_instance_id}/{docker_instance_log_uuid}/actions/"
+            os.makedirs(actions_log_path, exist_ok=True)
+
+            transition_log_path = f"{script_final_path}logs/{process_instance_id}/{docker_instance_log_uuid}/transition/"
+            os.makedirs(transition_log_path, exist_ok=True)
 
             # Constructing the relative path for logs inside the Docker container
-            relative_log_path = f"logs/{process_instance_id}/{docker_instance_log_uuid}/"
-            docker_scope_log_path = os.path.join('/app', relative_log_path)
-            
-            # set docker enviroment variables
-            docker_env_variables = {
+            actions_relative_log_path = f"logs/{process_instance_id}/{docker_instance_log_uuid}/actions/"
+            actions_docker_scope_log_path = os.path.join('/app', actions_relative_log_path)
+            actions_docker_env_variables = {
                 'process_instance_id': process_instance_id,
                 'process_type': data['process_type'],
-                'log_path': docker_scope_log_path
+                'log_path': actions_docker_scope_log_path
             }
-            # apply manual actions: already applied on `data`
-            # apply automated action effects: execute actions -> PATCH process
-            # docker_client = docker.from_env()
-            # script_final_path = script_final_path
-            # volumes = {script_final_path: {'bind': '/app', 'mode': 'rw'}}
-            # command = f"python actions_{data['operations_status']}.py"
-            # docker_container = docker_client.containers.run('scripts', command=command, volumes=volumes, environment=docker_env_variables, detach=True, stdout=True)
-            # docker_container_output = helpers.listen_to_docker_container_output(docker_container)
-            
-            
+            actions_docker_client = docker.from_env()
+            actions_final_path = script_final_path
+            actions_volumes = {actions_final_path: {'bind': '/app', 'mode': 'rw'}}
+            actions_command = f"python actions_{data['operations_status']}.py"
+            actions_docker_container = actions_docker_client.containers.run(
+                'scripts', 
+                command=actions_command, 
+                volumes=actions_volumes, 
+                environment=actions_docker_env_variables, 
+                detach=False,  # run syncronously because we are reading values form mounted volume in the next code blocks
+                stdout=True
+            )
+
+            actions_docker_container_output = ""
+            for filename in os.listdir(transition_log_path):
+                file_path = os.path.join(transition_log_path, filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, 'r') as file:
+                        actions_docker_container_output += file.read()
+                    print(file)
+                    file.close()
             # for output in docker_container_output:
             #     output = ast.literal_eval(output) # json.loads requires  double quoted key values but ast.literal_evel takes evalyuates the str(dict) as dict
                 
@@ -211,57 +242,64 @@ class ProcessEvent:
             #         raise helpers.PEPlaceholderError('Unknown wrapper type')
 
             # determine next steps: execute transitions -> PATCH process
-            transition_docker_client = docker.from_env()
-            transition_script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
-            transition_volumes = {transition_script_final_path: {'bind': '/app', 'mode': 'rw'}}
-            transition_command = f"python requirements_{data['operations_status']}.py"
-            docker_container = transition_docker_client.containers.run(
-                'scripts', 
-                command=transition_command,
-                volumes=transition_volumes, 
-                environment=docker_env_variables, 
-                detach=False,  # run syncronously because we are reading values form mounted volume in the next code blocks
-                stdout=True
-            )
+            # transition_relative_log_path = f"logs/{process_instance_id}/{docker_instance_log_uuid}/transitions/"
+            # transition_docker_scope_log_path = os.path.join('/app', transition_relative_log_path)
+            # transition_docker_env_variables = {
+            #     'process_instance_id': process_instance_id,
+            #     'process_type': data['process_type'],
+            #     'log_path': transition_docker_scope_log_path
+            # }
+            # transition_docker_client = docker.from_env()
+            # transition_script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
+            # transition_volumes = {transition_script_final_path: {'bind': '/app', 'mode': 'rw'}}
+            # transition_command = f"python requirements_{data['operations_status']}.py"
+            # transition_docker_container = transition_docker_client.containers.run(
+            #     'scripts', 
+            #     command=transition_command,
+            #     volumes=transition_volumes, 
+            #     environment=transition_docker_env_variables, 
+            #     detach=False,  # run syncronously because we are reading values form mounted volume in the next code blocks
+            #     stdout=True
+            # )
             
-            docker_container_output = ""
-            for filename in os.listdir(log_path):
-                file_path = os.path.join(log_path, filename)
-                if os.path.isfile(file_path):
-                    with open(file_path, 'r') as file:
-                        docker_container_output += file.read()
-                    file.close()
+            # action_docker_container_output = ""
+            # for filename in os.listdir(transition_log_path):
+            #     file_path = os.path.join(transition_log_path, filename)
+            #     if os.path.isfile(file_path):
+            #         with open(file_path, 'r') as file:
+            #             action_docker_container_output += file.read()
+            #         file.close()
             
-            if len(docker_container_output) > 0:
-                # print(docker_container_output)
-                data['operations_status'] = docker_container_output
-            else:
-                raise helpers.PEPlaceholderError('Morethan 1 next step returned')
+            # if len(action_docker_container_output) > 0:
+            #     # print(docker_container_output)
+            #     data['operations_status'] = action_docker_container_output
+            # else:
+            #     raise helpers.PEPlaceholderError('Morethan 1 next step returned')
 
-            # update operation_status if the process has ended
-            if data['steps'][data['operations_status']]['edge_status'] == '02_END':
-                data['operations_status'] = '02_END'
+            # # update operation_status if the process has ended
+            # if data['steps'][data['operations_status']]['edge_status'] == '02_END':
+            #     data['operations_status'] = '02_END'
             
-            # update process intance with all changes
-            temp_collection = self.db.process_instance
-            result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
-            temp_collection = None
+            # # update process intance with all changes
+            # temp_collection = self.db.process_instance
+            # result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
+            # temp_collection = None
 
-            if result.acknowledged != True: 
-                raise helpers.PEPlaceholderError('PUT for master_instance not implemented')
+            # if result.acknowledged != True: 
+            #     raise helpers.PEPlaceholderError('final PUT failed')
             
-            event_actions = {
-                "user_name": self.user_name,
-                "timestamp": datetime.utcnow(),
-                "status": "OK"
-            }
-            self.record_event(
-                event_name=f'update process instance', 
-                event_type='update', 
-                data_type='process_instance', 
-                data_id=id,
-                actions=event_actions
-            )
+            # event_actions = {
+            #     "user_name": self.user_name,
+            #     "timestamp": datetime.utcnow(),
+            #     "status": "OK"
+            # }
+            # self.record_event(
+            #     event_name=f'update process instance', 
+            #     event_type='update', 
+            #     data_type='process_instance', 
+            #     data_id=id,
+            #     actions=event_actions
+            # )
                 
 
     def record_event(self, event_name, event_type, data_type, data_id, actions):
