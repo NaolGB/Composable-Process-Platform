@@ -146,6 +146,7 @@ html {
   /* Removing box-shadow for a cleaner look, consistent with IBM's design principles */
   border-top: 1px solid var(--ibm-color-gray-20);
   padding: 1%;
+  overflow-y: auto;
 }
 .container-1-model-process-preview-section-preview {
   margin: 1%;
@@ -206,6 +207,14 @@ form {
 .table-row-container {
   width: 100%;
   display: flex;
+  flex-direction: row;
+}
+.container-2-master-preview-section {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--ibm-color-white );
+  border-radius: 1px;
+  margin-top: 5px;
 }
 
 

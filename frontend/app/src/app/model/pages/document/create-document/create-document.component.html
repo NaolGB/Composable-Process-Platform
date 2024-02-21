@@ -51,7 +51,32 @@
     <div *ngIf="showPreviewSection" class="container-1-master-preview-section preview-section" >
         <ng-container *ngIf="showPreviewSection; then buttonBar"></ng-container>
         <div *ngIf="showPreviewSection" class="container-1-master-preview-section-preview">
-            [preview section]
+            <div class="container-2-master-preview-section">
+                Document Data
+                <div class="table-container">
+                    <div *ngFor="let field of tempPreviewDocumentData | keyvalue" class="table-row">
+                        <b>{{field.key}}</b>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <div *ngFor="let field of tempPreviewDocumentData | keyvalue" class="table-row">
+                        {{field.value}}
+                    </div>
+                </div>
+            </div>
+            <div class="container-2-master-preview-section">
+                Master Data
+                <div class="table-container">
+                    <div *ngFor="let field of tempPreviewDocumentMasterDataData | keyvalue" class="table-row">
+                        <b>{{field.key}}</b>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <div *ngFor="let field of tempPreviewDocumentMasterDataData | keyvalue" class="table-row">
+                        {{field.value}}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -38,14 +38,16 @@
     <div *ngIf="showPreviewSection" class="container-1-master-preview-section preview-section" >
         <ng-container *ngIf="showPreviewSection; then buttonBar"></ng-container>
         <div *ngIf="showPreviewSection" class="container-1-master-preview-section-preview">
-            <div>
-                <div *ngFor="let field of tempPreviewData | keyvalue">
-                    <span>
+            <div class="container-2-master-preview-section">
+                <div class="table-container">
+                    <div *ngFor="let field of tempPreviewData | keyvalue" class="table-row">
                         <b>{{field.key}}</b>
-                    </span>
-                    <span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <div *ngFor="let field of tempPreviewData | keyvalue" class="table-row">
                         {{field.value}}
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
