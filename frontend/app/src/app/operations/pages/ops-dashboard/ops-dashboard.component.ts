@@ -81,6 +81,7 @@ export class OpsDashboardComponent {
 
   updateProcessInstance() {
     this.apiServices.putProcessInstance(this.processType, this.processInstance).subscribe()
+    this.toggleSidebar()
   }
 
   toggleAuxiliarySection() {
@@ -90,6 +91,7 @@ export class OpsDashboardComponent {
   destroyAuxiliarySection() {
     this.sidebarPackage = undefined
     this.auxiliarySection = false
+    this.showSidebar = false
   }
 
   showAuxiliarySectionCreateDocumnent(documentName: string) {
@@ -196,6 +198,19 @@ export class OpsDashboardComponent {
 
       this.destroyAuxiliarySection()
     }
+  }
+
+  cancelOperations() {
+    this.processInstancesByProcessType = undefined
+    this.processInstance = undefined
+
+    this.processType = ''
+    this.startSteps = []
+    this.sidebarPackage = undefined
+
+    this.auxiliarySection = false;
+    this.showSidebar = false;
+    this.mainSectionView = MainSectionView.SelectProcessInstance
   }
 
   toggleSidebar(): void {

@@ -203,6 +203,10 @@ form {
   flex-basis: 0; /* Initial size of the flex item */
   padding: 0.5%; /* Optional: Adds some padding inside each row */
 }
+.table-row-container {
+  width: 100%;
+  display: flex;
+}
 
 
 /* Base Button Style */
@@ -225,6 +229,7 @@ form {
 .button-primary:hover,
 .button-primary:focus {
   background-color: var(--ibm-color-blue-30);
+  /* color: var(--ibm-color-gray-100); */
 }
 
 /* Secondary Button */
@@ -248,6 +253,7 @@ form {
 .button-danger:hover,
 .button-danger:focus {
   background-color: var(--ibm-color-red-60); /* Assuming --ibm-color-red-60 is a darker shade */
+  color: var(--ibm-color-gray-100);
 }
 
 /* Disabled State for All Buttons */

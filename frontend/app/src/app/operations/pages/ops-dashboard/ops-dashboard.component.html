@@ -11,7 +11,7 @@
     
     
     <!-- Main section -->
-    <div class="container-1-ops-master-right-section">
+    <div class="container-1-ops-dashboard-right-section">
         <ng-container *ngIf="mainSectionView === 'SelectProcessInstance'; then SelectProcessInstance"></ng-container>
         <ng-container *ngIf="mainSectionView === 'SelectStartStep'; then SelectStartStep"></ng-container>
         <ng-container *ngIf="mainSectionView === 'PerformOperations'; then PerformOperations"></ng-container>
@@ -113,15 +113,25 @@
                         </div>
                     </div>
                 </div>
-
-                Master data: {{processInstance.document_instances[document.key].lead_object}}
-                <button (click)="showAuxiliarySectionCreateDocumentMasterData(document.key)">Master Create New</button>
-                <div 
-                    *ngFor="let masterData of processInstance.document_instances[document.key][
-                            processInstance.document_instances[document.key].lead_object + 's'
-                        ] | keyvalue"
-                >
-                    {{masterData.key}} | {{masterData.value | json}}
+                <div>
+                    <div class="container-2-ops-master-top-bar">
+                        <p>Master data: <b>{{processInstance.document_instances[document.key].lead_object}}</b></p>
+                        <button class="button button-secondary" (click)="showAuxiliarySectionCreateDocumentMasterData(document.key)">Master Create New</button>
+                    </div>
+                    <div *ngFor="let masterData of processInstance.document_instances[document.key][processInstance.document_instances[document.key].lead_object + 's'] | keyvalue" class="table-container">
+                        <span *ngIf="masterData.value" class="table-row-container">
+                            <div *ngFor="let field of masterData.value | keyvalue" class="table-row">
+                                {{field.key}}
+                            </div>
+                        </span>
+                    </div>
+                    <div *ngFor="let masterData of processInstance.document_instances[document.key][processInstance.document_instances[document.key].lead_object + 's'] | keyvalue" class="table-container">
+                        <span *ngIf="masterData.value" class="table-row-container">
+                            <div *ngFor="let field of masterData.value | keyvalue"  class="table-row">
+                                {{field.value}}
+                            </div>
+                        </span>
+                    </div>
                 </div>
             </div>
         </span>
@@ -151,5 +161,8 @@
             read
         </span>
     </span>
-    <button (click)="updateProcessInstance()">Save</button>
+    <div class="ops-dashboard-action-button-bar">
+        <button class="button button-danger" (click)="cancelOperations()">Cancel</button>
+        <button class="button button-primary" (click)="updateProcessInstance()">Save</button>
+    </div>
 </ng-template>
