@@ -87,8 +87,8 @@ class ProcessEvent:
         if dtype == 'master_instance':
             temp_collection = self.db[f'{id}']
 
-            if data.get('name', None):
-                data['_id'] = helpers.name_to_id(data['name'])
+            if data.get('Name', None):
+                data['_id'] = helpers.name_to_id(data['Name'])
             else:
                 data['_id'] = str(uuid.uuid4())
 
@@ -181,7 +181,7 @@ class ProcessEvent:
             actions_log_path = f"{script_final_path}logs/{process_instance_id}/{docker_instance_log_uuid}/actions/"
             os.makedirs(actions_log_path, exist_ok=True)
 
-            transition_log_path = f"{script_final_path}logs/{process_instance_id}/{docker_instance_log_uuid}/transition/"
+            transition_log_path = f"{script_final_path}logs/{process_instance_id}/{docker_instance_log_uuid}/transitions/"
             os.makedirs(transition_log_path, exist_ok=True)
 
             # Constructing the relative path for logs inside the Docker container
@@ -205,102 +205,110 @@ class ProcessEvent:
                 stdout=True
             )
 
-            actions_docker_container_output = ""
+            for filename in os.listdir(actions_log_path):
+                actions_docker_container_output = ""
+                file_path = os.path.join(actions_log_path, filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, 'r') as file:
+                        actions_docker_container_output = file.read()
+                    # print(file)
+
+                output = actions_docker_container_output
+                # print(output)
+                output = ast.literal_eval(output) # json.loads requires  double quoted key values but ast.literal_evel takes evalyuates the str(dict) as dict
+                
+                if output['metadata']['type'] == 'document_wrapper':
+                    for k, v in output['data'].items():
+                        document_id = output['metadata']['document_id']
+                        self.db.process_instance.update_one({'_id': output['metadata']['process_instance_id']}, {
+                            '$set': {f'document_instances.{document_id}.{k}': v}
+                        })
+                elif output['metadata']['type'] == 'document_master_data_wrapper':
+                    # for k, v in output['data'].items():
+                    document_id = output['metadata']['document_id']
+                    lead_object_key = f"{output['metadata']['lead_object']}s"
+                    master_data_id = output['metadata']['master_data_id']
+                    result = self.db.process_instance.update_one(
+                        {'_id': output['metadata']['process_instance_id']}, 
+                        {'$set': {f'document_instances.{document_id}.{lead_object_key}.{master_data_id}': output['data']}},
+                        upsert=True
+                    )
+                elif output['metadata']['type'] == 'master_data_wrapper':
+                    for k, v in output['data'].items():
+                        master_data_id = output['metadata']['master_data_id']
+                        master_data_type = output['metadata']['master_data_type']
+                        temp_collection = self.db[f'{master_data_type}']
+                        temp_collection.update_one({'_id': master_data_id}, {
+                            '$set': {k: v}
+                        })
+                else:
+                    raise helpers.PEPlaceholderError('Unknown wrapper type')
+                
+            # get the latest data to work with from actions' update
+            all_process_instances = self.get_data_details(dtype=dtype, id=data['process_type'])['data']
+            for process_instance in all_process_instances:
+                if process_instance['_id'] == data['_id']:
+                    data = process_instance
+                    break
+
+            # determine next steps: execute transitions -> PATCH process
+            transition_relative_log_path = f"logs/{process_instance_id}/{docker_instance_log_uuid}/transitions/"
+            transition_docker_scope_log_path = os.path.join('/app', transition_relative_log_path)
+            transition_docker_env_variables = {
+                'process_instance_id': process_instance_id,
+                'process_type': data['process_type'],
+                'log_path': transition_docker_scope_log_path
+            }
+            transition_docker_client = docker.from_env()
+            transition_script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
+            transition_volumes = {transition_script_final_path: {'bind': '/app', 'mode': 'rw'}}
+            transition_command = f"python requirements_{data['operations_status']}.py"
+            transition_docker_container = transition_docker_client.containers.run(
+                'scripts', 
+                command=transition_command,
+                volumes=transition_volumes, 
+                environment=transition_docker_env_variables, 
+                detach=False,  # run syncronously because we are reading values form mounted volume in the next code blocks
+                stdout=True
+            )
+            
+            transition_docker_container_output = ""
             for filename in os.listdir(transition_log_path):
                 file_path = os.path.join(transition_log_path, filename)
                 if os.path.isfile(file_path):
                     with open(file_path, 'r') as file:
-                        actions_docker_container_output += file.read()
-                    print(file)
-                    file.close()
-            # for output in docker_container_output:
-            #     output = ast.literal_eval(output) # json.loads requires  double quoted key values but ast.literal_evel takes evalyuates the str(dict) as dict
+                        transition_docker_container_output = file.read()
+            
+                if len(transition_docker_container_output) > 0:
+                    # print(docker_container_output)
+                    data['operations_status'] = transition_docker_container_output
+                else:
+                    raise helpers.PEPlaceholderError('Error with next step')
+
+                # update operation_status if the process has ended
+                if data['steps'][data['operations_status']]['edge_status'] == '02_END':
+                    data['operations_status'] = '02_END'
                 
-            #     if output['metadata']['type'] == 'document_wrapper':
-            #         for k, v in output['data'].items():
-            #             document_id = output['document_id']
-            #             self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
-            #                 '$set': {f'document_instances.{document_id}.{k}': v}
-            #             })
-            #     elif output['metadata']['type'] == 'document_master_data_wrapper':
-            #         for k, v in output['data'].items():
-            #             document_id = output['document_id']
-            #             lead_object_key = f"{output['lead_object']}s"
-            #             master_data_id = output['master_data_id']
-            #             self.db.process_instance.update_one({'_id': output['process_instance_id']}, {
-            #                 '$set': {f'document_instances.{document_id}.{lead_object_key}.{k}': v}
-            #             })
-            #     elif output['metadata']['type'] == 'master_data_wrapper':
-            #         for k, v in output['data'].items():
-            #             master_data_id = output['metadata']['master_data_id']
-            #             master_data_type = output['metadata']['master_data_type']
-            #             temp_collection = self.db[f'{master_data_type}']
-            #             temp_collection.update_one({'_id': master_data_id}, {
-            #                 '$set': {k: v}
-            #             })
-            #     else:
-            #         raise helpers.PEPlaceholderError('Unknown wrapper type')
+                # update process intance with all changes
+                temp_collection = self.db.process_instance
+                result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
+                temp_collection = None
 
-            # determine next steps: execute transitions -> PATCH process
-            # transition_relative_log_path = f"logs/{process_instance_id}/{docker_instance_log_uuid}/transitions/"
-            # transition_docker_scope_log_path = os.path.join('/app', transition_relative_log_path)
-            # transition_docker_env_variables = {
-            #     'process_instance_id': process_instance_id,
-            #     'process_type': data['process_type'],
-            #     'log_path': transition_docker_scope_log_path
-            # }
-            # transition_docker_client = docker.from_env()
-            # transition_script_final_path = os.path.join(CURRENT_DIRECTORY, f"scripts/src/{data['process_type']}/")
-            # transition_volumes = {transition_script_final_path: {'bind': '/app', 'mode': 'rw'}}
-            # transition_command = f"python requirements_{data['operations_status']}.py"
-            # transition_docker_container = transition_docker_client.containers.run(
-            #     'scripts', 
-            #     command=transition_command,
-            #     volumes=transition_volumes, 
-            #     environment=transition_docker_env_variables, 
-            #     detach=False,  # run syncronously because we are reading values form mounted volume in the next code blocks
-            #     stdout=True
-            # )
+                if result.acknowledged != True: 
+                    raise helpers.PEPlaceholderError('final PUT failed')
             
-            # action_docker_container_output = ""
-            # for filename in os.listdir(transition_log_path):
-            #     file_path = os.path.join(transition_log_path, filename)
-            #     if os.path.isfile(file_path):
-            #         with open(file_path, 'r') as file:
-            #             action_docker_container_output += file.read()
-            #         file.close()
-            
-            # if len(action_docker_container_output) > 0:
-            #     # print(docker_container_output)
-            #     data['operations_status'] = action_docker_container_output
-            # else:
-            #     raise helpers.PEPlaceholderError('Morethan 1 next step returned')
-
-            # # update operation_status if the process has ended
-            # if data['steps'][data['operations_status']]['edge_status'] == '02_END':
-            #     data['operations_status'] = '02_END'
-            
-            # # update process intance with all changes
-            # temp_collection = self.db.process_instance
-            # result = temp_collection.update_one({'_id': data['_id']}, {'$set': data})
-            # temp_collection = None
-
-            # if result.acknowledged != True: 
-            #     raise helpers.PEPlaceholderError('final PUT failed')
-            
-            # event_actions = {
-            #     "user_name": self.user_name,
-            #     "timestamp": datetime.utcnow(),
-            #     "status": "OK"
-            # }
-            # self.record_event(
-            #     event_name=f'update process instance', 
-            #     event_type='update', 
-            #     data_type='process_instance', 
-            #     data_id=id,
-            #     actions=event_actions
-            # )
-                
+            event_actions = {
+                "user_name": self.user_name,
+                "timestamp": datetime.utcnow(),
+                "status": "OK"
+            }
+            self.record_event(
+                event_name=f'update process instance', 
+                event_type='update', 
+                data_type='process_instance', 
+                data_id=id,
+                actions=event_actions
+            )
 
     def record_event(self, event_name, event_type, data_type, data_id, actions):
         event = {

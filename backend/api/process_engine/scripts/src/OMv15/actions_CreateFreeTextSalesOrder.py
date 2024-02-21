@@ -1,6 +1,6 @@
 import json
 from openai import OpenAI
-from data_api import DocumentApi, utils, DocumentWrapper
+from data_api import DocumentApi, utils, DocumentMasterDataWrapper
 
 api_key='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'
 client = OpenAI(api_key=api_key)
@@ -16,7 +16,6 @@ def action():
                     "role": "system",
                     "content": """You are a helpful assistant. That parses free text orders into valid json format.
                     For each material you return a json response like this: Example: [free text: from John Stinscen <noreply@tm.openai.com> Hey, can I get 12 MacBooks]
-                    "customer": {"Name": }
                     "materials": [{"Name": "MacBooks", "Quantiyt": "12", "Unit": "pcs"}]
                     """
                 },
@@ -26,9 +25,13 @@ def action():
                 }
         ]
     )
-    # json_response = json.loads(response.choices[0].message.content)
-    json_response = response.choices[0].message.content
-    utils().log(json_response)
+    json_response = json.loads(response.choices[0].message.content)
+
+    for material in json_response['materials']:
+        id = material['Name'].strip()
+        id = id.replace(' ', '_')
+        wrapped_data = str(DocumentMasterDataWrapper(document_id='SOv15', lead_object='MaterialV14', master_data_id=id, data=material))
+        utils().log(wrapped_data)
 
 if __name__ == '__main__':
     action()

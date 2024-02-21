@@ -81,7 +81,7 @@ export class OpsDashboardComponent {
 
   updateProcessInstance() {
     this.apiServices.putProcessInstance(this.processType, this.processInstance).subscribe()
-    this.toggleSidebar()
+    this.showSidebar = false
   }
 
   toggleAuxiliarySection() {
@@ -123,6 +123,34 @@ export class OpsDashboardComponent {
         sidebarType: 'create_from_selector',
         selector: {
           selectorType: 'master_instance',
+          // identifies the document instance where the lead object is located (to save the corresponding master data entries)
+          selectorPath: {
+            'processInstanceId': this.processInstance._id,
+            'documentId': documentId,
+          },
+          // identifies the document instance's lead object (to fetch the corresponding master data entries)
+          selectorId: this.processInstance.document_instances[documentId].lead_object 
+        },
+        content: {
+          allFields: allFields,
+          editableFields: editableFields
+        },
+        sidebarData: undefined,
+      }
+      this.auxiliarySection = true
+      this.toggleSidebar()
+    }
+  }
+
+  showAuxiliarySectionUpdateDocumentMasterData(documentId: string, masterDataId: string) {
+    if (this.processInstance != undefined) {
+      const allFields = this.processInstance.document_instances[documentId].lead_object_fields
+      const editableFields = this.processInstance.steps[this.processInstance.operations_status].fields[documentId].lead_object_fields
+      this.sidebarPackage = {
+        identifier: documentId,
+        sidebarType: 'update',
+        selector: {
+          selectorType: 'document_master_instance',
           // identifies the document instance where the lead object is located (to save the corresponding master data entries)
           selectorPath: {
             'processInstanceId': this.processInstance._id,

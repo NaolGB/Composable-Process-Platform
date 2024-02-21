@@ -12,16 +12,30 @@
 
     <div *ngIf="sidebarPackage.sidebarType === 'update'">
         <h3>Update</h3>
-        <div *ngIf="sidebarPackage.sidebarData">
-            <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
-                <div *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
-                    {{entry.key}}: <input class="input" type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+        <span *ngIf="sidebarPackage.selector.selectorType === 'document_instance'">
+            <div *ngIf="sidebarPackage.sidebarData">
+                <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
+                    <div *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
+                        {{entry.key}}: <input class="input" type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                    </div>
+                    <div *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
+                        {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
+                    </div>                
                 </div>
-                <div *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
-                    {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
-                </div>                
             </div>
-        </div>
+        </span>
+        <span *ngIf="sidebarPackage.selector.selectorType === 'document_master_instance'">
+            <div *ngIf="sidebarPackage.sidebarData">
+                <div *ngFor="let entry of sidebarPackage.sidebarData | keyvalue; trackBy: trackByEntry">
+                    <div *ngIf="sidebarPackage.content.editableFields.includes(entry.key)">
+                        {{entry.key}}: <input class="input" type="text" [(ngModel)]="sidebarPackage.sidebarData[entry.key]" />
+                    </div>
+                    <div *ngIf="!sidebarPackage.content.editableFields.includes(entry.key)">
+                        {{entry.key}}: {{sidebarPackage.sidebarData[entry.key]}}
+                    </div>                
+                </div>
+            </div>
+        </span>
         <div class="ops-sidebar-action-button-bar">
             <button class="button button-primary" (click)="onClickSave()" [disabled]="!formIsValid">Save</button>
         </div>
