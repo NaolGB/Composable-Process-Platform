@@ -3,3 +3,14 @@ svg {
     height: 100%;
     width: 100%;
 }
+
+.tooltip {
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    /* Add more styling as needed */
+    z-index: 3;
+  }
+  

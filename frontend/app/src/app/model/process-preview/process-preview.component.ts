@@ -66,8 +66,8 @@ export class ProcessPreviewComponent {
     const maxRectsPerColumn = this.numMaxRows; // Assuming numMaxRows accounts for the layout correctly
 
     // Determine the available width and height per rectangle, considering some padding
-    const availableWidthPerRect = (this.canvasWidth / maxRectsPerRow )- (this.padding * 2);
-    const availableHeightPerRect = (this.canvasHeight / maxRectsPerColumn) - (this.padding * 2);
+    const availableWidthPerRect = (this.canvasWidth / maxRectsPerColumn )//- (this.padding * 2);
+    const availableHeightPerRect = (this.canvasHeight / maxRectsPerRow) //- (this.padding * 2);
 
     // Use the smaller of the two dimensions to ensure rectangles fit both ways
     return Math.min(availableWidthPerRect, availableHeightPerRect);
@@ -88,4 +88,5 @@ export class ProcessPreviewComponent {
     }
     return retVal + 1
   }
+
 }

@@ -7,20 +7,16 @@
                 [attr.height]="rectSize" 
                 [attr.x]="((canvasWidth/(numMaxColumns+1)) * (step.value.column))" 
                 [attr.y]="((canvasHeight/(numMaxRows+1)) * (step.value.row))" 
-                rx="5"
+                rx="1"
                 fill="none"
                 [attr.stroke]="allConnectedSteps.includes(step.key) ? 'black' : 'red'"
                 stroke-width="2"
             >
+            
             </rect>
-            <!-- <text 
-                [attr.x]="(canvasWidth/(numMaxColumns+1) * (step.value.column)) + (rectSize) + (rectSize/3)" 
-                [attr.y]="(step.value.row+0.5) * (rectSize*1.25) + (rectSize/2)" 
-                fill="black"
-            >
-                {{step.key}}
-            </text> -->
         </g>
+        
+        
         <!-- transition lines -->
         <g *ngFor="let line of transitionLines | keyvalue">
             <polygon [attr.points]="getArrowHeadPoints(line.value)" fill="blue" />
