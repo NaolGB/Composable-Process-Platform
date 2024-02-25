@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: ./app
+    container_name: angular-dev
+    ports:
+      - 4200:4200
+    volumes:
+      - ./app:/app
+      - /app/node_modules  # separate volume for node_modules to avoid unnecessary npm installs
+    working_dir: /app
+    command: npm start -- --host 0.0.0.0 # allow access from outside the container
