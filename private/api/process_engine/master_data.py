@@ -49,7 +49,7 @@ class MasterDataType:
         
         result = self.collection.insert_one(self._data)
         if result.acknowledged:
-            return "Master data created successfully"
+            return data['attributes']['name']  # Return the name attribute of the created document
         else:
             raise ValueError("Failed to create master data")
 
@@ -58,54 +58,39 @@ class MasterDataType:
         Update a document by ID.
         :param id: The ID of the document to update.
         :param new_fields: A dictionary of new fields to add. Each item in the dictionary should have the 'field_name'.
+            new_fields = {new_field_name: new_field_type, ...}
         :param rename_fields: A list of dictionaries, each mapping a 'field_id' to a new 'field_name'.
+            rename_fields = [{'field_id': new_field_name}, ...]
         """
         if not id:
             raise ValueError("ID is required for update operation")
-        
-        # Fetch the existing document
-        existing_doc = self.collection.find_one({'_id': id})
-        if not existing_doc:
-            raise ValueError("Document not found")
 
         # Update the metadata document
-        added_fields_attribute_map = {str(uuid.uuid4()): k for k in new_fields.keys()}
-        meta_data = MetaData().get(id)
-        if meta_data:
+        if new_fields:
+            added_fields_attribute_map = {str(uuid.uuid4()): k for k in new_fields.keys()}
+            meta_data_fields =[]
             for k, v in added_fields_attribute_map.items():
-                meta_data['fields'].append({
+                meta_data_fields.append({
                     'field_id': k,
                     'field_name': v,
                     'field_type': new_fields[v],
                 })
-            meta_data_response = MetaData().update(existing_doc['_id'], data=meta_data)
+            meta_data_response = MetaData().update(id, 'extend', meta_data_fields)
             if meta_data_response != 200:
-                raise ValueError("Failed to update metadata document")
+                raise ValueError("Failed to extend metadata")
 
         # Rename fields in the metadata document
         if rename_fields:
             for rename_field in rename_fields:
                 for field_id, new_field_name in rename_field.items():
-                    # Assuming you have a separate method or logic to update the field name in the metadata document
-                    meta_data_response = self.update_metadata_field_name(field_id, new_field_name)
-                    if meta_data_response != 200:
-                        raise ValueError(f"Failed to rename field {field_id}")
-                    updated = True
-
-        if updated:
-            # Update the document in the collection if there were any changes
-            result = self.collection.update_one({'_id': id}, {'$set': {'attributes': existing_doc['attributes']}})
-            if result.matched_count:
-                return "Document updated successfully"
-            else:
-                raise ValueError("Failed to update the document")
-        else:
-            # No updates were made
-            return "No updates were necessary"
-
-        # update metadata field name
-
-
+                    meta_data_fields = []
+                    meta_data_fields.append({
+                        'field_id': field_id,
+                        'field_name': new_field_name,
+                    })
+            meta_data_response = MetaData().update(id, 'rename', meta_data_fields)
+            if meta_data_response != 200:
+                raise ValueError(f"Failed to rename fields in metadata")
 
     def get(self, id=None, fields=None):
         # Default response for "not found" or "empty"
