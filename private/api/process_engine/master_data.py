@@ -12,7 +12,8 @@ class MasterDataType:
         self._data = {}
 
     def create(self, **data):
-        self._data = data['data']
+        data = data['data'] # Unpack the data
+        self._data = data
 
         # validate data
         try:
@@ -44,8 +45,6 @@ class MasterDataType:
         }
 
         meta_data_response = MetaData().create(data=meta_data)
-        if meta_data_response != 200:
-            raise ValueError("Failed to create meta data")
         
         result = self.collection.insert_one(self._data)
         if result.acknowledged:
