@@ -1,5 +1,19 @@
 version: '3.8'
 services:
+  # add the dajngo api service
+  api:
+    build:
+      context: ./api
+    container_name: django-dev
+    environment:
+      - MONGO_DB_URI
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api:/api
+    working_dir: /api
+    command: python manage.py runserver
+    
   app:
     build:
       context: ./app
