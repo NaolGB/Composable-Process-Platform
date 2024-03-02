@@ -1,6 +1,7 @@
 from bson import json_util
 from pymongo.operations import UpdateOne
 from .mongo_utils import MongoDBClient
+from .helpers import ProcessEngineResponse
 
 MONGO_CLIENT = MongoDBClient()
 
@@ -13,24 +14,28 @@ class MetaData:
     def create(self, **data):
         self._data = data['data']
         
-        try:
-            self.validate()
-        except ValueError as e:
-            raise ValueError(str(e))
+        validation_response = self.validate()
+        if validation_response.success == False:
+            return validation_response
         
-        result = self.collection.insert_one(self._data)
+        try:
+            result = self.collection.insert_one(self._data)
 
-        if not result.acknowledged:
-            raise ValueError("Failed to create metadata")
+            if not result.acknowledged:
+                return ProcessEngineResponse(success=False, message="Failed to create metadata")
+            
+            return ProcessEngineResponse(success=True, message="Metadata created successfully")
+        except Exception as e:
+            return ProcessEngineResponse(success=False, message=str(e))
         
     def get(self, id):
         response = self.collection.find({'_id': id})
         response = json_util.loads(json_util.dumps(response))
         
         if response:
-            return response
+            return ProcessEngineResponse(success=True, data=response)
         else:
-            raise ValueError("Failed to retrieve metadata")
+            return ProcessEngineResponse(success=False, message="Failed to retrieve metadata")
 
     def update(self, id, update_type, fields):
         """
@@ -55,7 +60,7 @@ class MetaData:
             if len(bulk_updates) > 0:
                 result = self.collection.bulk_write(bulk_updates)
                 if (not result.acknowledged) or (result.modified_count != len(bulk_updates)):
-                    raise ValueError("Failed to update all or any metadata")
+                    return ProcessEngineResponse(success=False, message="Failed to update all or any metadata")
         elif update_type == 'rename':
             bulk_updates = []
             for field in fields:
@@ -69,17 +74,18 @@ class MetaData:
             if len(bulk_updates) > 0:
                 result = self.collection.bulk_write(bulk_updates)
                 if (not result.acknowledged) or (result.modified_count != len(bulk_updates)):
-                    raise ValueError("Failed to update all or any metadata")
+                    return ProcessEngineResponse(success=False, message="Failed to update all or any metadata")
         else:
-            raise ValueError("Invalid update type")
+            return ProcessEngineResponse(success=False, message="Invalid update type")
 
     def validate(self):
         required_fields = ['_id', 'collection_name', 'fields']
         for field in required_fields:
             if field not in self._data:
-                raise ValueError(f"Missing required field: {field}")
+                return ProcessEngineResponse(success=False, message=f"Missing required field: {field}")
             
         for field in self._data['fields']:
             if ('field_id' not in field) or ('field_name' not in field) or ('field_type' not in field):
-                raise ValueError("Invalid field format: field_id, field_name, and field_type are required attributes")
+                return ProcessEngineResponse(success=False, message="Missing required field in fields")
         
+        return ProcessEngineResponse(success=True, message="Metadata is valid")

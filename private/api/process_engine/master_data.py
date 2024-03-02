@@ -2,6 +2,7 @@ import os
 import uuid
 from .mongo_utils import MongoDBClient
 from .meta_data import MetaData
+from .helpers import name_to_id, ProcessEngineResponse
 
 MONGO_CLIENT = MongoDBClient()
 ORGANIZATION = os.environ.get('ORGANIZATION')
@@ -16,18 +17,18 @@ class MasterDataType:
         self._data = data
 
         # validate data
-        try:
-            self.validate()
-        except ValueError as e:
-            raise ValueError(str(e))
+        validation_response = self.validate()
+        if validation_response.success == False:
+            return validation_response
 
         # attribute map to reffer to data[attrbute] by uuid
         attribute_map = {str(uuid.uuid4()): k for k in self._data['attributes'].keys()}
-        master_data_type_id = str(uuid.uuid4())
+        master_data_type_id = name_to_id(self._data['name'])
 
         self._data = {
             '_id': master_data_type_id,
             'organization': ORGANIZATION,
+            'name': data['name'],
             'attributes': [element for element in attribute_map.keys()]
         }
 
@@ -45,12 +46,14 @@ class MasterDataType:
         }
 
         meta_data_response = MetaData().create(data=meta_data)
+        if meta_data_response.success == False:
+            return meta_data_response
         
         result = self.collection.insert_one(self._data)
         if result.acknowledged:
-            return data['attributes']['name']  # Return the name attribute of the created document
+            return ProcessEngineResponse(success=True, data=data['name'])
         else:
-            raise ValueError("Failed to create master data")
+            return ProcessEngineResponse(success=False, message="Failed to create master data")
 
     def update(self, id, new_fields=None, rename_fields=None):
         """
@@ -62,12 +65,12 @@ class MasterDataType:
             rename_fields = [{'field_id': new_field_name}, ...]
         """
         if not id:
-            raise ValueError("ID is required for update operation")
+            return ProcessEngineResponse(success=False, message="ID field is required")
 
         # Update the metadata document
         if new_fields:
             added_fields_attribute_map = {str(uuid.uuid4()): k for k in new_fields.keys()}
-            meta_data_fields =[]
+            meta_data_fields = []
             for k, v in added_fields_attribute_map.items():
                 meta_data_fields.append({
                     'field_id': k,
@@ -75,8 +78,8 @@ class MasterDataType:
                     'field_type': new_fields[v],
                 })
             meta_data_response = MetaData().update(id, 'extend', meta_data_fields)
-            if meta_data_response != 200:
-                raise ValueError("Failed to extend metadata")
+            if meta_data_response.success == False:
+                return ProcessEngineResponse(success=False, message="Failed to extend metadata")
 
         # Rename fields in the metadata document
         if rename_fields:
@@ -88,8 +91,8 @@ class MasterDataType:
                         'field_name': new_field_name,
                     })
             meta_data_response = MetaData().update(id, 'rename', meta_data_fields)
-            if meta_data_response != 200:
-                raise ValueError(f"Failed to rename fields in metadata")
+            if meta_data_response.success == False:
+                return ProcessEngineResponse(success=False, message="Failed to rename fields in metadata")
 
     def get(self, id=None, fields=None):
         # Default response for "not found" or "empty"
@@ -104,9 +107,9 @@ class MasterDataType:
                 result = self.collection.find_one(query)
             
             if result:
-                return result
+                return ProcessEngineResponse(success=True, data=result)
             else:
-                raise ValueError("Document not found")
+                return ProcessEngineResponse(success=False, message="Document not found")
         else:
             if fields:
                 projection = {field: 1 for field in fields}
@@ -116,18 +119,22 @@ class MasterDataType:
             result = list(cursor)
             
             if result:
-                return result
+                return ProcessEngineResponse(success=True, data=result)
             else:
-                raise ValueError("Documents not found")
+                return ProcessEngineResponse(success=False, message="Documents not found")
 
     def validate(self):
         attributes = self._data.get('attributes', None)
         if not attributes:
-            raise ValueError("Data must have attributes")
+            return ProcessEngineResponse(success=False, message="Data must have attributes")
         
         lowercase_keys = map(str.lower, self._data['attributes'].keys())
         if len(attributes) != len(set(lowercase_keys)):
-            raise ValueError("Attribute keys must be unique regardless of the case")
+            return ProcessEngineResponse(success=False, message="Attribute keys must be unique regardless of the case")
 
-        if 'name' not in map(str.lower, self._data['attributes'].keys()):
-            raise ValueError("Attributes must include the field 'name'")
+        if 'name' not in map(str.lower, self._data.keys()):
+            return ProcessEngineResponse(success=False, message="Data must include the field 'name'")
+        
+        return ProcessEngineResponse(success=True)
+        
+        

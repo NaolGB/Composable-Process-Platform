@@ -1,8 +1,9 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from process_engine.master_data import MasterDataType as MasterDataTypeService # Renamed to avoid conflict
+from process_engine.helpers import ProcessEngineResponse
 
 class MasterDataTypeView(APIView):
     """
@@ -17,8 +18,10 @@ class MasterDataTypeView(APIView):
         fields = fields.split(",") if fields else None
 
         response = MasterDataTypeService().get(id, fields=fields)
-
-        return Response(response, status=status.HTTP_200_OK)
+        if response.success == False:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_200_OK)
 
     def post(self, request):
         """
@@ -26,7 +29,11 @@ class MasterDataTypeView(APIView):
         """
         response = MasterDataTypeService().create(data=request.data)
 
-        return Response(response, status=status.HTTP_200_OK)
+        if response.success == False:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_200_OK)
+
 
     def patch(self, request):
         """
@@ -38,4 +45,7 @@ class MasterDataTypeView(APIView):
 
         response = MasterDataTypeService().update(id, new_fields, rename_fields)
 
-        return Response(response, status=status.HTTP_200_OK)
+        if response.success == False:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_200_OK)
