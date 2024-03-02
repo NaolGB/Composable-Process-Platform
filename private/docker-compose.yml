@@ -7,6 +7,7 @@ services:
     container_name: django-dev
     environment:
       - MONGO_DB_URI
+      - ORGANIZATION
     ports:
       - 8000:8000
     volumes:
