@@ -1,0 +1,17 @@
+@import 'assets/styles/_layout';
+@import 'assets/styles/_colors';
+@import 'assets/styles/_typography';
+
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: $white;
+    color: $black;
+    font-family: $font-family-base;
+    font-size: $base-font-size;
+    line-height: $line-height-body;
+  }

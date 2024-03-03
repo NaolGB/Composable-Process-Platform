@@ -1,0 +1,48 @@
+@import '_colors';
+@import '_typography';
+
+$spacing-unit: 8px;
+
+@function spacing($multiplier) {
+    @return $spacing-unit * $multiplier;
+}
+
+.master-layout {
+    display: grid;
+    grid-template-columns: auto 15fr;
+    width: 100%;
+    height: 100vh;
+    background-color: aquamarine;
+}
+
+.navbar-column {
+    grid-column: 1; 
+    width: 50px;
+    background-color: aqua;
+    padding: spacing(1);
+}
+
+.main-column {
+    display: grid;
+    grid-template-rows: 7fr 3fr;
+    background-color: chartreuse;
+
+    .top {
+        display: grid;
+        grid-template-columns: 3fr 12fr;
+        
+        .selection-column {
+            background-color: antiquewhite;
+            padding: spacing(1);
+        }
+        
+        .working-column {
+            background-color: cadetblue;
+            padding: spacing(1);
+        }
+    }
+    
+    .bottom {
+        background-color: darkgoldenrod;
+    }
+}
