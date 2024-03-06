@@ -102,35 +102,33 @@ $sidebar-width: 400px;
 .sidebar {
   position: fixed;
   top: 0;
-  right: -$sidebar-width;
-  bottom: 0;
   width: $sidebar-width;
-  background-color: $color-background;
-  z-index: 999;
+  height: 100%;
+  right: -$sidebar-width;
+  transition: right 0.5s;
+  z-index: 2;
+
   background-color: coral;
 }
 
 .sidebar-overlay {
   position: fixed;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
   opacity: 0;
   visibility: hidden;
-  z-index: 998;
+  transition: opacity 0.5s ease, visibility 0.5s;
 }
 
+.sidebar-open-overlay {
+  opacity: 1;
+  visibility: visible;
+}
 // Sidebar Open State
 .sidebar-open {
-  .sidebar {
-    right: 0;
-    transition: right 3s ;
-  }
-
-  .sidebar-overlay {
-    opacity: 1;
-    visibility: visible;
-  }
+  right: 0;
 }

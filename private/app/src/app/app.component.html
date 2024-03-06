@@ -1,5 +1,5 @@
 <!-- Placeholder -->
-<div class="grid-container" [class.sidebar-open]="isSidebarOpen">
+<div class="grid-container">
   <nav class="navigation">
     <a href="#" class="nav-item">
       <div class="nav-icon">some icon</div>
@@ -26,11 +26,16 @@
       </div>
     </div>
   </div>
-  <aside class="sidebar" *ngIf="isSidebarOpen">
-    sidebar content
-  </aside>
-  <div class="sidebar-overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div>
 </div>
+
+
+<!-- NOTE: The following code should not be placed inside *ngIf="sidebarOpen" because if so, 
+  it will be newly created on toggle and the transition will not happen -->
+<div [class.sidebar-open]="isSidebarOpen" class="sidebar">
+  sidebar content
+</div>
+<div class="sidebar-overlay" [class.sidebar-open-overlay]="isSidebarOpen" (click)="toggleSidebar()"></div>
+<!-- End of NOTE -->
 
 <!-- End of Placehodler -->
 
