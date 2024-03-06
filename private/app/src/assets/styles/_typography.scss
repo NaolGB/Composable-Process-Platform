@@ -1,32 +1,25 @@
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600&display=swap');
-
-// Font family
-$font-family-base: 'IBM Plex Sans', sans-serif;
-
-// Base font size
-$base-font-size: 16px;
-
-// Font weights
+$font-family-primary: 'IBM Plex Sans', sans-serif;
+$font-size-base: 16px;
+$font-size-small: 14px;
+$font-size-large: 18px;
 $font-weight-regular: 400;
 $font-weight-medium: 500;
-$font-weight-semibold: 600;
+$font-weight-bold: 700;
 
-// Typography scale
-$font-size-h1: 32px;
-$font-size-h2: 24px;
-$font-size-h3: 20px;
-$font-size-h4: 18px;
-$font-size-h5: 16px;
-$font-size-h6: 14px;
-$font-size-body: 16px;
-$font-size-small: 14px;
+// Headings
+$font-size-h1: 2.5rem;
+$font-size-h2: 2rem;
+$font-size-h3: 1.75rem;
+$font-size-h4: 1.5rem;
+$font-size-h5: 1.25rem;
+$font-size-h6: 1rem;
 
-// Line heights
-$line-height-h1: 40px;
-$line-height-h2: 32px;
-$line-height-h3: 28px;
-$line-height-h4: 24px;
-$line-height-h5: 22px;
-$line-height-h6: 20px;
-$line-height-body: 24px;
-$line-height-small: 20px;
+// Line Heights
+$line-height-base: 1.5;
+$line-height-heading: 1.2;
+
+// Spacing
+$spacing-small: 8px;
+$spacing-medium: 16px;
+$spacing-large: 24px;
+$spacing-extra-large: 32px;

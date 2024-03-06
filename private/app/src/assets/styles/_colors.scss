@@ -1,31 +1,32 @@
-// Primary palette
-$blue: #007AFF;
-$white: #FFFFFF;
-$black: #000000;
-$gray: #8E8E93;
+$color-primary: #0062FF;
+$color-secondary: #6F6F6F;
+$color-background: #FFFFFF;
+$color-text: #161616;
+$color-link: #0062FF;
+$color-success: #24A148;
+$color-error: #DA1E28;
+$color-warning: #F1C21B;
 
-// Expanded for accessibility
-$light-blue: #BFDBFE;
-$dark-blue: #005AC1;
-$accessible-red: #D32F2F;
-$accessible-green: #56A36C;
+// Light Mode
+$color-button-primary: $color-primary;
+$color-button-primary-hover: darken($color-primary, 10%);
+$color-button-primary-active: darken($color-primary, 20%);
+$color-button-secondary: $color-secondary;
+$color-button-secondary-hover: darken($color-secondary, 10%);
+$color-button-secondary-active: darken($color-secondary, 20%);
+$color-input-background: #F4F4F4;
+$color-input-focus: #E0E0E0;
+$color-input-disabled: #C6C6C6;
 
-// Enhancing for UI depth and feedback
-$blue-hover: #005ECB;
-$blue-active: #0066CC;
-$disabled-gray: #C7C7CC;
-
-// Visual hierarchy and backgrounds
-$off-white: #FAFAFA;
-$light-gray: #F2F2F7;
-$mid-gray: #AEAEB2;
-
-// Special use cases
-$highlight-yellow: #FFD60A;
-$secondary-accent-purple: #AF52DE;
-$information-blue: #007AFF;
-
-// Dark mode adjustments
-$slate-gray: #3A3A3C;
-$dark-gray: #2C2C2E;
-$quinary-background: #2C2C2E;
+// Dark Mode
+$color-background-dark: #161616;
+$color-text-dark: #F4F4F4;
+$color-button-primary-dark: lighten($color-primary, 10%);
+$color-button-primary-hover-dark: $color-primary;
+$color-button-primary-active-dark: darken($color-primary, 10%);
+$color-button-secondary-dark: lighten($color-secondary, 10%);
+$color-button-secondary-hover-dark: $color-secondary;
+$color-button-secondary-active-dark: darken($color-secondary, 10%);
+$color-input-background-dark: #262626;
+$color-input-focus-dark: #393939;
+$color-input-disabled-dark: #525252;

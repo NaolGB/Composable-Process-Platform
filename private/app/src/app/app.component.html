@@ -1,23 +1,37 @@
-<!-- Place Holder -->
-<div class="master-layout" >
-  <div class="navbar-column">Navbar</div>
-
-  <div class="main-column">
-    <div class="top">
-      <div class="selection-column">
-        Selection
+<!-- Placeholder -->
+<div class="grid-container" [class.sidebar-open]="isSidebarOpen">
+  <nav class="navigation">
+    <a href="#" class="nav-item">
+      <div class="nav-icon">some icon</div>
+      <span class="nav-text">Home</span>
+    </a>
+    <a href="#" class="nav-item">
+      <div class="nav-icon">some icon</div>
+      <span class="nav-text">About</span>
+    </a>
+  </nav>
+  <div class="main-section">
+    <div class="top-section">
+      <div class="selection-section">
+        selection-section
       </div>
-      <div class="working-column">
-        Working
+      <div class="working-section">
+        working-section
+        <button class="sidebar-toggle" (click)="toggleSidebar()">Toggle Sidebar</button>
       </div>
     </div>
-    
-    <div class="bottom">
-      <div class="preview-section">Preview</div>
+    <div class="bottom-section">
+      <div class="preview-section">
+        preview-section content
+      </div>
     </div>
   </div>
-
+  <aside class="sidebar" *ngIf="isSidebarOpen">
+    sidebar content
+  </aside>
+  <div class="sidebar-overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div>
 </div>
+
 <!-- End of Placehodler -->
 
 <!-- <router-outlet /> -->
