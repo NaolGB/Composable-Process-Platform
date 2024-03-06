@@ -1,0 +1,8 @@
+<app-form-card 
+  *ngFor="let card of formCards" 
+  [cardFields]="card.fields" 
+  (cardDataChange)="onCardDataChange(card.id, $event)">
+</app-form-card>
+
+<button (click)="onSubmit()">Submit</button>
+<button (click)="addFormCard()">Add Field</button>
