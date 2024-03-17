@@ -1,10 +1,11 @@
 import os
 import uuid
 from .mongo_utils import MongoDBClient
-from .helpers import name_to_id, ProcessEngineResponse
+from .helpers import name_to_id, ProcessEngineResponse, ProcessEngineValidator
 
 MONGO_CLIENT = MongoDBClient()
 ORGANIZATION = os.environ.get('ORGANIZATION')
+
 class MasterDataType:
     def __init__(self) -> None:
         self.db = MONGO_CLIENT.dev
@@ -21,36 +22,15 @@ class MasterDataType:
             return validation_response
 
         # attribute map to reffer to data[attrbute] by uuid
-        attribute_map = {str(uuid.uuid4()): k for k in self._data['attributes'].keys()}
-        master_data_type_id = name_to_id(self._data['name'])
+        master_data_type_id = name_to_id(self._data['display_name'])
 
-        self._data = {
-            '_id': master_data_type_id,
-            'organization': ORGANIZATION,
-            'name': data['name'],
-            'attributes': [element for element in attribute_map.keys()]
-        }
-
-        # create meta data
-        meta_data = {
-            '_id': master_data_type_id,
-            'collection_name': 'master_data_type',
-            'fields': [
-                {
-                    'field_id': k,
-                    'field_name': v,
-                    'field_type': data['attributes'][v],
-                } for k, v in attribute_map.items()
-            ]
-        }
-
-        meta_data_response = MetaData().create(data=meta_data)
-        if meta_data_response.success == False:
-            return meta_data_response
+        # add identifiers
+        self._data['_id'] = master_data_type_id
+        self._data['organization'] = ORGANIZATION
         
         result = self.collection.insert_one(self._data)
         if result.acknowledged:
-            return ProcessEngineResponse(success=True, data=data['name'])
+            return ProcessEngineResponse(success=True, data=data['display_name'])
         else:
             return ProcessEngineResponse(success=False, message="Failed to create master data")
 
@@ -63,6 +43,7 @@ class MasterDataType:
         :param rename_fields: A list of dictionaries, each mapping a 'field_id' to a new 'field_name'.
             rename_fields = [{'field_id': new_field_name}, ...]
         """
+        return ProcessEngineResponse(success=False, message="Not implemented")
         if not id:
             return ProcessEngineResponse(success=False, message="ID field is required")
 
@@ -123,36 +104,24 @@ class MasterDataType:
                 return ProcessEngineResponse(success=False, message="Documents not found")
 
     def validate(self):
-        attributes = self._data.get('attributes', None)
-        if not attributes:
-            return ProcessEngineResponse(success=False, message="Data must have attributes")
-        
-        lowercase_keys = map(str.lower, self._data['attributes'].keys())
-        if len(attributes) != len(set(lowercase_keys)):
-            return ProcessEngineResponse(success=False, message="Attribute keys must be unique regardless of the case")
+        validator = ProcessEngineValidator()
 
-        if 'name' not in map(str.lower, self._data.keys()):
-            return ProcessEngineResponse(success=False, message="Data must include the field 'name'")
+        validation = validator.data_has_attributes(self._data, ['display_name', 'attributes'])
+        if not validation.success:
+            return validation
+        
+        validation = validator.data_has_unique_attributes(self._data)
+        print(self._data)
+        if not validation.success:
+            return validation  
+        
+        validation = validator.data_has_unique_attributes(self._data['attributes'])
+        if not validation.success:
+            return validation
+        
+        for attribute, attribute_data in self._data['attributes'].items():
+            validation = validator.data_has_attributes(attribute_data, ['display_name', 'type', 'required', 'default_value'])
+            if not validation.success:
+                return validation
         
         return ProcessEngineResponse(success=True)
-        
-        
-# master_data_type
-example_master_data_type_uuid123 = {
-    "display_name": 'Materials',
-    "attributes": [
-        {"field_id": 'uuid456', "display_name": 'Name', "type": 'string', "required": True, "dedault_value": 'Name'},
-        {"field_id": 'uuid789', "display_name": 'Quantity', "type": 'number', "required": False, "dedault_value": 0.00},
-        {"field_id": 'uuid1011', "display_name": 'Plant', "type": 'master_data', "required": True, "default_value": 'Plant'}
-    ]
-}
-
-# master_data_instance
-example_master_data_instance_uuid456 = {
-    "master_data_type": 'example_master_data_type_uuid123',
-    "content": {
-        {"field_id": 'uuid456', "value": 'MacBook Air 2020'},
-        {"field_id": 'uuid789', "value": 234},
-        {"field_id": 'uuid1011', "value": 'plant_uuid_1112'},
-    }
-}

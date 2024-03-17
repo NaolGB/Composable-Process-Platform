@@ -9,6 +9,7 @@ services:
       - ORGANIZATION
     ports:
       - 8000:8000
+    mem_limit: 2g
     volumes:
       - ./api:/api
     working_dir: /api
@@ -20,8 +21,10 @@ services:
     container_name: angular-dev
     ports:
       - 4200:4200
+    mem_limit: 2g
     volumes:
       - ./app:/app
       - /app/node_modules  # separate volume for node_modules to avoid unnecessary npm installs
     working_dir: /app
-    command: npm start -- --host 0.0.0.0 # allow access from outside the container
+    # command: ng serve --host 0.0.0.0 # allow access from outside the container
+    command: ng serve --host 0.0.0.0 --poll 1 # windows does not support change detexction for VM so we need to poll
