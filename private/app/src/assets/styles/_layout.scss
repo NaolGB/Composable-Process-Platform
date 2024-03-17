@@ -12,7 +12,7 @@ $sidebar-width: 400px;
 
 #grid-container {
     display: grid;
-    grid-template-columns: 1fr 3fr 12fr;
+    grid-template-columns: auto 3fr 12fr;
     grid-template-rows: 7fr 3fr;
     height: 100%;
     background-color: cadetblue;
@@ -37,104 +37,6 @@ $sidebar-width: 400px;
     background-color: burlywood;
 }
 
-// Grid System
-.grid-container {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  height: 100%;
-  background-color: aqua;
-}
-
-// Navigation
-.navigation {
-  background-color: $color-background;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: $spacing-medium;
-  width: $nav-icon-width;
-  @include transition(width, 0.3s);
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: $spacing-medium;
-
-    .nav-icon {
-      width: $nav-icon-width;
-      height: $nav-icon-width;
-      // Add your icon styles here
-    }
-
-    .nav-text {
-      display: none;
-      margin-left: $spacing-small;
-    }
-  }
-
-  &:hover {
-    width: $nav-expanded-width;
-
-    .nav-text {
-      display: inline-block;
-    }
-  }
-
-  background-color: aquamarine;
-}
-
-// Main Section
-.main-section {
-  display: flex;
-  flex-direction: column;
-  background-color:chocolate;
-  height: 100%;
-}
-
-// Top Section
-.top-section {
-  display: grid;
-  grid-template-columns: 3fr 12fr;
-  height: 70%;
-  background-color: bisque;
-
-}
-
-.selection-section {
-  background-color: $color-background;
-  padding: $spacing-medium;
-  background-color: burlywood;
-//   height: 100%;
-}
-
-.working-section {
-    display: flex;
-    flex-direction: column;
-    padding: $spacing-medium;
-    // height: 100%;
-    background-color: cadetblue;
-  
-    // .working-section-row-container {
-    //     display: flex;
-    //     flex-direction: column;
-    //     flex: 1;
-    //     overflow: hidden;
-    //   }
-  }
-
-// Bottom Section
-.bottom-section {
-    height: 100%;
-    background-color: cornflowerblue;
-}
-
-// Preview Section
-.preview-section {
-  background-color: $color-background;
-  padding: $spacing-medium;
-  height: max-content;
-  background-color: bisque;
-}
 
 // Sidebar
 .sidebar {
@@ -165,7 +67,6 @@ $sidebar-width: 400px;
   opacity: 1;
   visibility: visible;
 }
-// Sidebar Open State
 .sidebar-open {
   right: 0;
 }
@@ -193,10 +94,23 @@ height:75px;
 background-color: aquamarine;
 }
 
+
 // Table
 .table-container {
-    // height: min-content;
-    // width: 550px;
+    max-height: 300px;
     flex: 1;
     overflow: auto;
   }
+
+// Navigation
+.navigation-container {
+    width: max-content;
+    height: 100%;
+    padding: 8px;
+}
+
+.navigation-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

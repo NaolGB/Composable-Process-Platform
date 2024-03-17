@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table'; // to enable filtering
 import { DataService } from '../../../services/data.service';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-design-master-home',
@@ -23,7 +24,8 @@ import {MatIconModule} from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSidenavModule
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
@@ -32,6 +34,8 @@ export class DesignMasterHomeComponent {
   dbMasterDataOverviewData: any;
   filteredMasterDataOverviewData: any; // to hold the filtered data instead of overwriting the original data with filtered data
   isSidebarOpen = false;
+  showSidenav = true;
+  showSidenavText = true;
 
   masterDataOverviewColumnsToDisplay: string[] = ['display_name', '_id'];
 
