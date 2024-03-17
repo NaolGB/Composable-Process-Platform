@@ -3,7 +3,6 @@
 // Variables
 $nav-icon-width: 50px;
 $nav-expanded-width: 200px;
-$preview-height: 30%;
 $sidebar-width: 400px;
 
 // Mixins
@@ -11,12 +10,38 @@ $sidebar-width: 400px;
   transition: $property $duration $timing-function;
 }
 
+#grid-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr 12fr;
+    grid-template-rows: 7fr 3fr;
+    height: 100%;
+    background-color: cadetblue;
+    grid-gap: 8px;
+}
+
+#navigation {
+    grid-row: 1/ span 2;
+    background-color: aquamarine;
+}
+
+#selection {
+    background-color: cornflowerblue;
+}
+
+#activity {
+    background-color: darkolivegreen;
+}
+
+#preview {
+    grid-column: 2 / span 2;
+    background-color: burlywood;
+}
+
 // Grid System
 .grid-container {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-rows: 1fr;
-  height: 100vh;
+  height: 100%;
   background-color: aqua;
 }
 
@@ -60,41 +85,54 @@ $sidebar-width: 400px;
 
 // Main Section
 .main-section {
-  display: grid;
-  grid-template-rows: 1fr $preview-height;
-  background-color: beige;
+  display: flex;
+  flex-direction: column;
+  background-color:chocolate;
+  height: 100%;
 }
 
 // Top Section
 .top-section {
   display: grid;
-  grid-template-columns: $sidebar-width 1fr;
+  grid-template-columns: 3fr 12fr;
+  height: 70%;
   background-color: bisque;
+
 }
 
-// Selection Section
 .selection-section {
   background-color: $color-background;
   padding: $spacing-medium;
   background-color: burlywood;
+//   height: 100%;
 }
 
-// Working Section
 .working-section {
-  background-color: $color-background;
-  padding: $spacing-medium;
-  background-color: cadetblue;
-}
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-medium;
+    // height: 100%;
+    background-color: cadetblue;
+  
+    // .working-section-row-container {
+    //     display: flex;
+    //     flex-direction: column;
+    //     flex: 1;
+    //     overflow: hidden;
+    //   }
+  }
 
 // Bottom Section
 .bottom-section {
-  display: grid;
+    height: 100%;
+    background-color: cornflowerblue;
 }
 
 // Preview Section
 .preview-section {
   background-color: $color-background;
   padding: $spacing-medium;
+  height: max-content;
   background-color: bisque;
 }
 
@@ -110,7 +148,6 @@ $sidebar-width: 400px;
 
   background-color: coral;
 }
-
 .sidebar-overlay {
   position: fixed;
   width: 100%;
@@ -132,3 +169,34 @@ $sidebar-width: 400px;
 .sidebar-open {
   right: 0;
 }
+
+
+// Horizontal Bar
+.horizontal-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: bisque;
+  }
+  
+.bar-element {
+padding: 8px 16px;
+border-radius: 4px;
+transition: background-color 0.3s ease;
+height:75px;
+
+&:hover {
+    background-color: #d0d0d0;
+    cursor: pointer;
+}
+
+background-color: aquamarine;
+}
+
+// Table
+.table-container {
+    // height: min-content;
+    // width: 550px;
+    flex: 1;
+    overflow: auto;
+  }

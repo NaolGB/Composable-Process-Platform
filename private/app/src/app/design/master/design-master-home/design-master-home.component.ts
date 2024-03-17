@@ -2,30 +2,51 @@ import { Component } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table'; // to enable filtering - see https://material.angular.io/components/table/examples
+import { DataService } from '../../../services/data.service';
+import { MatButtonModule } from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-design-master-home',
   standalone: true,
-  imports: [MatListModule, MatDividerModule, MatTableModule, MatCardModule, MatGridListModule],
+  imports: [
+    MatListModule, 
+    MatDividerModule,
+    MatTableModule, 
+    MatCardModule, 
+    MatGridListModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
+  ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
 })
 export class DesignMasterHomeComponent {
   dbMasterDataOverviewData: any;
+  filteredMasterDataOverviewData: any; // to hold the filtered data instead of overwriting the original data with filtered data
   isSidebarOpen = false;
 
   masterDataOverviewColumnsToDisplay: string[] = ['display_name', '_id'];
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private dataService: DataService) {}
 
   ngOnInit() {
     this.apiService.getMasterDataOverview().subscribe((data: any) => {
       this.dbMasterDataOverviewData = data['data'];
-      console.log(this.dbMasterDataOverviewData);
+      this.filteredMasterDataOverviewData = this.dbMasterDataOverviewData;
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterText = (event.target as HTMLInputElement).value;
+    this.filteredMasterDataOverviewData = this.dataService.filterData(this.dbMasterDataOverviewData, filterText);
   }
 
   toggleSidebar() {

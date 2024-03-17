@@ -27,29 +27,46 @@
             </div>
 
             <div class="working-section">
-                <mat-card>
-                    <mat-card-header>
-                        <mat-card-title>Master Data Overview</mat-card-title>
-                        <mat-card-subtitle>This is an overview of all Master Data. Click to edit</mat-card-subtitle>
-                    </mat-card-header>
-                </mat-card>
-                <mat-grid-list cols="2" rowHeight="50px" [gutterSize]="'1em'">
-                    <mat-grid-tile>1</mat-grid-tile>
-                    <mat-grid-tile>2</mat-grid-tile>
-                  </mat-grid-list>
-                <table mat-table [dataSource]="dbMasterDataOverviewData" class="mat-elevation-z8">
-                    <ng-container matColumnDef="_id">
-                        <th mat-header-cell *matHeaderCellDef> ID </th>
-                        <td mat-cell *matCellDef="let element"> {{element._id}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="display_name">
-                        <th mat-header-cell *matHeaderCellDef> Name </th>
-                        <td mat-cell *matCellDef="let element"> {{element.display_name}} </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="masterDataOverviewColumnsToDisplay"></tr>
-                    <tr mat-row *matRowDef="let myRowData; columns: masterDataOverviewColumnsToDisplay"></tr>
-                </table>
+                <div class="working-section-row-container">
+                    <mat-card>
+                        <mat-card-header>
+                            <mat-card-title>Master Data Overview</mat-card-title>
+                            <mat-card-subtitle>This is an overview of all Master Data. Click to edit</mat-card-subtitle>
+                        </mat-card-header>
+                    </mat-card>
+                    <div class="horizontal-bar">
+                        <mat-form-field class="bar-element">
+                            <mat-label>Filter</mat-label>
+                            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+                        </mat-form-field>
+                        <div class="bar-element">
+                            <button mat-button>
+                                Add New
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <section class="table-container">
+                        <table mat-table [dataSource]="filteredMasterDataOverviewData">
+                            <ng-container matColumnDef="_id">
+                                <th mat-header-cell *matHeaderCellDef> ID </th>
+                                <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="display_name">
+                                <th mat-header-cell *matHeaderCellDef> Name </th>
+                                <td mat-cell *matCellDef="let element"> {{element.display_name}} </td>
+                            </ng-container>
+        
+                            <tr mat-header-row *matHeaderRowDef="masterDataOverviewColumnsToDisplay"></tr>
+                            <tr mat-row *matRowDef="let myRowData; columns: masterDataOverviewColumnsToDisplay"></tr>
+        
+                            <!-- Row shown when there is no matching data. -->
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                            </tr>
+                        </table>
+                    </section>
+                </div>
                 <button class="sidebar-toggle" (click)="toggleSidebar()">Toggle Sidebar</button>
             </div>
         </div>
