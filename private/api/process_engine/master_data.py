@@ -1,7 +1,6 @@
 import os
 import uuid
 from .mongo_utils import MongoDBClient
-from .meta_data import MetaData
 from .helpers import name_to_id, ProcessEngineResponse
 
 MONGO_CLIENT = MongoDBClient()
@@ -138,3 +137,22 @@ class MasterDataType:
         return ProcessEngineResponse(success=True)
         
         
+# master_data_type
+example_master_data_type_uuid123 = {
+    "display_name": 'Materials',
+    "attributes": [
+        {"field_id": 'uuid456', "display_name": 'Name', "type": 'string', "required": True, "dedault_value": 'Name'},
+        {"field_id": 'uuid789', "display_name": 'Quantity', "type": 'number', "required": False, "dedault_value": 0.00},
+        {"field_id": 'uuid1011', "display_name": 'Plant', "type": 'master_data', "required": True, "default_value": 'Plant'}
+    ]
+}
+
+# master_data_instance
+example_master_data_instance_uuid456 = {
+    "master_data_type": 'example_master_data_type_uuid123',
+    "content": {
+        {"field_id": 'uuid456', "value": 'MacBook Air 2020'},
+        {"field_id": 'uuid789', "value": 234},
+        {"field_id": 'uuid1011', "value": 'plant_uuid_1112'},
+    }
+}
