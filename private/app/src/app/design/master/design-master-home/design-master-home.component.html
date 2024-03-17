@@ -1,0 +1,37 @@
+<div class="grid-container">
+    <nav class="navigation">
+        <a href="#" class="nav-item">
+        <div class="nav-icon">some icon</div>
+        <span class="nav-text">Home</span>
+        </a>
+        <a href="#" class="nav-item">
+        <div class="nav-icon">some icon</div>
+        <span class="nav-text">About</span>
+        </a>
+    </nav>
+    <div class="main-section">
+        <div class="top-section">
+            <div class="selection-section">
+                selection-section
+            </div>
+            <div class="working-section">
+                working-section
+                <button class="sidebar-toggle" (click)="toggleSidebar()">Toggle Sidebar</button>
+            </div>
+        </div>
+        
+        <div class="bottom-section">
+            <div class="preview-section">
+                preview-section content
+            </div>
+        </div>
+    </div>
+</div>
+  
+
+<!-- NOTE: The following code should not be placed inside *ngIf="sidebarOpen" because if so, 
+it will be newly created on toggle and the transition will not happen -->
+<div [class.sidebar-open]="isSidebarOpen" class="sidebar">
+    sidebar content
+</div>
+<div class="sidebar-overlay" [class.sidebar-open-overlay]="isSidebarOpen" (click)="toggleSidebar()"></div>
