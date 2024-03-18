@@ -25,4 +25,10 @@ export class ApiService {
   createNewMasterDataType(masterDataType: MasterDataType) {
     return this.http.post(`${this.designBaseUrl}/master-data-type/`, masterDataType);
   }
+
+  updateMasterDataType(id: string, masterDataType: MasterDataType) {
+    const params = new HttpParams()
+      .set('id', id)
+    return this.http.patch(`${this.designBaseUrl}/master-data-type/`, masterDataType, { params });
+  }
 }

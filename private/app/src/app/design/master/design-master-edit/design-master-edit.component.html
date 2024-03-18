@@ -65,9 +65,9 @@
           <mat-icon>add</mat-icon>
           Add Attribute
         </button>
-        <button class="button-card-item" type="button" (click)="onSubmit()" [disabled]="masterDataFromClient.invalid">
-          <mat-icon>save</mat-icon>
-          Submit
+        <button class="button-card-item" type="button" (click)="onSubmit()" [disabled]="masterDataFromClient.pristine">
+            <mat-icon>save</mat-icon>
+            Submit
         </button>
       </div>
 }

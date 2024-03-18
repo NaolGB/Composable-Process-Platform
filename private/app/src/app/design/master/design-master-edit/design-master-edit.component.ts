@@ -61,6 +61,7 @@ export class DesignMasterEditComponent {
   private fetchData() {
     this.apiService.getMasterDataTypeById(this.masterDataId ?? '').subscribe((data: any) => {
       this.masterDataObject = data['data'];
+      console.log(this.masterDataObject);
       if (!this.masterDataObject) {
         return;
       }
@@ -99,6 +100,10 @@ export class DesignMasterEditComponent {
   }
 
   onSubmit() {
+    if (this.masterDataFromClient.pristine) {
+      return; // Exit the method if the form is pristine (no changes)
+    }
+    
     const masterDataFromClientApiFormat: MasterDataType = {
       display_name: this.masterDataFromClient.value.display_name,
       attributes: {}
@@ -119,8 +124,8 @@ export class DesignMasterEditComponent {
   
     console.log(masterDataFromClientApiFormat);
   
-    // this.apiService.updateMasterDataType(this.masterDataId, masterDataFromClientApiFormat).subscribe((response: any) => {
-    //   console.log(response);
-    // });
+    this.apiService.updateMasterDataType(this.masterDataId ?? '', masterDataFromClientApiFormat).subscribe((response: any) => {
+      console.log(response);
+    });
   }
 }

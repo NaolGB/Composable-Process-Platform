@@ -16,7 +16,6 @@ class MasterDataTypeView(APIView):
         id = request.query_params.get('id')
         fields = request.query_params.get('fields')
         fields = fields.split(",") if fields else None
-        print('id', id)
 
         response = MasterDataTypeService().get(id=id, fields=fields)
         if response.success == False:
@@ -28,7 +27,6 @@ class MasterDataTypeView(APIView):
         """
         Create a master data type.
         """
-        print(request.data)
         response = MasterDataTypeService().create(data=request.data)
 
         if response.success == False:
@@ -41,11 +39,10 @@ class MasterDataTypeView(APIView):
         """
         Update a master data type by ID. 
         """
-        id = request.data.get('id') 
-        new_fields = request.data.get('new_fields')
-        rename_fields = request.data.get('rename_fields')
+        id = request.query_params.get('id') 
+        data = request.data
 
-        response = MasterDataTypeService().update(id, new_fields, rename_fields)
+        response = MasterDataTypeService().update(id, data=data)
 
         if response.success == False:
             return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)

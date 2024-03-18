@@ -1,4 +1,5 @@
 export interface MasterDataType {
+    _id?: string;
     display_name: string;
     attributes: {
         [key: string]: {
