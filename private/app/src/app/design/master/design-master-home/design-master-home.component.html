@@ -30,60 +30,20 @@
             </mat-card-header>
         </mat-card>
         <mat-nav-list>
-            <mat-list-item>Master Data Overview</mat-list-item>
+            <mat-list-item (click)="selectMasterData('__select_master_data_overview')">Master Data Overview</mat-list-item>
             @for (masterDataElement of dbMasterDataOverviewData; track masterDataElement._id) {
                 @if (masterDataElement.display_name) {
-                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement.display_name }}</mat-list-item>
-                    <!-- <mat-divider></mat-divider> -->
+                    <mat-list-item>{{ masterDataElement.display_name }}</mat-list-item>
                 } 
                 @else {
-                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement._id }}</mat-list-item>
-                    <!-- <mat-divider></mat-divider> -->
+                    <mat-list-item>{{ masterDataElement._id }}</mat-list-item>
                 }
             }
         </mat-nav-list>
     </section>
     <section id="activity">
-        <app-design-master-add-new></app-design-master-add-new>
-        <!-- <mat-card>
-            <mat-card-header>
-                <mat-card-title>Master Data Overview</mat-card-title>
-                <mat-card-subtitle>This is an overview of all Master Data. Click to edit</mat-card-subtitle>
-            </mat-card-header>
-        </mat-card>
-        <div class="horizontal-bar">
-            <form class="bar-element">
-                <input type="text" placeholder="Search..." (keyup)="applyFilter($event)" #input/>
-            </form>
-            <div class="bar-element">
-                <button mat-button>
-                    Add New
-                    <mat-icon>add</mat-icon>
-                </button>
-            </div>
-        </div>
-        <div class="scrollable">
-            <table mat-table [dataSource]="filteredMasterDataOverviewData">
-                <ng-container matColumnDef="_id">
-                    <th mat-header-cell *matHeaderCellDef> ID </th>
-                    <td mat-cell *matCellDef="let element"> {{element._id}} </td>
-                </ng-container>
-                <ng-container matColumnDef="display_name">
-                    <th mat-header-cell *matHeaderCellDef> Name </th>
-                    <td mat-cell *matCellDef="let element"> {{element.display_name}} </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="masterDataOverviewColumnsToDisplay"></tr>
-                <tr mat-row *matRowDef="let myRowData; columns: masterDataOverviewColumnsToDisplay"></tr>
-
-                <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-                </tr>
-            </table>
-        </div>
-        <div class="stick-to-section-bottom">
-            hi NY!
-        </div> -->
+        <ng-container *ngIf="selectedMasterDataId==='__select_master_data_overview'; then masterDataOverviewTable"></ng-container>
+        <ng-container *ngIf="selectedMasterDataId==='__add_new_master_data_type'; then masterDataAddNew"></ng-container>
     </section>
     <section id="preview">
         @if (selectedMasterDataId === '') {
@@ -101,3 +61,49 @@ it will be newly created on toggle and the transition will not happen -->
     sidebar content
 </div>
 <div class="sidebar-overlay" [class.sidebar-open-overlay]="isSidebarOpen" (click)="toggleSidebar()"></div>
+
+<ng-template #masterDataOverviewTable>
+    <mat-card class="activity-flex-item">
+        <mat-card-header>
+            <mat-card-title>Master Data Overview</mat-card-title>
+            <mat-card-subtitle>This is an overview of all Master Data. Click to edit</mat-card-subtitle>
+        </mat-card-header>
+    </mat-card>
+    <div class="activity-flex-item horizontal-bar">
+        <form class="bar-element">
+            <input type="text" placeholder="Search..." (keyup)="applyFilter($event)" #input/>
+        </form>
+        <div class="bar-element activity-flex-item">
+            <button mat-button (click)="selectMasterData('__add_new_master_data_type')">
+                Add New
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="activity-flex-item scrollable">
+        <table mat-table [dataSource]="filteredMasterDataOverviewData">
+            <ng-container matColumnDef="_id">
+                <th mat-header-cell *matHeaderCellDef> ID </th>
+                <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="display_name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.display_name}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="masterDataOverviewColumnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let myRowData; columns: masterDataOverviewColumnsToDisplay"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            </tr>
+        </table>
+    </div>
+    <div class="activity-flex-item stick-to-section-bottom">
+        <button>hi NY!</button>
+    </div>
+</ng-template>
+
+<ng-template #masterDataAddNew>
+    <app-design-master-add-new></app-design-master-add-new>
+</ng-template>

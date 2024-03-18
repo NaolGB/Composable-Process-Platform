@@ -12,11 +12,13 @@ import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { DesignMasterAddNewComponent } from '../design-master-add-new/design-master-add-new.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-design-master-home',
   standalone: true,
   imports: [
+    CommonModule,
     MatListModule, 
     MatDividerModule,
     MatTableModule, 
@@ -27,7 +29,7 @@ import { DesignMasterAddNewComponent } from '../design-master-add-new/design-mas
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
-    DesignMasterAddNewComponent
+    DesignMasterAddNewComponent,
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
@@ -37,7 +39,7 @@ export class DesignMasterHomeComponent {
   filteredMasterDataOverviewData: any; // to hold the filtered data instead of overwriting the original data with filtered data
   isSidebarOpen = false;
   showSidenavText = false;
-  selectedMasterDataId: string = '';
+  selectedMasterDataId: string = '__select_master_data_overview';
   selectedMasterDataObject: any;
 
   masterDataOverviewColumnsToDisplay: string[] = ['display_name', '_id'];
@@ -57,52 +59,13 @@ export class DesignMasterHomeComponent {
 
   selectMasterData(masterDataId: string) {
     this.selectedMasterDataId = masterDataId;
-    this.apiService.getMasterDataTypeById(masterDataId).subscribe((data: any) => {
-      this.selectedMasterDataObject = data['data'];
-      this.getPreviewMasterDataOverviewData();
-      this.getpreviewMasterDataOverviewDataColumns(); 
-      this.getPreviewMasterDataOverviewDataColumnsToDisplay();
-    });
-  }
-
-  getPreviewMasterDataOverviewData() {
-    if (this.selectedMasterDataObject) {
-      this.previewMasterDataOverviewData = [];
-      Object.keys(this.selectedMasterDataObject['attributes']).forEach((item: string) => {
-        const displayName = this.selectedMasterDataObject['attributes'][item].display_name;
-        const defaultValue = this.selectedMasterDataObject['attributes'][item].default_value;
-        const previewItem = {
-          [displayName]: defaultValue,
-        };
-        this.previewMasterDataOverviewData.push(previewItem);
+    if (![
+          '__select_master_data_overview',
+          '__add_new_master_data_type'
+        ].includes(this.selectedMasterDataId)) {
+      this.apiService.getMasterDataTypeById(masterDataId).subscribe((data: any) => {
+        this.selectedMasterDataObject = data['data'];
       });
-
-      console.log(this.previewMasterDataOverviewData);
-    }
-  }
-
-  getpreviewMasterDataOverviewDataColumns() {
-    if (this.selectedMasterDataObject) {
-      this.previewMasterDataOverviewDataColumns = [];
-      Object.keys(this.selectedMasterDataObject['attributes']).forEach((item: string) => {
-        const displayName = this.selectedMasterDataObject['attributes'][item].display_name;
-        const defaultValue = this.selectedMasterDataObject['attributes'][item].default_value;
-        const previewItem = {
-          columnDef: displayName,
-          header: displayName,
-          cell: defaultValue
-        };
-        this.previewMasterDataOverviewDataColumns.push(previewItem);
-      });
-
-      console.log(this.previewMasterDataOverviewDataColumns);
-    }
-  }
-
-  getPreviewMasterDataOverviewDataColumnsToDisplay() {
-    if (this.selectedMasterDataObject) {
-      this.previewMasterDataOverviewDataColumnsToDisplay = this.previewMasterDataOverviewDataColumns.map((item: any) => item.columnDef);
-      console.log(this.previewMasterDataOverviewDataColumnsToDisplay);
     }
   }
 

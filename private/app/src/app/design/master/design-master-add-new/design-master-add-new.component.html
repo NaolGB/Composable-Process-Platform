@@ -4,6 +4,9 @@
         <mat-card-subtitle>Add required fields and additional attributes</mat-card-subtitle>
     </mat-card-header>
 </mat-card>
+<div class="activity-flex-item horizontal-bar">
+    hi NY!
+</div>
 <form [formGroup]="masterDataFromClient" class="activity-flex-item scrollable">
     <div class="form-card">
         <div class="form-card">
@@ -31,7 +34,8 @@
       <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i">
         <div class="form-card">
             <div class="form-card-element">
-                <mat-checkbox checked>Requirted</mat-checkbox>
+                <mat-checkbox formControlName="is_required">Required</mat-checkbox>
+                <!-- <mat-checkbox [checked]="attribute.isRequired">Required</mat-checkbox> -->
             </div>
 
             <mat-form-field class="form-card-element">
@@ -41,7 +45,7 @@
             </mat-form-field>
 
             <mat-form-field class="form-card-element">
-                <input type="text" matInput id="dsiaply_name" formControlName="dsiaply_name" placeholder="Display Name" required>
+                <input type="text" matInput id="display_name" formControlName="display_name" placeholder="Display Name" required>
             </mat-form-field>
             
             <mat-form-field class="form-card-element">

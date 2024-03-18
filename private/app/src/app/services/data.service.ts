@@ -26,4 +26,8 @@ export class DataService {
       );
     }
   }
+
+  nameToId(name: string) {
+    return name.toLowerCase().replace(/ /g, '_');
+  }
 }

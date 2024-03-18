@@ -17,7 +17,7 @@ class MasterDataType:
         self._data = data
 
         # validate data
-        validation_response = self.validate()
+        validation_response = self._validate_create()
         if validation_response.success == False:
             return validation_response
 
@@ -103,7 +103,7 @@ class MasterDataType:
             else:
                 return ProcessEngineResponse(success=False, message="Documents not found")
 
-    def validate(self):
+    def _validate_create(self):
         validator = ProcessEngineValidator()
 
         validation = validator.data_has_attributes(self._data, ['display_name', 'attributes'])
@@ -120,7 +120,7 @@ class MasterDataType:
             return validation
         
         for attribute, attribute_data in self._data['attributes'].items():
-            validation = validator.data_has_attributes(attribute_data, ['display_name', 'type', 'required', 'default_value'])
+            validation = validator.data_has_attributes(attribute_data, ['display_name', 'type', 'is_required', 'default_value'])
             if not validation.success:
                 return validation
         

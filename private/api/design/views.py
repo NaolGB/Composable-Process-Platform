@@ -28,6 +28,7 @@ class MasterDataTypeView(APIView):
         """
         Create a master data type.
         """
+        print(request.data)
         response = MasterDataTypeService().create(data=request.data)
 
         if response.success == False:

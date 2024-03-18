@@ -9,6 +9,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MasterDataType } from '../../../services/interface';
+import { DataService } from '../../../services/data.service';
 
 @Component({
   selector: 'app-design-master-add-new',
@@ -31,14 +33,14 @@ export class DesignMasterAddNewComponent {
   masterDataFromClient: FormGroup;
   fieldTypeOptions: string[] = ['string', 'number', 'boolean', 'date', 'Master Data Type'];
 
-  constructor(private apiService: ApiService, private formBuilder: FormBuilder) {
+  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private dataService: DataService) { 
     this.masterDataFromClient = this.formBuilder.group({
       display_name: ['', Validators.required],	
       attributes: this.formBuilder.array([
         this.formBuilder.group({
-          dsiaply_name: ['', Validators.required],
+          display_name: ['', Validators.required],
           type: [this.fieldTypeOptions[0], Validators.required],
-          required: [false, Validators.required],
+          is_required: [true, Validators.required],
           default_value: ['', Validators.required]
         })
       ])
@@ -51,9 +53,9 @@ export class DesignMasterAddNewComponent {
 
   addAttribute() {
     const attribute = this.formBuilder.group({
-      dsiaply_name: ['', Validators.required],
+      display_name: ['', Validators.required],
       type: [this.fieldTypeOptions[0], Validators.required],
-      required: [false, Validators.required],
+      is_required: [false, Validators.required],
       default_value: ['', Validators.required]
     });
 
@@ -66,7 +68,28 @@ export class DesignMasterAddNewComponent {
   }
 
   onSubmit() {
-    console.log(this.masterDataFromClient.value);
+    const masterDataFromClientApiFormat: MasterDataType = {
+      display_name: this.masterDataFromClient.value.display_name,
+      attributes: {}
+    }
+
+    console.log(this.dataService.nameToId(this.masterDataFromClient.value.display_name))
+
+    this.attributes.controls.forEach(element => {
+      masterDataFromClientApiFormat.attributes[this.dataService.nameToId(element.value.display_name)] = {
+        display_name: element.value.display_name,
+        type: element.value.type,
+        is_required: element.value.is_required,
+        default_value: element.value.default_value
+      }
+    });
+
+    console.log(masterDataFromClientApiFormat);
+
+    this.apiService.createNewMasterDataType(masterDataFromClientApiFormat).subscribe((response: any) => {
+      console.log(response);
+    });
+    // console.log(this.masterDataFromClient.value);
   }
 
 
