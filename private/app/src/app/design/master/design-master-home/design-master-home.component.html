@@ -33,17 +33,27 @@
             <mat-list-item (click)="selectMasterData('__select_master_data_overview')">Master Data Overview</mat-list-item>
             @for (masterDataElement of dbMasterDataOverviewData; track masterDataElement._id) {
                 @if (masterDataElement.display_name) {
-                    <mat-list-item>{{ masterDataElement.display_name }}</mat-list-item>
+                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement.display_name }}</mat-list-item>
                 } 
                 @else {
-                    <mat-list-item>{{ masterDataElement._id }}</mat-list-item>
+                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement._id }}</mat-list-item>
                 }
             }
         </mat-nav-list>
     </section>
     <section id="activity">
-        <ng-container *ngIf="selectedMasterDataId==='__select_master_data_overview'; then masterDataOverviewTable"></ng-container>
-        <ng-container *ngIf="selectedMasterDataId==='__add_new_master_data_type'; then masterDataAddNew"></ng-container>
+        <ng-container [ngSwitch]="selectedMasterDataId">
+            <ng-container *ngSwitchCase="'__select_master_data_overview'">
+                <ng-container *ngTemplateOutlet="masterDataOverviewTable"></ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="'__add_new_master_data_type'">
+                <app-design-master-add-new></app-design-master-add-new>
+            </ng-container>
+            <!-- Specific Master Data Type selected -->
+            <ng-container *ngSwitchDefault> 
+                <app-design-master-edit [masterDataId]="selectedMasterDataId"></app-design-master-edit>
+            </ng-container>
+        </ng-container>
     </section>
     <section id="preview">
         @if (selectedMasterDataId === '') {
@@ -102,8 +112,4 @@ it will be newly created on toggle and the transition will not happen -->
     <div class="activity-flex-item stick-to-section-bottom">
         <button>hi NY!</button>
     </div>
-</ng-template>
-
-<ng-template #masterDataAddNew>
-    <app-design-master-add-new></app-design-master-add-new>
 </ng-template>

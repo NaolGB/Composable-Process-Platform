@@ -13,6 +13,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { DesignMasterAddNewComponent } from '../design-master-add-new/design-master-add-new.component';
 import { CommonModule } from '@angular/common';
+import {MatAccordion, MatExpansionModule} from '@angular/material/expansion';
+import { DesignMasterEditComponent } from '../design-master-edit/design-master-edit.component';
+
 
 @Component({
   selector: 'app-design-master-home',
@@ -30,6 +33,9 @@ import { CommonModule } from '@angular/common';
     MatIconModule,
     MatSidenavModule,
     DesignMasterAddNewComponent,
+    DesignMasterEditComponent,
+    MatExpansionModule,
+    MatAccordion
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
@@ -47,6 +53,8 @@ export class DesignMasterHomeComponent {
   previewMasterDataOverviewData: {}[] = [];
   previewMasterDataOverviewDataColumnsToDisplay: string[] = [];
   previewMasterDataOverviewDataColumns: {}[] = [];
+
+  testExpand = true
 
   constructor(private apiService: ApiService, private dataService: DataService) {}
 
