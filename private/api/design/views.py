@@ -16,8 +16,9 @@ class MasterDataTypeView(APIView):
         id = request.query_params.get('id')
         fields = request.query_params.get('fields')
         fields = fields.split(",") if fields else None
+        print('id', id)
 
-        response = MasterDataTypeService().get(id, fields=fields)
+        response = MasterDataTypeService().get(id=id, fields=fields)
         if response.success == False:
             return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)
         else:

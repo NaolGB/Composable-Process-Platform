@@ -111,9 +111,9 @@ class MasterDataType:
             return validation
         
         validation = validator.data_has_unique_attributes(self._data)
-        print(self._data)
         if not validation.success:
             return validation  
+        print('passesd')
         
         validation = validator.data_has_unique_attributes(self._data['attributes'])
         if not validation.success:

@@ -14,4 +14,10 @@ export class ApiService {
       .set('fields', '_id,display_name')
     return this.http.get(`${this.designBaseUrl}/master-data-type`, { params });
   }
+
+  getMasterDataTypeById(masterDataTypeId: string) {
+    const params = new HttpParams()
+      .set('id', masterDataTypeId)
+    return this.http.get(`${this.designBaseUrl}/master-data-type`, { params });
+  }
 }

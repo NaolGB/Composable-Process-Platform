@@ -1,9 +1,17 @@
 <div id="grid-container">
     <section id="navigation">
         <mat-drawer-container class="navigation-container" autosize>
-            <button type="button" mat-button (click)="showSidenavText = !showSidenavText">
-                Tog
-            </button>
+            @if (showSidenavText) {
+                <button mat-button (click)="showSidenavText = !showSidenavText">
+                    Collapse
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
+            }
+            @else {
+                <button mat-button (click)="showSidenavText = !showSidenavText">
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+            }
             <div class="navigation-content">
                 hi NY!
                 @if (showSidenavText) {
@@ -15,64 +23,75 @@
           </mat-drawer-container>
     </section>
     <section id="selection">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>All Master Data</mat-card-title>
+                <mat-card-subtitle>Select to edit</mat-card-subtitle>
+            </mat-card-header>
+        </mat-card>
         <mat-nav-list>
+            <mat-list-item>Master Data Overview</mat-list-item>
             @for (masterDataElement of dbMasterDataOverviewData; track masterDataElement._id) {
                 @if (masterDataElement.display_name) {
-                    <mat-list-item>{{ masterDataElement.display_name }}</mat-list-item>
+                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement.display_name }}</mat-list-item>
                     <!-- <mat-divider></mat-divider> -->
                 } 
                 @else {
-                    <mat-list-item>{{ masterDataElement._id }}</mat-list-item>
+                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement._id }}</mat-list-item>
                     <!-- <mat-divider></mat-divider> -->
                 }
             }
         </mat-nav-list>
     </section>
     <section id="activity">
-        <div>
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Master Data Overview</mat-card-title>
-                    <mat-card-subtitle>This is an overview of all Master Data. Click to edit</mat-card-subtitle>
-                </mat-card-header>
-            </mat-card>
-            <div class="horizontal-bar">
-                <mat-form-field class="bar-element">
-                    <mat-label>Filter</mat-label>
-                    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-                </mat-form-field>
-                <div class="bar-element">
-                    <button mat-button>
-                        Add New
-                        <mat-icon>add</mat-icon>
-                    </button>
-                </div>
-            </div>
-            <div class="table-container">
-                <table mat-table [dataSource]="filteredMasterDataOverviewData">
-                    <ng-container matColumnDef="_id">
-                        <th mat-header-cell *matHeaderCellDef> ID </th>
-                        <td mat-cell *matCellDef="let element"> {{element._id}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="display_name">
-                        <th mat-header-cell *matHeaderCellDef> Name </th>
-                        <td mat-cell *matCellDef="let element"> {{element.display_name}} </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="masterDataOverviewColumnsToDisplay"></tr>
-                    <tr mat-row *matRowDef="let myRowData; columns: masterDataOverviewColumnsToDisplay"></tr>
-
-                    <!-- Row shown when there is no matching data. -->
-                    <tr class="mat-row" *matNoDataRow>
-                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-                    </tr>
-                </table>
+        <app-design-master-add-new></app-design-master-add-new>
+        <!-- <mat-card>
+            <mat-card-header>
+                <mat-card-title>Master Data Overview</mat-card-title>
+                <mat-card-subtitle>This is an overview of all Master Data. Click to edit</mat-card-subtitle>
+            </mat-card-header>
+        </mat-card>
+        <div class="horizontal-bar">
+            <form class="bar-element">
+                <input type="text" placeholder="Search..." (keyup)="applyFilter($event)" #input/>
+            </form>
+            <div class="bar-element">
+                <button mat-button>
+                    Add New
+                    <mat-icon>add</mat-icon>
+                </button>
             </div>
         </div>
-        <button class="sidebar-toggle" (click)="toggleSidebar()">Toggle Sidebar</button>
+        <div class="scrollable">
+            <table mat-table [dataSource]="filteredMasterDataOverviewData">
+                <ng-container matColumnDef="_id">
+                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+                </ng-container>
+                <ng-container matColumnDef="display_name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.display_name}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="masterDataOverviewColumnsToDisplay"></tr>
+                <tr mat-row *matRowDef="let myRowData; columns: masterDataOverviewColumnsToDisplay"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                </tr>
+            </table>
+        </div>
+        <div class="stick-to-section-bottom">
+            hi NY!
+        </div> -->
     </section>
     <section id="preview">
-      preview
+        @if (selectedMasterDataId === '') {
+            <p>Select a Master Data Type or Add New to see a preview</p>
+        }
+        @else {
+            hi NY!
+        }
     </section>
   </div>
 

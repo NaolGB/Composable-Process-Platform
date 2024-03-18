@@ -15,8 +15,8 @@ class ProcessEngineValidator:
         return ProcessEngineResponse(success=True)
     
     def data_has_unique_attributes(self, data: dict):
-        lowercase_keys = map(str.lower, data.keys())
-        if len(list(lowercase_keys)) != len(list(set(lowercase_keys))):
+        lowercase_keys = list(map(str.lower, data.keys()))
+        if len(lowercase_keys) != len(list(set(lowercase_keys))):
             return ProcessEngineResponse(success=False, message="Attributes must be unique - case insensitive")
         return ProcessEngineResponse(success=True)
 

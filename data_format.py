@@ -26,3 +26,9 @@ example_master_data_instance_uuid456 = {
         {'plant': 'plant_uuid_1112'},
     }
 }
+
+api_status_message = {
+    "success": bool, 
+    "message":str,
+    "data": dict if success else None
+}

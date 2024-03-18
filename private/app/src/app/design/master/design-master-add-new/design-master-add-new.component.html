@@ -1,0 +1,64 @@
+<mat-card class="activity-flex-item">
+    <mat-card-header>
+        <mat-card-title>Add Master Data Type</mat-card-title>
+        <mat-card-subtitle>Add required fields and additional attributes</mat-card-subtitle>
+    </mat-card-header>
+</mat-card>
+<form [formGroup]="masterDataFromClient" class="activity-flex-item scrollable">
+    <div class="form-card">
+        <div class="form-card">
+            <div class="form-card-element">
+                <mat-checkbox checked disabled>Requirted</mat-checkbox>
+            </div>
+
+            <mat-form-field class="form-card-element full-width">
+                <select matNativeControl required disabled>
+                    <option>string</option>
+                </select>
+            </mat-form-field>
+
+            <mat-form-field class="form-card-element full-width">
+                <input type="text" matInput id="display_name" formControlName="display_name" placeholder="Display Name" required>
+            </mat-form-field>
+            
+            <mat-form-field class="form-card-element full-width">
+                <input type="text" disabled matInput placeholder="Default Value" required>
+            </mat-form-field>
+        </div>
+    </div>
+   
+    <div formArrayName="attributes">
+      <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i">
+        <div class="form-card">
+            <div class="form-card-element">
+                <mat-checkbox checked>Requirted</mat-checkbox>
+            </div>
+
+            <mat-form-field class="form-card-element">
+                <select matNativeControl id="type" formControlName="type" required>
+                    <option *ngFor="let option of fieldTypeOptions" [value]="option">{{ option }}</option>
+                </select>
+            </mat-form-field>
+
+            <mat-form-field class="form-card-element">
+                <input type="text" matInput id="dsiaply_name" formControlName="dsiaply_name" placeholder="Display Name" required>
+            </mat-form-field>
+            
+            <mat-form-field class="form-card-element">
+                <input type="text" matInput id="default_value" formControlName="default_value" placeholder="Default Value" required>
+            </mat-form-field>
+
+            <div class="form-card-element">
+                <button mat-button (click)="removeAttribute(i)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+      </div>
+    </div>
+   
+</form>
+<div class="activity-flex-item stick-to-section-bottom button-card">
+    <button class="button-card-item" type="button" (click)="addAttribute()">Add Attribute</button>
+    <button class="button-card-item" type="button" (click)="onSubmit()">Submit</button>
+</div>
