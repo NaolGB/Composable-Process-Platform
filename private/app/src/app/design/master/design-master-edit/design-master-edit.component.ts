@@ -1,8 +1,8 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { APIResponse, MasterDataType } from '../../../services/interface';
+import { APIResponse, MasterDataType, Notification } from '../../../services/interface';
 import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { OnChanges, SimpleChanges } from '@angular/core';
@@ -32,7 +32,7 @@ import { DataService } from '../../../services/data.service';
 })
 export class DesignMasterEditComponent {
   @Input() masterDataId: string | undefined;
-  // @Output() apiResponse: EventEmitter<any> = new EventEmitter<any>();
+  @Output() apiResponse: EventEmitter<Notification> = new EventEmitter<Notification>();
 
   masterDataObject: MasterDataType | undefined;
   masterDataFromClient: FormGroup;
@@ -100,6 +100,13 @@ export class DesignMasterEditComponent {
     this.attributes.push(attribute);
   }
 
+  isAPIResponse(object: any): object is APIResponse {
+    return Object.keys(object).includes('success') &&
+            Object.keys(object).includes('message') &&
+           (object.success === true || object.success === false);
+  }
+  
+
   onSubmit() {
     if (this.masterDataFromClient.pristine) {
       return; // Exit the method if the form is pristine (no changes)
@@ -126,11 +133,41 @@ export class DesignMasterEditComponent {
     console.log(masterDataFromClientApiFormat);
   
     this.apiService.updateMasterDataType(this.masterDataId ?? '', masterDataFromClientApiFormat).subscribe(
-      (response: any) => {
-        // this.apiResponse.emit(response);
+      (response: any) => { // Use `any` to allow for type checking within the function
+        let notification: Notification;
+        if (this.isAPIResponse(response)) {
+          console.log('APIResponse');
+          // Convert APIResponse to Notification
+          notification = {
+            type: response.success ? 'success' : 'error', 
+            message: response.message || response.success ? 'Success' : 'Failed', // Use API response message or a default one
+            dismissed: false,
+            remainingTime: 5000
+          };
+        } else {
+          // Response does not fit APIResponse; default to info type Notification
+          const fallbackMessage = `Status: ${response.status} ${response.statusText}.`;
+          notification = {
+            type: 'info',
+            message: fallbackMessage,
+            dismissed: false,
+            remainingTime: 5000
+          };
+        }
+        this.apiResponse.emit(notification);
       },
       (error: any) => {
-        // this.apiResponse.emit(error);
-      });
+        // Handle errors by emitting an error type Notification
+        const fallbackMessage = `Status: ${error.status} ${error.statusText}.`;
+        const notification: Notification = {
+          type: 'error',
+          message: fallbackMessage ? fallbackMessage : 'An error occurred.',
+          dismissed: false,
+          remainingTime: 5000
+        };
+        this.apiResponse.emit(notification);
+      }
+    );
+    
   }
 }

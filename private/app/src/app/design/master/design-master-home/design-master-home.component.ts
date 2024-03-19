@@ -16,7 +16,8 @@ import { CommonModule } from '@angular/common';
 import {MatAccordion, MatExpansionModule} from '@angular/material/expansion';
 import { DesignMasterEditComponent } from '../design-master-edit/design-master-edit.component';
 import { NotificationComponent } from '../../../components/notification/notification.component';
-import { Notification } from '../../../services/interface';
+import { Notification, TableData } from '../../../services/interface';
+import { TableComponent } from '../../../components/table/table.component';
 
 
 @Component({
@@ -37,6 +38,7 @@ import { Notification } from '../../../services/interface';
     DesignMasterAddNewComponent,
     DesignMasterEditComponent,
     NotificationComponent,
+    TableComponent,
     MatExpansionModule,
     MatAccordion
   ],
@@ -55,11 +57,10 @@ export class DesignMasterHomeComponent {
 
   masterDataOverviewColumnsToDisplay: string[] = ['display_name', '_id'];
 
-  previewMasterDataOverviewData: {}[] = [];
+  previewTableData: TableData = {} as TableData;
+  previewMasterDataOverviewData: {display_name: string, default_value: string}[] = [];
   previewMasterDataOverviewDataColumnsToDisplay: string[] = [];
   previewMasterDataOverviewDataColumns: {}[] = [];
-
-  testExpand = true
 
   constructor(private apiService: ApiService, private dataService: DataService) {}
 
@@ -78,7 +79,12 @@ export class DesignMasterHomeComponent {
         ].includes(this.selectedMasterDataId)) {
       this.apiService.getMasterDataTypeById(masterDataId).subscribe((data: any) => {
         this.selectedMasterDataObject = data['data'];
+        this.preparePreviewTable();
       });
+    }
+    else {
+      this.selectedMasterDataObject = null;
+      this.previewMasterDataOverviewData = [];
     }
   }
 
@@ -87,17 +93,45 @@ export class DesignMasterHomeComponent {
     this.filteredMasterDataOverviewData = this.dataService.filterData(this.dbMasterDataOverviewData, filterText);
   }
 
-  handleApiResponse(event: any) {
-    console.log(event);
+  preparePreviewTable() {
+    if (this.selectedMasterDataObject && this.selectedMasterDataObject.attributes) {
+      const rowData: {display_name: string, default_value: string}[] = []
+      const columnsToDisplay: {columnIdentifier: string, displayName: string}[] = [];
+  
+      // Extract attribute names and default values
+      Object.keys(this.selectedMasterDataObject.attributes).forEach(key => {
+        const attribute = this.selectedMasterDataObject.attributes[key];
+        rowData.push({
+          display_name: attribute.display_name,
+          default_value: attribute.default_value,
+        });
+        columnsToDisplay.push({
+          columnIdentifier: 'display_name',
+          displayName: attribute.display_name
+        })
+      });
+
+      const newPreviewTableData: TableData = {
+        rowContent: rowData,
+        columnsToDisplay: columnsToDisplay
+      }
+      
+      this.previewTableData.rowContent = rowData;
+      this.previewTableData.columnsToDisplay = columnsToDisplay
+      this.previewTableData = newPreviewTableData;
+
+      // this.previewMasterDataOverviewData = rowData;
+      // this.previewMasterDataOverviewDataColumnsToDisplay = ['display_name', 'default_value'];	
+    }
+  }
+  
+
+  handleApiResponse(event: Notification) {
+    console.log(event.message);
+    this.addNotification(event);
   }
 
-  addNotification(message: string) {
-    const newNotification: Notification = {
-      message,
-      dismissed: false,
-      remainingTime: this.dismissalTime,
-      intervalId: null
-    };
+  addNotification(newNotification: Notification) {
     this.notifications = [...this.notifications, newNotification];
   }
 

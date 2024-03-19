@@ -1,0 +1,15 @@
+<table>
+    <thead>
+      <tr>
+        <th *ngFor="let column of tableData.columnsToDisplay">{{ column.displayName }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of tableData.rowContent">
+        <td *ngFor="let column of tableData.columnsToDisplay">{{ row[column.columnIdentifier] }}</td>
+      </tr>
+    </tbody>
+</table>
+
+{{tableData.rowContent | json}}
+{{tableData.columnsToDisplay | json}}

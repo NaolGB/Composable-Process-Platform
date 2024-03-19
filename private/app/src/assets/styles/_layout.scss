@@ -28,6 +28,22 @@ $sidebar-width: 400px;
   height: 100%;
   max-height: 500px;
   background-color: cornflowerblue;
+  position: relative; /* Required for positioning the stick-to-section-bottom */
+
+  .activity-flex-item {
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  }
+  
+  .scrollable {
+    flex: 1; /* Take remaining space */
+    max-height: 400px;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  }
+  
+  .stick-to-section-bottom {
+      position: absolute;
+      bottom: 0;
+  }
 }
 
 // Properties
@@ -41,25 +57,32 @@ $sidebar-width: 400px;
   flex-direction: column;
   background-color: darkolivegreen;
   position: relative; /* Required for positioning the stick-to-section-bottom */
+
+  .activity-flex-item {
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  }
+  
+  .scrollable {
+    flex: 1; /* Take remaining space */
+    max-height: 350px;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  }
+  
+  .stick-to-section-bottom {
+      position: absolute;
+      bottom: 0;
+  }
 }
 
-.activity-flex-item {
-  overflow-y: auto; /* Enable vertical scrolling if content overflows */
-}
-
-.scrollable {
-  flex: 1; /* Take remaining space */
-  max-height: 350px;
-  overflow-y: auto; /* Enable vertical scrolling if content overflows */
-}
-
-.stick-to-section-bottom {
-    position: absolute;
-    bottom: 0;
-}
 
 #preview {
     grid-column: 2 / span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+
     background-color: burlywood;
 }
 
@@ -136,7 +159,6 @@ $sidebar-width: 400px;
 }
 
 
-
 // Form Card
 .form-card {
     display: flex;
@@ -150,6 +172,8 @@ $sidebar-width: 400px;
   background-color: aquamarine;
 }
 
+
+// Button Card
 .button-card {
   display: flex;
   flex-direction: row;

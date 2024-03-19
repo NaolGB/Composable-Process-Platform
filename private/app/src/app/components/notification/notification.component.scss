@@ -40,4 +40,16 @@
       opacity: 1;
     }
   }
+
+  .notification-message.success {
+    background-color: #4CAF50; /* Green */
+  }
+  
+  .notification-message.error {
+    background-color: #f44336; /* Red */
+  }
+  
+  .notification-message.info {
+    background-color: #2196F3; /* Blue */
+  }
   

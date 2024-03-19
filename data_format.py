@@ -8,14 +8,7 @@ received_from_client_example_master_data_type_uuid123 = {
     }
 }
 
-saved_example_master_data_type_uuid123 = {
-    "display_name": 'Materials',
-    "attributes": {
-        'name': {"display_name": 'Name', "type": 'string', "required": True, "default_value": 'Name'},
-        'quantity': {"display_name": 'Quantity', "type": 'number', "required": False, "default_value": 0.00},
-        'plant': {"display_name": 'Plant', "type": 'master_data', "required": True, "default_value": 'Plant'}
-    }
-}
+
 
 # master_data_instance
 example_master_data_instance_uuid456 = {

@@ -29,7 +29,7 @@
                 <mat-card-subtitle>Select to edit</mat-card-subtitle>
             </mat-card-header>
         </mat-card>
-        <mat-nav-list>
+        <mat-nav-list class="scrollable">
             <mat-list-item (click)="selectMasterData('__select_master_data_overview')">Master Data Overview</mat-list-item>
             @for (masterDataElement of dbMasterDataOverviewData; track masterDataElement._id) {
                 @if (masterDataElement.display_name) {
@@ -47,24 +47,21 @@
                 <ng-container *ngTemplateOutlet="masterDataOverviewTable"></ng-container>
             </ng-container>
             <ng-container *ngSwitchCase="'__add_new_master_data_type'">
-                <app-design-master-add-new></app-design-master-add-new>
+                <app-design-master-add-new (apiResponse)="handleApiResponse($event)"></app-design-master-add-new>
             </ng-container>
             <!-- Specific Master Data Type selected -->
             <ng-container *ngSwitchDefault> 
-                <app-design-master-edit [masterDataId]="selectedMasterDataId"></app-design-master-edit>
+                <app-design-master-edit (apiResponse)="handleApiResponse($event)" [masterDataId]="selectedMasterDataId"></app-design-master-edit>
             </ng-container>
         </ng-container>
     </section>
     <section id="preview">
-        
-        @if (selectedMasterDataId === '') {
-            <p>Select a Master Data Type or Add New to see a preview</p>
-        }
-        @else {
-            hi NY!
-        }
+        <ng-container *ngIf="selectedMasterDataObject; then masterDataPreviewTable">
+        </ng-container>
+        <ng-container *ngIf="!selectedMasterDataObject; then selectMasterDataPllaceholder">
+        </ng-container>
     </section>
-    <button (click)="addNotification('This is an error message')">Add Error</button>
+    <!-- <button (click)="addNotification('This is an success message')">Add Error</button> -->
 
   </div>
 
@@ -74,6 +71,7 @@ it will be newly created on toggle and the transition will not happen -->
     sidebar content
 </div>
 <div class="sidebar-overlay" [class.sidebar-open-overlay]="isSidebarOpen" (click)="toggleSidebar()"></div>
+<app-notification [notifications]="notifications" [dismissalTime]="dismissalTime" (notificationDismissed)="onNotificaitonDismissed($event)"></app-notification>
 
 <ng-template #masterDataOverviewTable>
     <mat-card class="activity-flex-item">
@@ -117,4 +115,18 @@ it will be newly created on toggle and the transition will not happen -->
     </div>
 </ng-template>
 
-<app-notification [notifications]="notifications" [dismissalTime]="dismissalTime" (notificationDismissed)="onNotificaitonDismissed($event)"></app-notification>
+
+<ng-template #masterDataPreviewTable>
+    @if (selectedMasterDataObject.display_name) {
+        {{ selectedMasterDataObject.display_name }}
+
+    } 
+    @else {
+        {{ selectedMasterDataObject._id }}
+    }
+    <app-table [tableData]="previewTableData"></app-table>
+</ng-template>
+
+<ng-template #selectMasterDataPllaceholder>
+    <p>Please Select Master Data</p>
+</ng-template>

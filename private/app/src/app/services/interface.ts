@@ -12,14 +12,23 @@ export interface MasterDataType {
 }
 
 export interface APIResponse {
-    status: string;
+    success: string;
     data: any;
     message: string;
 }
 
 export interface Notification {
+    type: 'success' | 'error' | 'info'; 
     message: string;
     dismissed: boolean;
     remainingTime: number;
-    intervalId: any;
+    intervalId?: any; // Make it optional as it will be used internally
+}
+
+export interface TableData {
+    rowContent: { [key: string]: string | number | boolean }[];
+    columnsToDisplay: {
+        columnIdentifier: string;
+        displayName: string;
+    }[];
 }
