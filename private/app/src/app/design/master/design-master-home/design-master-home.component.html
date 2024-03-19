@@ -56,6 +56,7 @@
         </ng-container>
     </section>
     <section id="preview">
+        
         @if (selectedMasterDataId === '') {
             <p>Select a Master Data Type or Add New to see a preview</p>
         }
@@ -63,6 +64,8 @@
             hi NY!
         }
     </section>
+    <button (click)="addNotification('This is an error message')">Add Error</button>
+
   </div>
 
 <!-- NOTE: The following code should not be placed inside *ngIf="sidebarOpen" because if so, 
@@ -113,3 +116,5 @@ it will be newly created on toggle and the transition will not happen -->
         <button>hi NY!</button>
     </div>
 </ng-template>
+
+<app-notification [notifications]="notifications" [dismissalTime]="dismissalTime" (notificationDismissed)="onNotificaitonDismissed($event)"></app-notification>

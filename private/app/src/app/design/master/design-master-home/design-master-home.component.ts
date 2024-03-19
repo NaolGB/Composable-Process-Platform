@@ -15,6 +15,8 @@ import { DesignMasterAddNewComponent } from '../design-master-add-new/design-mas
 import { CommonModule } from '@angular/common';
 import {MatAccordion, MatExpansionModule} from '@angular/material/expansion';
 import { DesignMasterEditComponent } from '../design-master-edit/design-master-edit.component';
+import { NotificationComponent } from '../../../components/notification/notification.component';
+import { Notification } from '../../../services/interface';
 
 
 @Component({
@@ -34,6 +36,7 @@ import { DesignMasterEditComponent } from '../design-master-edit/design-master-e
     MatSidenavModule,
     DesignMasterAddNewComponent,
     DesignMasterEditComponent,
+    NotificationComponent,
     MatExpansionModule,
     MatAccordion
   ],
@@ -47,6 +50,8 @@ export class DesignMasterHomeComponent {
   showSidenavText = false;
   selectedMasterDataId: string = '__select_master_data_overview';
   selectedMasterDataObject: any;
+  notifications: Notification[] = [];
+  dismissalTime = 5000;
 
   masterDataOverviewColumnsToDisplay: string[] = ['display_name', '_id'];
 
@@ -80,6 +85,24 @@ export class DesignMasterHomeComponent {
   applyFilter(event: Event) {
     const filterText = (event.target as HTMLInputElement).value;
     this.filteredMasterDataOverviewData = this.dataService.filterData(this.dbMasterDataOverviewData, filterText);
+  }
+
+  handleApiResponse(event: any) {
+    console.log(event);
+  }
+
+  addNotification(message: string) {
+    const newNotification: Notification = {
+      message,
+      dismissed: false,
+      remainingTime: this.dismissalTime,
+      intervalId: null
+    };
+    this.notifications = [...this.notifications, newNotification];
+  }
+
+  onNotificaitonDismissed(notification: Notification) {
+    this.notifications = this.notifications.filter(n => n !== notification);
   }
 
   toggleSidebar() {

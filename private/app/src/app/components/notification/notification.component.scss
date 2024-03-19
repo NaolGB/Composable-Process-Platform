@@ -1,0 +1,43 @@
+.notification-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+  }
+  
+  .notification-message {
+    background-color: #f44336;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: slide-up 0.3s ease-out;
+  }
+  
+  .enotificationrror-message.dismissed {
+    opacity: 0;
+    transform: translateY(-50%);
+    pointer-events: none; // Disable pointer events for dismissed notifications
+  }
+  
+  .remaining-time {
+    margin-left: 10px;
+    font-size: 12px;
+  }
+  
+  @keyframes slide-up {
+    0% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  

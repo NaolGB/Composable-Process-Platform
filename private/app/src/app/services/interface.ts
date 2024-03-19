@@ -10,3 +10,16 @@ export interface MasterDataType {
         }
     };
 }
+
+export interface APIResponse {
+    status: string;
+    data: any;
+    message: string;
+}
+
+export interface Notification {
+    message: string;
+    dismissed: boolean;
+    remainingTime: number;
+    intervalId: any;
+}

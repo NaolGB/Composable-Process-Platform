@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MasterDataType } from '../../../services/interface';
+import { APIResponse, MasterDataType } from '../../../services/interface';
 import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { OnChanges, SimpleChanges } from '@angular/core';
@@ -12,7 +12,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DataService } from '../../../services/data.service';
-
 
 @Component({
   selector: 'app-design-master-edit',
@@ -33,6 +32,8 @@ import { DataService } from '../../../services/data.service';
 })
 export class DesignMasterEditComponent {
   @Input() masterDataId: string | undefined;
+  // @Output() apiResponse: EventEmitter<any> = new EventEmitter<any>();
+
   masterDataObject: MasterDataType | undefined;
   masterDataFromClient: FormGroup;
   fieldTypeOptions: string[] = ['string', 'number', 'boolean', 'date', 'Master Data Type'];
@@ -124,8 +125,12 @@ export class DesignMasterEditComponent {
   
     console.log(masterDataFromClientApiFormat);
   
-    this.apiService.updateMasterDataType(this.masterDataId ?? '', masterDataFromClientApiFormat).subscribe((response: any) => {
-      console.log(response);
-    });
+    this.apiService.updateMasterDataType(this.masterDataId ?? '', masterDataFromClientApiFormat).subscribe(
+      (response: any) => {
+        // this.apiResponse.emit(response);
+      },
+      (error: any) => {
+        // this.apiResponse.emit(error);
+      });
   }
 }

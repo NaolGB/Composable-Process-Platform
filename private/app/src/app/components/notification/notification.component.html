@@ -1,0 +1,7 @@
+<div class="notification-toast">
+    <div *ngFor="let notification of notifications" class="notification-message" [class.dismissed]="notification.dismissed">
+        <span>{{ notification.message }}</span>
+        <span class="remaining-time">{{ notification.remainingTime / 1000 }}s</span>
+        <button (click)="dismissNotification(notification)">Dismiss</button>
+    </div>
+</div>
