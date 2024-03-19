@@ -16,6 +16,7 @@ import { Notification, TableData } from '../../../services/interface';
 import { TableComponent } from '../../../components/table/table.component';
 import { NavigationComponent } from '../../../components/navigation/navigation.component';
 import { TileComponent } from '../../../components/tile/tile.component';
+import { PreviewSectionComponent } from '../../../components/preview-section/preview-section.component';
 
 
 @Component({
@@ -35,7 +36,8 @@ import { TileComponent } from '../../../components/tile/tile.component';
     NotificationComponent,
     TableComponent,
     NavigationComponent,
-    TileComponent
+    TileComponent,
+    PreviewSectionComponent
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
@@ -48,6 +50,7 @@ export class DesignMasterHomeComponent {
   selectedMasterDataObject: any;
   notifications: Notification[] = [];
   dismissalTime = 5000;
+  selectedTileId: string | null =  '__select_master_data_overview';
 
   masterDataOverviewColumnsToDisplay: string[] = ['display_name', '_id'];
 
@@ -69,7 +72,6 @@ export class DesignMasterHomeComponent {
     });
   }
 
-  selectedTileId: string | null =  '__select_master_data_overview';
 
   // Helper method to determine if a tile is selected
   isTileSelected(id: string): boolean {
@@ -91,6 +93,30 @@ export class DesignMasterHomeComponent {
     else {
       this.selectedMasterDataObject = null;
       this.previewMasterDataOverviewData = [];
+    }
+  }
+
+  get masterDataOverviewTableData(): TableData{
+    const columnsToDisplay: {columnIdentifier: string, displayName: string}[] = [
+      {
+        columnIdentifier: 'display_name',
+        displayName: 'Display Name'
+      },
+      {
+        columnIdentifier: '_id',
+        displayName: 'ID'
+      }
+    ];
+    const rowData: {[key: string]: string}[] = this.filteredMasterDataOverviewData.map((row: any) => {
+      return {
+        display_name: row.display_name,
+        _id: row._id
+      }
+    });
+
+    return {
+      rowContent: rowData,
+      columnsToDisplay: columnsToDisplay
     }
   }
 
