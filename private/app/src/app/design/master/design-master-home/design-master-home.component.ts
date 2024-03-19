@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
@@ -62,7 +62,11 @@ export class DesignMasterHomeComponent {
   previewMasterDataOverviewDataColumnsToDisplay: string[] = [];
   previewMasterDataOverviewDataColumns: {}[] = [];
 
-  constructor(private apiService: ApiService, private dataService: DataService) {}
+  constructor(
+    private apiService: ApiService, 
+    private dataService: DataService,
+    private cdRef: ChangeDetectorRef
+    ) {}
 
   ngOnInit() {
     this.apiService.getMasterDataOverview().subscribe((data: any) => {
@@ -95,18 +99,15 @@ export class DesignMasterHomeComponent {
 
   preparePreviewTable() {
     if (this.selectedMasterDataObject && this.selectedMasterDataObject.attributes) {
-      const rowData: {display_name: string, default_value: string}[] = []
+      const rowData: {[key: string]: string}[] = [{}]
       const columnsToDisplay: {columnIdentifier: string, displayName: string}[] = [];
   
       // Extract attribute names and default values
       Object.keys(this.selectedMasterDataObject.attributes).forEach(key => {
         const attribute = this.selectedMasterDataObject.attributes[key];
-        rowData.push({
-          display_name: attribute.display_name,
-          default_value: attribute.default_value,
-        });
+        rowData[0][`display_name_${attribute.display_name}`] = attribute.default_value
         columnsToDisplay.push({
-          columnIdentifier: 'display_name',
+          columnIdentifier: `display_name_${attribute.display_name}`,
           displayName: attribute.display_name
         })
       });
@@ -119,16 +120,20 @@ export class DesignMasterHomeComponent {
       this.previewTableData.rowContent = rowData;
       this.previewTableData.columnsToDisplay = columnsToDisplay
       this.previewTableData = newPreviewTableData;
-
-      // this.previewMasterDataOverviewData = rowData;
-      // this.previewMasterDataOverviewDataColumnsToDisplay = ['display_name', 'default_value'];	
+      console.log(this.previewTableData)
     }
   }
   
 
   handleApiResponse(event: Notification) {
-    console.log(event.message);
     this.addNotification(event);
+  }
+
+  handleTableDataResponse(event: TableData) {
+    this.previewTableData = {...event};
+    this.cdRef.detectChanges();
+    console.log(this.selectedMasterDataId)
+    console.log(this.previewTableData)
   }
 
   addNotification(newNotification: Notification) {

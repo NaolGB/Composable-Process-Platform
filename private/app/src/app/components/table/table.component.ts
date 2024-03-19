@@ -14,7 +14,5 @@ import { CommonModule } from '@angular/common';
 export class TableComponent {
   @Input() tableData: TableData = {} as TableData;
 
-  ngonInit() {
-    console.log('tableData', this.tableData);
-  }
+  ngonInit() {}
 }

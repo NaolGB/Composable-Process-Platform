@@ -9,7 +9,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { APIResponse, MasterDataType, Notification } from '../../../services/interface';
+import { APIResponse, MasterDataType, Notification, TableData } from '../../../services/interface';
 import { DataService } from '../../../services/data.service';
 
 @Component({
@@ -31,6 +31,7 @@ import { DataService } from '../../../services/data.service';
 })
 export class DesignMasterAddNewComponent {
   @Output() apiResponse: EventEmitter<Notification> = new EventEmitter<Notification>();
+  @Output() tableDataEmitter: EventEmitter<TableData> = new EventEmitter<TableData>();
 
   masterDataFromClient: FormGroup;
   fieldTypeOptions: string[] = ['string', 'number', 'boolean', 'date', 'Master Data Type'];
@@ -64,26 +65,43 @@ export class DesignMasterAddNewComponent {
     });
 
     this.attributes.push(attribute);
-    this.preparePreviewDataFromForm();
+    this.prepareAndEmitPreviewData();
   }
 
-  preparePreviewDataFromForm() {
-    const formData = this.masterDataFromClient.value;
-    const attributes: any[] = formData.attributes; // Assuming 'attributes' is a FormArray
+  ngOnChanges() {
+    this.prepareAndEmitPreviewData();
+  }
+
+  prepareAndEmitPreviewData() {
+    // Assume 'attributes' is a FormArray in your FormGroup
+    const attributes = this.masterDataFromClient.get('attributes') as FormArray;
+    const rowData: { [key: string]: any } = {};
+    const columnsToDisplay: { columnIdentifier: string, displayName: string }[] = [];
   
-    // Transform to the format suitable for preview
-    this.previewMasterDataOverviewData = attributes.map(attr => ({
-      display_name: attr.display_name,
-      default_value: attr.default_value
-    }));
-    
-    this.previewMasterDataOverviewDataColumnsToDisplay = ['display_name', 'default_value'];
+    attributes.controls.forEach((attributeControl, index) => {
+      const attribute = attributeControl.value;
+      // Assume display_name serves as a unique identifier for columnIdentifier
+      const columnIdentifier = `attribute_${index}`;
+      rowData[columnIdentifier] = attribute.default_value;
+      columnsToDisplay.push({
+        columnIdentifier: columnIdentifier,
+        displayName: attribute.display_name
+      });
+    });
+  
+    const tableData: TableData = {
+      rowContent: [rowData], // Assume you only have one row of data
+      columnsToDisplay: columnsToDisplay
+    };
+  
+    // Emit this data
+    this.tableDataEmitter.emit(tableData); 
   }
   
 
   removeAttribute(index: number) {
     this.attributes.removeAt(index);
-    this.preparePreviewDataFromForm();
+    this.prepareAndEmitPreviewData();
   }
 
   isAPIResponse(object: any): object is APIResponse {
