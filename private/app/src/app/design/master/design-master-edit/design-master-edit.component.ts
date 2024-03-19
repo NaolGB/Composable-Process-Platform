@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { APIResponse, MasterDataType, Notification } from '../../../services/interface';
+import { APIResponse, MasterDataType, Notification, TableData } from '../../../services/interface';
 import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { OnChanges, SimpleChanges } from '@angular/core';
@@ -33,6 +33,8 @@ import { DataService } from '../../../services/data.service';
 export class DesignMasterEditComponent {
   @Input() masterDataId: string | undefined;
   @Output() apiResponse: EventEmitter<Notification> = new EventEmitter<Notification>();
+  @Output() tableDataEmitter: EventEmitter<TableData> = new EventEmitter<TableData>();
+
 
   masterDataObject: MasterDataType | undefined;
   masterDataFromClient: FormGroup;
@@ -98,6 +100,33 @@ export class DesignMasterEditComponent {
     });
   
     this.attributes.push(attribute);
+    this.prepareAndEmitPreviewData();
+  }
+
+  prepareAndEmitPreviewData() {
+    // Assume 'attributes' is a FormArray in your FormGroup
+    const attributes = this.masterDataFromClient.get('attributes') as FormArray;
+    const rowData: { [key: string]: any } = {};
+    const columnsToDisplay: { columnIdentifier: string, displayName: string }[] = [];
+  
+    attributes.controls.forEach((attributeControl, index) => {
+      const attribute = attributeControl.value;
+      // Assume display_name serves as a unique identifier for columnIdentifier
+      const columnIdentifier = `attribute_${index}`;
+      rowData[columnIdentifier] = attribute.default_value;
+      columnsToDisplay.push({
+        columnIdentifier: columnIdentifier,
+        displayName: attribute.display_name
+      });
+    });
+  
+    const tableData: TableData = {
+      rowContent: [rowData], // Assume you only have one row of data
+      columnsToDisplay: columnsToDisplay
+    };
+  
+    // Emit this data
+    this.tableDataEmitter.emit(tableData); 
   }
 
   isAPIResponse(object: any): object is APIResponse {

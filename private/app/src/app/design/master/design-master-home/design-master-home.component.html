@@ -43,6 +43,7 @@
     </section>
     <section id="activity">
         <ng-container [ngSwitch]="selectedMasterDataId">
+
             <ng-container *ngSwitchCase="'__select_master_data_overview'">
                 <ng-container *ngTemplateOutlet="masterDataOverviewTable"></ng-container>
             </ng-container>
@@ -54,7 +55,12 @@
             </ng-container>
             <!-- Specific Master Data Type selected -->
             <ng-container *ngSwitchDefault> 
-                <app-design-master-edit (apiResponse)="handleApiResponse($event)" [masterDataId]="selectedMasterDataId"></app-design-master-edit>
+                <app-design-master-edit 
+                (apiResponse)="handleApiResponse($event)" 
+                (tableDataEmitter)="handleTableDataResponse($event)"
+                [masterDataId]="selectedMasterDataId"
+            ></app-design-master-edit>
+
             </ng-container>
         </ng-container>
     </section>
@@ -129,7 +135,7 @@ it will be newly created on toggle and the transition will not happen -->
 
 
 <ng-template #masterDataPreviewTable>
-    <!-- @if (selectedMasterDataObject) {
+    @if (selectedMasterDataObject) {
         @if (selectedMasterDataObject.display_name) {
             {{ selectedMasterDataObject.display_name }}
 
@@ -137,7 +143,7 @@ it will be newly created on toggle and the transition will not happen -->
         @else {
             {{ selectedMasterDataObject._id }}
         }
-    } -->
+    }
     <app-table [tableData]="previewTableData"></app-table>
 </ng-template>
 

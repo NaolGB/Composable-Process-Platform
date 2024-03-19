@@ -68,10 +68,6 @@ export class DesignMasterAddNewComponent {
     this.prepareAndEmitPreviewData();
   }
 
-  ngOnChanges() {
-    this.prepareAndEmitPreviewData();
-  }
-
   prepareAndEmitPreviewData() {
     // Assume 'attributes' is a FormArray in your FormGroup
     const attributes = this.masterDataFromClient.get('attributes') as FormArray;

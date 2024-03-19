@@ -5,38 +5,25 @@
             <mat-card-subtitle>editing master data with id: {{masterDataId}}</mat-card-subtitle>
         </mat-card-header>
     </mat-card>
-    <div class="activity-flex-item horizontal-bar">
-       <div></div>
-        <div class="bar-element activity-flex-item">
-            <button mat-button>
-                Extend
-                <mat-icon>add</mat-icon>
-            </button>
-            <button mat-button>
-                Rename Fields
-                <mat-icon>text_fields_alt</mat-icon>
-            </button>
-        </div>
-    </div>
+    <div class="activity-flex-item horizontal-bar"></div>
     <form [formGroup]="masterDataFromClient" class="activity-flex-item scrollable">
         <div class="form-card">
-          <div class="form-card">
-            <div class="form-card-element">
-              <mat-checkbox checked disabled>Required</mat-checkbox>
-            </div>
-            <mat-form-field class="form-card-element full-width">
-              <select matNativeControl required disabled>
-                <option>string</option>
-              </select>
-            </mat-form-field>
-            <mat-form-field class="form-card-element full-width">
-              <input type="text" matInput id="display_name" formControlName="display_name" placeholder="Display Name" required>
-            </mat-form-field>
-            <mat-form-field class="form-card-element full-width">
-              <input type="text" disabled matInput placeholder="Default Value" required>
-            </mat-form-field>
+          <div class="form-card-element">
+            <mat-checkbox checked disabled>Required</mat-checkbox>
           </div>
+          <mat-form-field class="form-card-element full-width">
+            <select matNativeControl required disabled>
+              <option>string</option>
+            </select>
+          </mat-form-field>
+          <mat-form-field class="form-card-element full-width">
+            <input type="text" matInput id="display_name" formControlName="display_name" placeholder="Display Name" required>
+          </mat-form-field>
+          <mat-form-field class="form-card-element full-width">
+            <input type="text" disabled matInput placeholder="Default Value" required>
+          </mat-form-field>
         </div>
+
         <div formArrayName="attributes">
           <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i">
             <div class="form-card">
@@ -59,6 +46,7 @@
             </div>
           </div>
         </div>
+
       </form>
       <div class="activity-flex-item stick-to-section-bottom button-card">
         <button class="button-card-item" type="button" (click)="addAttribute()">
