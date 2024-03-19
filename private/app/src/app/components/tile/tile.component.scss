@@ -1,11 +1,24 @@
 @import '../../../assets/styles/_spacing';
 @import '../../../assets/styles/_typography';
+@import '../../../assets/styles/_colors';
 
 #component-tile {
     display: flex;
     flex-direction: column;
+    padding: $spacing-03;
 
-    background-color: aqua;
+    &.selectable {
+        &:hover, &:focus{
+            background-color: $ui-03;
+            color: $interactive-01;
+            cursor: pointer;
+        }
+        &.selected {
+            background-color: $ui-03; 
+            color: $text-02; 
+            border-left: $spacing-03 solid $interactive-01; 
+        }
+    }
 }
 
 .component-tile-content {
@@ -14,4 +27,12 @@
 
 .component-tile-header {
     @include title;
+}
+
+.tile-divider {
+    height: 1px;
+    width: 90%;
+    background-color: $ui-05;
+    margin-left: auto; 
+    margin-right: auto; 
 }

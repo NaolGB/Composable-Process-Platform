@@ -2,8 +2,11 @@
     <section id="navigation">
         <app-navigation></app-navigation>
     </section>
+
     <section id="selection">
-        <app-tile>
+        <app-tile
+            [hasDivider]="false"
+        >
             <div tile-header>
                 All Master Data
             </div>
@@ -11,24 +14,30 @@
                 Select to edit
             </div>
         </app-tile>
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>All Master Data</mat-card-title>
-                <mat-card-subtitle>Select to edit</mat-card-subtitle>
-            </mat-card-header>
-        </mat-card>
-        <mat-nav-list class="scrollable">
-            <mat-list-item (click)="selectMasterData('__select_master_data_overview')">Master Data Overview</mat-list-item>
-            @for (masterDataElement of dbMasterDataOverviewData; track masterDataElement._id) {
-                @if (masterDataElement.display_name) {
-                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement.display_name }}</mat-list-item>
-                } 
-                @else {
-                    <mat-list-item (click)="selectMasterData(masterDataElement._id)">{{ masterDataElement._id }}</mat-list-item>
-                }
-            }
-        </mat-nav-list>
+        <div class="scrollable">
+            <app-tile
+                [isSelected]="selectedTileId ===  '__select_master_data_overview'" 
+                (click)="selectMasterData('__select_master_data_overview')"
+                [isSelectable]="true"
+                [hasDivider]="false"
+            >
+                <div tile-content>
+                    Master Data Overview
+                </div>
+            </app-tile>
+            <app-tile *ngFor="let masterDataElement of dbMasterDataOverviewData" 
+                [isSelected]="isTileSelected(masterDataElement._id)"
+                (click)="selectMasterData(masterDataElement._id)"
+                [isSelectable]="true"
+                [hasDivider]="false"
+            >
+                <div tile-content>
+                    {{ masterDataElement.display_name || masterDataElement._id }}
+                </div>
+            </app-tile>
+        </div>
     </section>
+
     <section id="activity">
         <ng-container [ngSwitch]="selectedMasterDataId">
 
@@ -52,6 +61,7 @@
             </ng-container>
         </ng-container>
     </section>
+
     <section id="preview">
         <ng-container [ngSwitch]="selectedMasterDataId">
             <ng-container *ngSwitchCase="'__select_master_data_overview'">
@@ -67,9 +77,7 @@
         </ng-container>
 
     </section>
-    <!-- <button (click)="addNotification('This is an success message')">Add Error</button> -->
-
-  </div>
+</div>
 
 <!-- NOTE: The following code should not be placed inside *ngIf="sidebarOpen" because if so, 
 it will be newly created on toggle and the transition will not happen -->
@@ -80,13 +88,17 @@ it will be newly created on toggle and the transition will not happen -->
 <app-notification [notifications]="notifications" [dismissalTime]="dismissalTime" (notificationDismissed)="onNotificaitonDismissed($event)"></app-notification>
 
 <ng-template #masterDataOverviewTable>
-    <mat-card class="activity-flex-item">
-        <mat-card-header>
-            <mat-card-title>Master Data Overview</mat-card-title>
-            <mat-card-subtitle>This is an overview of all Master Data. Click to edit</mat-card-subtitle>
-        </mat-card-header>
-    </mat-card>
-    <div class="activity-flex-item horizontal-bar">
+    <app-tile
+        [hasDivider]="false"
+    >
+        <div tile-header>
+            Master Data Overview
+        </div>
+        <div tile-content>
+            This is an overview of all Master Data. Click to edit
+        </div>
+    </app-tile>
+    <div class="horizontal-bar">
         <form class="bar-element">
             <input type="text" placeholder="Search..." (keyup)="applyFilter($event)" #input/>
         </form>
@@ -97,7 +109,7 @@ it will be newly created on toggle and the transition will not happen -->
             </button>
         </div>
     </div>
-    <div class="activity-flex-item scrollable">
+    <div class="scrollable">
         <table mat-table [dataSource]="filteredMasterDataOverviewData">
             <ng-container matColumnDef="_id">
                 <th mat-header-cell *matHeaderCellDef> ID </th>
@@ -116,11 +128,10 @@ it will be newly created on toggle and the transition will not happen -->
             </tr>
         </table>
     </div>
-    <div class="activity-flex-item stick-to-section-bottom">
+    <div>
         <button>hi NY!</button>
     </div>
 </ng-template>
-
 
 <ng-template #masterDataPreviewTable>
     @if (selectedMasterDataObject) {

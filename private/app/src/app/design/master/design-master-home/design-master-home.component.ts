@@ -69,8 +69,16 @@ export class DesignMasterHomeComponent {
     });
   }
 
+  selectedTileId: string | null =  '__select_master_data_overview';
+
+  // Helper method to determine if a tile is selected
+  isTileSelected(id: string): boolean {
+    return this.selectedTileId === id;
+  }
+
   selectMasterData(masterDataId: string) {
     this.selectedMasterDataId = masterDataId;
+    this.selectedTileId = masterDataId;
     if (![
           '__select_master_data_overview',
           '__add_new_master_data_type'
