@@ -1,23 +1,21 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table'; // to enable filtering - see https://material.angular.io/components/table/examples
 import { DataService } from '../../../services/data.service';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {MatSidenavModule} from '@angular/material/sidenav';
 import { DesignMasterAddNewComponent } from '../design-master-add-new/design-master-add-new.component';
 import { CommonModule } from '@angular/common';
-import {MatAccordion, MatExpansionModule} from '@angular/material/expansion';
 import { DesignMasterEditComponent } from '../design-master-edit/design-master-edit.component';
 import { NotificationComponent } from '../../../components/notification/notification.component';
 import { Notification, TableData } from '../../../services/interface';
 import { TableComponent } from '../../../components/table/table.component';
+import { NavigationComponent } from '../../../components/navigation/navigation.component';
+import { TileComponent } from '../../../components/tile/tile.component';
 
 
 @Component({
@@ -26,21 +24,18 @@ import { TableComponent } from '../../../components/table/table.component';
   imports: [
     CommonModule,
     MatListModule, 
-    MatDividerModule,
     MatTableModule, 
     MatCardModule, 
-    MatGridListModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSidenavModule,
     DesignMasterAddNewComponent,
     DesignMasterEditComponent,
     NotificationComponent,
     TableComponent,
-    MatExpansionModule,
-    MatAccordion
+    NavigationComponent,
+    TileComponent
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
@@ -49,7 +44,6 @@ export class DesignMasterHomeComponent {
   dbMasterDataOverviewData: any;
   filteredMasterDataOverviewData: any; // to hold the filtered data instead of overwriting the original data with filtered data
   isSidebarOpen = false;
-  showSidenavText = false;
   selectedMasterDataId: string = '__select_master_data_overview';
   selectedMasterDataObject: any;
   notifications: Notification[] = [];

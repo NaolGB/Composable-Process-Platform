@@ -1,0 +1,17 @@
+@import '../../../assets/styles/_spacing';
+@import '../../../assets/styles/_typography';
+
+#component-tile {
+    display: flex;
+    flex-direction: column;
+
+    background-color: aqua;
+}
+
+.component-tile-content {
+    
+}
+
+.component-tile-header {
+    @include title;
+}

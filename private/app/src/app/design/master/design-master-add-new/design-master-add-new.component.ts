@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { APIResponse, MasterDataType, Notification, TableData } from '../../../services/interface';
 import { DataService } from '../../../services/data.service';
+import { DesignMasterGeneralService } from '../services/design-master-general.service';
 
 @Component({
   selector: 'app-design-master-add-new',
@@ -38,7 +39,12 @@ export class DesignMasterAddNewComponent {
   previewMasterDataOverviewData: { display_name: any; default_value: any; }[] = [];
   previewMasterDataOverviewDataColumnsToDisplay: string[] = [];
 
-  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private dataService: DataService) { 
+  constructor(
+    private apiService: ApiService, 
+    private formBuilder: FormBuilder, 
+    private dataService: DataService,
+    private designMasterGeneralService: DesignMasterGeneralService
+  ) { 
     this.masterDataFromClient = this.formBuilder.group({
       display_name: ['', Validators.required],	
       attributes: this.formBuilder.array([
@@ -69,28 +75,8 @@ export class DesignMasterAddNewComponent {
   }
 
   prepareAndEmitPreviewData() {
-    // Assume 'attributes' is a FormArray in your FormGroup
     const attributes = this.masterDataFromClient.get('attributes') as FormArray;
-    const rowData: { [key: string]: any } = {};
-    const columnsToDisplay: { columnIdentifier: string, displayName: string }[] = [];
-  
-    attributes.controls.forEach((attributeControl, index) => {
-      const attribute = attributeControl.value;
-      // Assume display_name serves as a unique identifier for columnIdentifier
-      const columnIdentifier = `attribute_${index}`;
-      rowData[columnIdentifier] = attribute.default_value;
-      columnsToDisplay.push({
-        columnIdentifier: columnIdentifier,
-        displayName: attribute.display_name
-      });
-    });
-  
-    const tableData: TableData = {
-      rowContent: [rowData], // Assume you only have one row of data
-      columnsToDisplay: columnsToDisplay
-    };
-  
-    // Emit this data
+    const tableData = this.designMasterGeneralService.prepareAttributePreviewDataForTableFromFormArray(attributes);
     this.tableDataEmitter.emit(tableData); 
   }
   
@@ -100,19 +86,11 @@ export class DesignMasterAddNewComponent {
     this.prepareAndEmitPreviewData();
   }
 
-  isAPIResponse(object: any): object is APIResponse {
-    return Object.keys(object).includes('success') &&
-            Object.keys(object).includes('message') &&
-           (object.success === true || object.success === false);
-  }
-
   onSubmit() {
     const masterDataFromClientApiFormat: MasterDataType = {
       display_name: this.masterDataFromClient.value.display_name,
       attributes: {}
     }
-
-    console.log(this.dataService.nameToId(this.masterDataFromClient.value.display_name))
 
     this.attributes.controls.forEach(element => {
       masterDataFromClientApiFormat.attributes[this.dataService.nameToId(element.value.display_name)] = {
@@ -123,41 +101,13 @@ export class DesignMasterAddNewComponent {
       }
     });
 
-    console.log(masterDataFromClientApiFormat);
-
     this.apiService.createNewMasterDataType(masterDataFromClientApiFormat).subscribe(
       (response: any) => { // Use `any` to allow for type checking within the function
-        let notification: Notification;
-        if (this.isAPIResponse(response)) {
-          console.log('APIResponse');
-          // Convert APIResponse to Notification
-          notification = {
-            type: response.success ? 'success' : 'error', 
-            message: response.message || response.success ? 'Success' : 'Failed', // Use API response message or a default one
-            dismissed: false,
-            remainingTime: 5000
-          };
-        } else {
-          // Response does not fit APIResponse; default to info type Notification
-          const fallbackMessage = `Status: ${response.status} ${response.statusText}.`;
-          notification = {
-            type: 'info',
-            message: fallbackMessage,
-            dismissed: false,
-            remainingTime: 5000
-          };
-        }
+        const notification = this.designMasterGeneralService.createNotificationFromAPIResponse(response);
         this.apiResponse.emit(notification);
       },
       (error: any) => {
-        // Handle errors by emitting an error type Notification
-        const fallbackMessage = `Status: ${error.status} ${error.statusText}.`;
-        const notification: Notification = {
-          type: 'error',
-          message: fallbackMessage ? fallbackMessage : 'An error occurred.',
-          dismissed: false,
-          remainingTime: 5000
-        };
+        const notification = this.designMasterGeneralService.createNotificationFromAPIResponse(error);
         this.apiResponse.emit(notification);
       })
   }

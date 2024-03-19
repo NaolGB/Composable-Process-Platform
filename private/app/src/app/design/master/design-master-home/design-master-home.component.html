@@ -1,28 +1,16 @@
 <div id="grid-container">
     <section id="navigation">
-        <mat-drawer-container class="navigation-container" autosize>
-            @if (showSidenavText) {
-                <button mat-button (click)="showSidenavText = !showSidenavText">
-                    Collapse
-                    <mat-icon>chevron_left</mat-icon>
-                </button>
-            }
-            @else {
-                <button mat-button (click)="showSidenavText = !showSidenavText">
-                    <mat-icon>chevron_right</mat-icon>
-                </button>
-            }
-            <div class="navigation-content">
-                hi NY!
-                @if (showSidenavText) {
-                    Lorem, ipsu
-                  }
-            </div>
-          
-          
-          </mat-drawer-container>
+        <app-navigation></app-navigation>
     </section>
     <section id="selection">
+        <app-tile>
+            <div tile-header>
+                All Master Data
+            </div>
+            <div tile-content>
+                Select to edit
+            </div>
+        </app-tile>
         <mat-card>
             <mat-card-header>
                 <mat-card-title>All Master Data</mat-card-title>
