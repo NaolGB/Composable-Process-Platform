@@ -62,11 +62,14 @@ body {
   display: flex;
   width: 100%;
   height: $spacing-09;
+  margin: $spacing-05 0;
 
-  background-color: beige;
+  // background-color: beige;
   
   .horizontal-bar-item {
     display: flex;
+    flex-direction: row;
+    align-items: center;
     width: 100%;
     // background-color: bisque;
   }
@@ -116,4 +119,8 @@ body {
   .button-card-item {
     width: 100%;
   }
+}
+
+.muted-text {
+  color: $text-03;
 }

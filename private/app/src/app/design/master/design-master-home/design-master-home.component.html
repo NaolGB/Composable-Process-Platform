@@ -103,10 +103,14 @@ it will be newly created on toggle and the transition will not happen -->
     </app-tile>
     <div class="horizontal-bar">
         <div class="horizontal-bar-item">
+            <span class="material-symbols-outlined muted-text">search</span>
             <input type="text" placeholder="Search..." (keyup)="applyFilter($event)" #input/>
         </div>
         <div class="horizontal-bar-item stick-to-right">
-            <button class="primary" (click)="selectMasterData('__add_new_master_data_type')">Add New</button>
+            <button class="primary" (click)="selectMasterData('__add_new_master_data_type')">
+                <span class="material-symbols-outlined">add</span>
+                <span>Add New</span>
+            </button>
         </div>
     </div>
     <div class="scrollable">

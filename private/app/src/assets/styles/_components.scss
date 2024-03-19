@@ -6,7 +6,8 @@ input {
     width: 100%;
     // height: 100%;
     padding: $spacing-03 $spacing-04; 
-    border: 1px solid #d0d0d0; 
+    border: $spacing-00 solid transparent;
+    // border-bottom: 1px solid #d0d0d0; 
     border-radius: $spacing-01; 
     transition: border-color 0.2s ease-in-out; 
 
@@ -23,48 +24,50 @@ input {
 
 
 button {
-    display: inline-block;
-    padding: 10px 20px; // Adjust as needed
-    font-size: 16px; // Adjust as needed
-    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $spacing-03;
+    padding: $spacing-03 $spacing-05;
     text-align: center;
     text-decoration: none;
-    border: 2px solid transparent;
-    border-radius: 4px; // Adjust as needed
+    border: $spacing-00 solid transparent;
+    border-radius: $spacing-00; 
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-  
+    
     &.primary {
-      color: #ffffff;
-      background-color: #007bff;
-      border-color: #007bff;
+      color: $text-04;
+      background-color: $interactive-01;
   
       &:hover {
-        background-color: darken(#007bff, 10%);
-        border-color: darken(#007bff, 10%);
+        background-color: darken($interactive-01, 10%);
+        border-color: darken($interactive-01, 10%);
       }
     }
   
     &.secondary {
-      color: #007bff;
-      background-color: #ffffff;
-      border-color: #007bff;
+      color: $interactive-01;
+      background-color: $ui-02;
+      border-color: $interactive-01;
   
       &:hover {
         color: #ffffff;
-        background-color: #007bff;
+        background-color: $interactive-01;
       }
     }
   
     &.danger {
       color: #ffffff;
-      background-color: #dc3545;
-      border-color: #dc3545;
+      background-color: $error-01;
+      border-color: $error-01;
   
       &:hover {
-        background-color: darken(#dc3545, 10%);
-        border-color: darken(#dc3545, 10%);
+        background-color: darken($error-01, 10%);
+        border-color: darken($error-01, 10%);
       }
     }
-}
+  
+    // Add more button styles as needed
+  }
   
