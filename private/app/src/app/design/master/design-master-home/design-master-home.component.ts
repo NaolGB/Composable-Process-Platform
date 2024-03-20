@@ -17,6 +17,7 @@ import { TableComponent } from '../../../components/table/table.component';
 import { NavigationComponent } from '../../../components/navigation/navigation.component';
 import { TileComponent } from '../../../components/tile/tile.component';
 import { PreviewSectionComponent } from '../../../components/preview-section/preview-section.component';
+import { VisualizationTablesComponent } from '../../../components/visualization/visualization-tables/visualization-tables.component';
 
 
 @Component({
@@ -37,7 +38,8 @@ import { PreviewSectionComponent } from '../../../components/preview-section/pre
     TableComponent,
     NavigationComponent,
     TileComponent,
-    PreviewSectionComponent
+    PreviewSectionComponent,
+    VisualizationTablesComponent
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'

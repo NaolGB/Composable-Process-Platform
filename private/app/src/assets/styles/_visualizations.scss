@@ -1,0 +1,33 @@
+@import '_spacing';
+
+.chart-container {
+    width: 100%;
+    height: 100%;
+    position: relative; // Important for absolute positioning inside
+  }
+    
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+.overlay {
+    display: flex;
+    position: absolute;
+    top: $spacing-03;
+    left: auto;
+    right: $spacing-03;
+    z-index: 99; 
+    width:max-content;
+
+    background-color: aqua;
+}
+  
+.chart-label {
+    // Style your label here
+}
+  
+.reset-button {
+    // Style your reset button here
+}
+  
