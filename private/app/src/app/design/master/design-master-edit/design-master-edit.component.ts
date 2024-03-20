@@ -7,12 +7,13 @@ import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { SimpleChanges } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DataService } from '../../../services/data.service';
 import { DesignMasterGeneralService } from '../services/design-master-general.service';
+import { TileComponent } from '../../../components/tile/tile.component';
 
 @Component({
   selector: 'app-design-master-edit',
@@ -23,6 +24,7 @@ import { DesignMasterGeneralService } from '../services/design-master-general.se
     MatButtonModule,
     MatGridListModule,
     CommonModule,
+    TileComponent,
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
@@ -65,7 +67,10 @@ export class DesignMasterEditComponent {
   get attributes() {
     return this.masterDataFromClient.get('attributes') as FormArray;
   }
-  
+
+  toggleCheckbox(attribute: AbstractControl) {
+    attribute.get('is_required')?.setValue(!attribute.value.is_required);
+  }
 
   private fetchData() {
     this.apiService.getMasterDataTypeById(this.masterDataId ?? '').subscribe((data: any) => {

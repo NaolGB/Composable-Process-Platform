@@ -1,11 +1,13 @@
-<mat-card class="activity-flex-item">
-    <mat-card-header>
-        <mat-card-title>Add Master Data Type</mat-card-title>
-        <mat-card-subtitle>Add required fields and additional attributes</mat-card-subtitle>
-    </mat-card-header>
-</mat-card>
+<app-tile>
+    <div tile-header>
+        Add Master Data Type
+    </div>
+    <div tile-content>
+        Add required fields and additional attributes
+    </div>
+</app-tile>
 <div class="activity-flex-item horizontal-bar">
-    hi NY!
+    
 </div>
 <form [formGroup]="masterDataFromClient" class="activity-flex-item scrollable">
     <div class="form-card">
@@ -21,8 +23,11 @@
             </mat-form-field>
 
             <mat-form-field class="form-card-element full-width">
-                <input type="text" matInput id="display_name" formControlName="display_name" placeholder="Display Name" required>
             </mat-form-field>
+            
+            <div class="horizontal-bar">
+                <input type="text" id="display_name" formControlName="display_name" placeholder="Display Name" required>
+            </div>
             
             <mat-form-field class="form-card-element full-width">
                 <input type="text" disabled matInput placeholder="Default Value" required>

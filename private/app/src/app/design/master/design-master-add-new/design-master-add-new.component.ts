@@ -12,6 +12,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { APIResponse, MasterDataType, Notification, TableData } from '../../../services/interface';
 import { DataService } from '../../../services/data.service';
 import { DesignMasterGeneralService } from '../services/design-master-general.service';
+import { TileComponent } from '../../../components/tile/tile.component';
 
 @Component({
   selector: 'app-design-master-add-new',
@@ -19,6 +20,7 @@ import { DesignMasterGeneralService } from '../services/design-master-general.se
   imports: [
     ReactiveFormsModule, 
     CommonModule,
+    TileComponent,
     MatCardModule,
     MatInputModule,
     MatSelectModule,

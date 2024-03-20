@@ -13,12 +13,12 @@ input {
 
     &:focus {
         outline: none;
-        border-color: #007bff; 
+        border-color: $interactive-03; 
         box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); 
     }
 
     &::placeholder {
-        color: #bfbfbf; 
+        color: $text-03; 
     }
 }
 
@@ -67,7 +67,78 @@ button {
         border-color: darken($error-01, 10%);
       }
     }
+}
+ 
+// Select Styles
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+
+  .select {
+    appearance: none; // Removes native dropdown styling
+    background-color: $ui-background;
+    border: 1px solid transparent;
+    padding: $spacing-03 $spacing-04;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    color: $text-01;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: $interactive-01; // Focus state
+    }
+
+    &:hover {
+      background-color: $ui-02; // Hover state
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: $text-03;
+    }
+  }
+
+  .dropdown-arrow {
+    position: absolute;
+    right: $spacing-03;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; // Makes the arrow non-interactive
+    color: $text-02;
+  }
+
   
-    // Add more button styles as needed
+}
+
+
+// Checkbox Styles
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .checkbox-icon {
+    font-size: $font-size-06; 
+    color:$text-01;
+    margin-right: $spacing-03;
   }
   
+  .checked {
+    color: $interactive-01; 
+  }
+  
+  .checkbox-label {
+    @include body($font-size-02);
+    color: $text-01;
+    cursor: pointer;
+  }
+
+  .disabled {
+    cursor: not-allowed;
+    color:$text-03;
+  }
+
+}
