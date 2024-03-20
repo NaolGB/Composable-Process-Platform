@@ -56,9 +56,8 @@ body {
 .horizontal-bar {
   display: flex;
   width: 100%;
-  // height: $spacing-09;
   gap: $spacing-03;
-  // margin: $spacing-05 0;
+  margin: $spacing-05 0;
 
   // background-color: beige;
   
@@ -73,6 +72,10 @@ body {
   .stick-to-right {
     justify-content: flex-end;
   
+  }
+
+  .tight {
+    width: max-content;
   }
 }
 
@@ -96,14 +99,38 @@ body {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  width: 50%;
+  width: 100%;
 
  
-  background-color: aqua;
+  // background-color: aqua;
 }
 
 .form-scrollable-body {
   overflow-y: auto;
 
-  background-color: aquamarine;
+  // background-color: aquamarine;
+}
+
+// Style for clickable icon
+.icon {
+  cursor: pointer;
+  color: $interactive-01; 
+  font-size: 24px; 
+
+  // Ensure icon is vertically centered
+  display: flex;
+  align-items: center;
+
+  // Adjust hover color as needed
+  &:hover {
+    color: darken($interactive-01, 10%);
+  }
+
+  &.white {
+    color: $text-04;
+
+    &:hover {
+      color: darken($text-04, 10%);
+    }
+  }
 }

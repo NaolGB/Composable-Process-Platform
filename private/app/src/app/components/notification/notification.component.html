@@ -1,13 +1,17 @@
 <div class="notification-toast">
-    <div *ngFor="let notification of notifications" 
-         [ngClass]="{'notification-message': true, 
-                     'success': notification.type === 'success', 
-                     'error': notification.type === 'error', 
-                     'info': notification.type === 'info', 
-                     'dismissed': notification.dismissed}">
-      <span>{{ notification.message }}</span>
-      <span class="remaining-time">{{ notification.remainingTime / 1000 }}s</span>
-      <button (click)="dismissNotification(notification)">Dismiss</button>
-    </div>
+  <div *ngFor="let notification of notifications" 
+       [ngClass]="{'notification-message': true, 
+                   'success': notification.type === 'success', 
+                   'error': notification.type === 'error', 
+                   'info': notification.type === 'info', 
+                   'dismissed': notification.dismissed}"
+      class="notification-wrapper"
+  >
+    <span>{{ notification.message }}</span>
+    <!-- <span class="remaining-time">{{ notification.remainingTime / 1000 }}s</span> -->
+    <!-- <button (click)="dismissNotification(notification)">Dismiss</button> -->
+    <span class="material-symbols-outlined icon white" (click)="dismissNotification(notification)">
+      close
+    </span>
   </div>
-  
+</div>

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -62,6 +62,10 @@ export class DesignMasterAddNewComponent {
 
   get attributes() {
     return this.masterDataFromClient.get('attributes') as FormArray;
+  }
+
+  toggleCheckbox(attribute: AbstractControl) {
+    attribute.get('is_required')?.setValue(!attribute.value.is_required);
   }
 
   addAttribute() {

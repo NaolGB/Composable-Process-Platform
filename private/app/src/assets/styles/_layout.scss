@@ -18,7 +18,7 @@ $sidebar-width: 400px;
     height: 100%;
     width: 100%;
     gap: $spacing-03;
-    background-color: cadetblue;
+    // background-color: cadetblue;
 }
 
 #navigation {
@@ -46,19 +46,12 @@ $sidebar-width: 400px;
   height: 100%;
   width: 100%;
 
-  background-color: darkolivegreen;
+  // background-color: darkolivegreen;
   
   .scrollable {
     flex: 1 1 0; 
     overflow: scroll; 
-    background-color: darkseagreen;
-  }
-
-  .take-full-height {
-    flex: 1;
-    overflow: auto;
-    width: 50%;
-    background-color: aquamarine;
+    // background-color: darkseagreen;
   }
 }
 

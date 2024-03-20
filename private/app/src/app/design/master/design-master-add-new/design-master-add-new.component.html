@@ -1,73 +1,64 @@
-<app-tile>
-    <div tile-header>
-        Add Master Data Type
-    </div>
-    <div tile-content>
-        Add required fields and additional attributes
-    </div>
-</app-tile>
-<div class="activity-flex-item horizontal-bar">
-    
-</div>
-<form [formGroup]="masterDataFromClient" class="activity-flex-item scrollable">
-    <div class="form-card">
-        <div class="form-card">
-            <div class="form-card-element">
-                <mat-checkbox checked disabled>Requirted</mat-checkbox>
+<form [formGroup]="masterDataFromClient" class="form-wrapper">
+    <div class="form-scrollable-body">
+        <div class="horizontal-bar">
+            <div class="checkbox-wrapper">
+                <span class="material-symbols-outlined checkbox-icon" [class.checked]="true" [class.disabled]="true">
+                  check_box
+                </span>
+                <label class="checkbox-label">Required</label>
             </div>
-
-            <mat-form-field class="form-card-element full-width">
-                <select matNativeControl required disabled>
-                    <option>string</option>
+            <div class="select-wrapper">
+                <select class="select" required disabled>
+                  <option  class="select-option">string</option>
                 </select>
-            </mat-form-field>
-
-            <mat-form-field class="form-card-element full-width">
-            </mat-form-field>
-            
-            <div class="horizontal-bar">
+                <span class="material-symbols-outlined dropdown-arrow">expand_more</span>
+            </div>
+            <div class="horizontal-bar-item">
                 <input type="text" id="display_name" formControlName="display_name" placeholder="Display Name" required>
             </div>
-            
-            <mat-form-field class="form-card-element full-width">
-                <input type="text" disabled matInput placeholder="Default Value" required>
-            </mat-form-field>
-        </div>
-    </div>
-   
-    <div formArrayName="attributes">
-      <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i">
-        <div class="form-card">
-            <div class="form-card-element">
-                <mat-checkbox formControlName="is_required">Required</mat-checkbox>
-                <!-- <mat-checkbox [checked]="attribute.isRequired">Required</mat-checkbox> -->
+            <div class="horizontal-bar-item">
+                <input type="text" disabled placeholder="Default Value" required>
             </div>
-
-            <mat-form-field class="form-card-element">
-                <select matNativeControl id="type" formControlName="type" required>
-                    <option *ngFor="let option of fieldTypeOptions" [value]="option">{{ option }}</option>
-                </select>
-            </mat-form-field>
-
-            <mat-form-field class="form-card-element">
-                <input type="text" matInput id="display_name" formControlName="display_name" placeholder="Display Name" required>
-            </mat-form-field>
-            
-            <mat-form-field class="form-card-element">
-                <input type="text" matInput id="default_value" formControlName="default_value" placeholder="Default Value" required>
-            </mat-form-field>
-
-            <div class="form-card-element">
-                <button mat-button (click)="removeAttribute(i)">
-                    <mat-icon>close</mat-icon>
+            <div class="horizontal-bar-item tight">
+                <button disabled>
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
         </div>
-      </div>
+        <div formArrayName="attributes">
+            <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i">
+                <div class="horizontal-bar">
+                    <div class="checkbox-wrapper">
+                        <span class="material-symbols-outlined checkbox-icon" [class.checked]="attribute.value.is_required" (click)="toggleCheckbox(attribute)">
+                          {{ attribute.value.is_required ? 'check_box' : 'check_box_outline_blank' }}
+                        </span>
+                        <label class="checkbox-label">Required</label>
+                        <input type="checkbox" formControlName="is_required" hidden>
+                    </div>
+                    <div class="select-wrapper">
+                        <select class="select" id="type" formControlName="type" required>
+                          <option class="select-option" *ngFor="let option of fieldTypeOptions" [value]="option">{{ option }}</option>
+                        </select>
+                        <span class="material-symbols-outlined dropdown-arrow">expand_more</span>
+                    </div>
+                    <div class="horizontal-bar-item">
+                        <input type="text" id="display_name" formControlName="display_name" placeholder="Display Name" required>
+                    </div>
+                    <div class="horizontal-bar-item">
+                        <input type="text" id="default_value" formControlName="default_value" placeholder="Default Value" required>
+                    </div>
+                    <div class="horizontal-bar-item tight">
+                        <button (click)="removeAttribute(i)">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-   
+
+    <div class="horizontal-bar">
+        <button class="secondary wide" type="button" (click)="addAttribute()">Add Attribute</button>
+        <button class="primary wide" type="button" type="button" (click)="onSubmit()">Submit</button>
+    </div>
 </form>
-<div class="activity-flex-item stick-to-section-bottom button-card">
-    <button class="button-card-item" type="button" (click)="addAttribute()">Add Attribute</button>
-    <button class="button-card-item" type="button" (click)="onSubmit()">Submit</button>
-</div>

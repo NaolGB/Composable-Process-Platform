@@ -52,15 +52,13 @@
       </div>
     </div>
 
-    <div>
-      <button type="button" (click)="addAttribute()">
+    <div class="horizontal-bar">
+      <button class="secondary wide" type="button" (click)="addAttribute()">
+        Add Attribute
       </button>
+      <button class="primary wide" type="button" (click)="onSubmit()" [disabled]="masterDataFromClient.pristine">
+        Submit
+    </button>
     </div>
   </form>
-  
-  
 }
-<!-- <button class="button-card-item" type="button" (click)="onSubmit()" [disabled]="masterDataFromClient.pristine">
-    <mat-icon>save</mat-icon>
-    Submit
-</button> -->

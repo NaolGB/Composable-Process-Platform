@@ -47,7 +47,7 @@ export class DesignMasterHomeComponent {
   filteredMasterDataOverviewData: any; // to hold the filtered data instead of overwriting the original data with filtered data
   isSidebarOpen = false;
   // selectedMasterDataId: string = '__select_master_data_overview';
-  selectedMasterDataId: string = 'material_v07';
+  selectedMasterDataId: string = '__add_new_master_data_type';
   selectedMasterDataObject: any;
   notifications: Notification[] = [];
   dismissalTime = 5000;

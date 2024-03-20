@@ -1,55 +1,62 @@
-.notification-toast {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 9999;
-  }
-  
-  .notification-message {
-    background-color: #f44336;
-    color: white;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 300px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    animation: slide-up 0.3s ease-out;
-  }
-  
-  .enotificationrror-message.dismissed {
-    opacity: 0;
-    transform: translateY(-50%);
-    pointer-events: none; // Disable pointer events for dismissed notifications
-  }
-  
-  .remaining-time {
-    margin-left: 10px;
-    font-size: 12px;
-  }
-  
-  @keyframes slide-up {
-    0% {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
+@import "../../../assets/styles/_spacing";
+@import "../../../assets/styles/_typography";
+@import "../../../assets/styles/_colors";
 
-  .notification-message.success {
-    background-color: #4CAF50; /* Green */
+.notification-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 9999;
+  color: $text-04;
+}
+
+.notification-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-03;
+}
+
+.notification-message {
+  padding: $spacing-03 $spacing-05; 
+  margin-bottom: $spacing-03; 
+  border-radius: $spacing-00; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: $spacing-15;
+  animation: slide-up 0.3s ease-out;
+}
+
+.notification-message.dismissed {
+  opacity: 0;
+  transform: translateY(-50%);
+  pointer-events: none; // Disable pointer events for dismissed notifications
+}
+
+.remaining-time {
+  margin-left: $spacing-03; 
+  font-size: $font-size-02; 
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
   }
-  
-  .notification-message.error {
-    background-color: #f44336; /* Red */
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
-  
-  .notification-message.info {
-    background-color: #2196F3; /* Blue */
-  }
-  
+}
+
+.notification-message.success {
+  background-color: $success-01; 
+}
+
+.notification-message.error {
+  background-color: $error-01; 
+}
+
+.notification-message.info {
+  background-color: $info-01; 
+}
