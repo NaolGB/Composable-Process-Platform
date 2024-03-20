@@ -40,24 +40,20 @@
 
     <section id="activity">
         <ng-container [ngSwitch]="selectedMasterDataId">
-
             <ng-container *ngSwitchCase="'__select_master_data_overview'">
                 <ng-container *ngTemplateOutlet="masterDataOverviewTable"></ng-container>
             </ng-container>
+
             <ng-container *ngSwitchCase="'__add_new_master_data_type'">
                 <app-design-master-add-new 
                     (apiResponse)="handleApiResponse($event)"
                     (tableDataEmitter)="handleTableDataResponse($event)"
                 ></app-design-master-add-new>
             </ng-container>
+
             <!-- Specific Master Data Type selected -->
             <ng-container *ngSwitchDefault> 
-                <app-design-master-edit 
-                (apiResponse)="handleApiResponse($event)" 
-                (tableDataEmitter)="handleTableDataResponse($event)"
-                [masterDataId]="selectedMasterDataId"
-            ></app-design-master-edit>
-
+                <ng-container *ngTemplateOutlet="masterDataEditComponent"></ng-container>
             </ng-container>
         </ng-container>
     </section>
@@ -113,6 +109,25 @@ it will be newly created on toggle and the transition will not happen -->
     </div>
     <div class="scrollable">
         <app-table [tableData]="masterDataOverviewTableData"></app-table>
+    </div>
+</ng-template>
+
+<ng-template #masterDataEditComponent>
+    <app-tile>
+        <div tile-header>
+            Edit Master Data
+        </div>
+        <div tile-content>
+            editing master data with id: {{selectedMasterDataId}}
+        </div>
+    </app-tile>
+    <div class="horizontal-bar"></div>
+    <div class="scrollable">
+        <app-design-master-edit 
+            (apiResponse)="handleApiResponse($event)" 
+            (tableDataEmitter)="handleTableDataResponse($event)"
+            [masterDataId]="selectedMasterDataId"
+        ></app-design-master-edit>
     </div>
 </ng-template>
 
