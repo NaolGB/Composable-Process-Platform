@@ -91,9 +91,7 @@ it will be newly created on toggle and the transition will not happen -->
 <app-notification [notifications]="notifications" [dismissalTime]="dismissalTime" (notificationDismissed)="onNotificaitonDismissed($event)"></app-notification>
 
 <ng-template #masterDataOverviewTable>
-    <app-tile
-        [hasDivider]="false"
-    >
+    <app-tile>
         <div tile-header>
             Master Data Overview
         </div>
@@ -115,9 +113,6 @@ it will be newly created on toggle and the transition will not happen -->
     </div>
     <div class="scrollable">
         <app-table [tableData]="masterDataOverviewTableData"></app-table>
-    </div>
-    <div>
-        <button>hi NY!</button>
     </div>
 </ng-template>
 

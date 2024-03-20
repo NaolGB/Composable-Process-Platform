@@ -6,8 +6,11 @@
     display: flex;
     flex-direction: column;
     padding: $spacing-03;
-    width: 100%;
+    // border: 1px solid black;
     // background-color: aquamarine;
+
+    flex: 1;
+    flex-wrap: wrap;
 
     &.selectable {
         &:hover, &:focus{
@@ -24,7 +27,9 @@
 }
 
 .component-tile-content {
+    display: flex;
     width: 100%;
+    // flex-wrap: wrap;
     // background-color:brown
 }
 
