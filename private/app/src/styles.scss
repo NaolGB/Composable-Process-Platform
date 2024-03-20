@@ -115,6 +115,7 @@ body {
 .icon {
   cursor: pointer;
   color: $interactive-01; 
+  padding: $spacing-03 $spacing-05;
   font-size: 24px; 
 
   // Ensure icon is vertically centered
@@ -131,6 +132,14 @@ body {
 
     &:hover {
       color: darken($text-04, 10%);
+    }
+  }
+
+  &.dark {
+    color: $text-02;
+
+    &:hover {
+      color: darken($text-02, 10%);
     }
   }
 }
