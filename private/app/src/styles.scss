@@ -144,3 +144,13 @@ body {
     }
   }
 }
+
+// Preview Section
+.dotted-background {
+  background-size: 20px 20px; // Size of each "cell" of the pattern
+  background-image: radial-gradient(circle, $ui-04 1px, transparent 1px); // Creates the dot
+  background-color: $ui-background; // Background color of the section
+
+  /* Ensures the pattern repeats throughout the section */
+  background-repeat: repeat;
+}

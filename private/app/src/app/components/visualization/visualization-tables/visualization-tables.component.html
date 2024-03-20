@@ -4,9 +4,11 @@
 
 <div #chartContainer class="chart-container">
     <svg #chart></svg>
-    <div class="overlay">
-      <span class="chart-label">Your Label Here</span>
-      <button class="reset-button" (click)="resetZoom()">Reset Zoom</button>
+    <div class="overlay" (click)="resetZoom()">
+        <span class="material-symbols-outlined" >
+            restart_alt
+        </span>
+      <span class="chart-label">{{zoomLevelFormatted}}</span>
     </div>
   </div>
   

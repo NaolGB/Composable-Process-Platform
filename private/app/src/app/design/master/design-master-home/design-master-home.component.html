@@ -55,23 +55,22 @@
         </ng-container>
     </section>
 
-    <section id="preview">
-        <app-visualization-tables></app-visualization-tables>
-        <!-- <ng-container [ngSwitch]="selectedMasterDataId">
-            <ng-container *ngSwitchCase="'__select_master_data_overview'">
-                <ng-container *ngTemplateOutlet="selectMasterDataPlaceholder"></ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="'__add_new_master_data_type'">
-                <app-table [tableData]="previewTableData"></app-table>
-            </ng-container>
-            <ng-container *ngSwitchDefault> 
-                <ng-container *ngIf="selectedMasterDataObject; then masterDataPreviewTable">
+    <section id="preview" class="dotted-background">
+        <!-- <app-visualization-tables></app-visualization-tables> -->
+        <div class="preview-section-card">
+            <ng-container [ngSwitch]="selectedMasterDataId">
+                <ng-container *ngSwitchCase="'__select_master_data_overview'">
+                    <ng-container *ngTemplateOutlet="selectMasterDataPlaceholder"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'__add_new_master_data_type'">
+                    <app-table [tableData]="previewTableData"></app-table>
+                </ng-container>
+                <ng-container *ngSwitchDefault> 
+                    <ng-container *ngIf="selectedMasterDataObject; then masterDataPreviewTable">
+                    </ng-container>
                 </ng-container>
             </ng-container>
-        </ng-container> -->
-        <!-- <app-preview-section>
-            hello
-        </app-preview-section> -->
+        </div>
 
     </section>
 </div>
@@ -161,5 +160,5 @@ it will be newly created on toggle and the transition will not happen -->
 </ng-template>
 
 <ng-template #selectMasterDataPlaceholder>
-    <p>Please Select Master Data</p>
+    <p style="text-align: center;">Please Select Master Data to See Table Preview</p>
 </ng-template>

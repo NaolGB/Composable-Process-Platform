@@ -1,4 +1,5 @@
 @import '_spacing';
+@import '_colors';
 
 .chart-container {
     width: 100%;
@@ -17,10 +18,21 @@
     top: $spacing-03;
     left: auto;
     right: $spacing-03;
+
+    gap: $spacing-03;
+    padding: $spacing-03 $spacing-03;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
     z-index: 99; 
     width:max-content;
 
-    background-color: aqua;
+    color: $text-02;
+    background-color: $ui-02;
+
+    &:hover {
+        background-color: $ui-03;
+    }
 }
   
 .chart-label {

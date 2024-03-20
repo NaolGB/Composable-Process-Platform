@@ -12,7 +12,9 @@ export class VisualizationTablesComponent {
   @ViewChild('chartContainer', { static: false }) private chartContainer!: ElementRef;
   @ViewChild('chart') private chartElement!: ElementRef;
 
-  private zoom!: d3.ZoomBehavior<Element, unknown>; // Add this line to define the zoom behavior
+  private zoom!: d3.ZoomBehavior<Element, unknown>; 
+  zoomLevel = '1';
+
 
   constructor() {}
 
@@ -30,6 +32,27 @@ export class VisualizationTablesComponent {
     svg.transition().duration(750).call(this.zoom.transform, d3.zoomIdentity); // Reset zoom
   }
 
+  updateZoomLevel(scale: number) {
+    this.zoomLevel = scale.toFixed(2);
+  }
+
+  get zoomLevelFormatted() {
+    const zoomLevelNumber = Number(this.zoomLevel) * 100;
+    let formattedZoomLevel = '';
+
+    if (zoomLevelNumber >= 1000000000) {
+      formattedZoomLevel = (zoomLevelNumber / 1000000000).toFixed(2) + 'B';
+    } else if (zoomLevelNumber >= 1000000) {
+      formattedZoomLevel = (zoomLevelNumber / 1000000).toFixed(2) + 'M';
+    } else if (zoomLevelNumber >= 1000) {
+      formattedZoomLevel = (zoomLevelNumber / 1000).toFixed(2) + 'K';
+    } else {
+      formattedZoomLevel = zoomLevelNumber.toFixed(0);
+    }
+
+    return formattedZoomLevel + '%';
+  }
+
   createChart() {
     const container = this.chartContainer.nativeElement;
     const width = container.offsetWidth;
@@ -42,9 +65,12 @@ export class VisualizationTablesComponent {
     svg.selectAll('*').remove(); // Clear previous SVG elements
 
     // Initialize zoom behavior
-    this.zoom = d3.zoom().on('zoom', (event) => {
-      zoomG.attr('transform', event.transform);
-    });
+    this.zoom = d3.zoom()
+      .scaleExtent([0.01, 100]) // Limit zoom extent
+      .on('zoom', (event) => {
+          zoomG.attr('transform', event.transform);
+          this.updateZoomLevel(event.transform.k);
+      });
     svg.call(this.zoom); // Apply zoom behavior to the SVG
 
     // Background pattern that doesn't scale on zoom

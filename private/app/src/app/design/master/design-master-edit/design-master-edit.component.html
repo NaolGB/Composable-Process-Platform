@@ -47,6 +47,10 @@
             <div class="horizontal-bar-item">
               <input type="text" id="default_value" formControlName="default_value" placeholder="Default Value" required>
             </div>
+
+            <div class="horizontal-bar-item tight" *ngIf="attribute.value.isNew">
+              <span class="material-symbols-outlined icon dark" (click)="removeAttribute(i)">close</span>
+            </div>
           </div>
         </div>
       </div>

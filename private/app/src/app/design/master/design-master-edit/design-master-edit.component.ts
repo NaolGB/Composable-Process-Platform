@@ -114,6 +114,11 @@ export class DesignMasterEditComponent {
     this.prepareAndEmitPreviewData();
   }
 
+  removeAttribute(index: number) {
+    this.attributes.removeAt(index);
+    this.prepareAndEmitPreviewData();
+  }
+
   prepareAndEmitPreviewData() {
     const attributes = this.masterDataFromClient.get('attributes') as FormArray;
     const tableData = this.designMasterGeneralService.prepareAttributePreviewDataForTableFromFormArray(attributes);
