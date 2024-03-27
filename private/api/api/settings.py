@@ -30,7 +30,6 @@ INSTALLED_APPS = [
 
     'process_engine',
     'master_data_type',
-    'design',
 ]
 
 MIDDLEWARE = [

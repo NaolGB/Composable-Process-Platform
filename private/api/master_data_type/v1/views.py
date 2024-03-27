@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from process_engine.v1.helpers import generate_id_from_display_name
 from process_engine.v1.mongo_utils import get_client_for_user
-from bson.objectid import ObjectId
-from bson.errors import InvalidId
+from process_engine.v1.validation import validate_master_data_type
 
 class MasterDataTypeView(APIView):
     max_page_size = 50
@@ -41,8 +41,6 @@ class MasterDataTypeView(APIView):
         id_param = request.query_params.get('id')
         query = {}
         if id_param:
-            # Optionally, implement logic here to determine if 'id_param' is an ObjectId or another type
-            # For simplicity, this example directly uses 'id_param' without conversion
             query['_id'] = id_param
 
         # Fetch data with pagination and fields filtering
@@ -56,5 +54,56 @@ class MasterDataTypeView(APIView):
                 docs = list(collection.find(query, fields_dict).skip(skip_amount).limit(page_size))
                 return Response(docs, status=status.HTTP_200_OK)
         except Exception as e:
-            # Handling unexpected errors more generically
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def post(self, request):
+        db = get_client_for_user(request.user)
+        collection = db.master_data_type
+
+        document = request.data 
+        
+        # Validate the incoming data
+        if not validate_master_data_type(document):
+            return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        base_id = generate_id_from_display_name(document['display_name'])
+        document['_id'] = self.ensure_unique_id(collection, base_id)
+
+        try:
+            result = collection.insert_one(document)
+            return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    def put(self, request):
+        db = get_client_for_user(request.user)
+        collection = db.master_data_type
+
+        id_param = request.query_params.get('id')
+        if not id_param:
+            return Response({"error": "Document ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        document = request.data
+        if not validate_master_data_type(document):
+            return Response({"error": "Invalid document format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            result = collection.update_one({"_id": id_param}, {"$set": document})
+            if not result.acknowledged:
+                return Response({"error": "Operation was not acknowledged."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            if result.matched_count == 0:
+                return Response({"error": "Document not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"success": "Document updated successfully.", "id": id_param}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    
+    # helper methods that need access to the database
+    def ensure_unique_id(self, collection, base_id):
+        # Check if the base_id exists; if so, create a variation until a unique id is found
+        unique_id = base_id
+        variation = 1
+        while collection.find_one({"_id": unique_id}):
+            unique_id = f"{base_id}_{variation}"
+            variation += 1
+        return unique_id
