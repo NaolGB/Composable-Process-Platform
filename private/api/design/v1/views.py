@@ -1,0 +1,48 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from process_engine.v1.master_data import MasterDataType as MasterDataTypeService # Renamed to avoid conflict
+
+class MasterDataTypeView(APIView):
+    """
+    Master Data Type API
+    """
+    def get(self, request):
+        """
+        Get a master data type by ID.
+        """
+        id = request.query_params.get('id')
+        fields = request.query_params.get('fields')
+        fields = fields.split(",") if fields else None
+
+        response = MasterDataTypeService().get(id=id, fields=fields)
+        if response.success == False:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        """
+        Create a master data type.
+        """
+        response = MasterDataTypeService().create(data=request.data)
+
+        if response.success == False:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_200_OK)
+
+
+    def patch(self, request):
+        """
+        Update a master data type by ID. 
+        """
+        id = request.query_params.get('id') 
+        data = request.data
+
+        response = MasterDataTypeService().update(id, data=data)
+
+        if response.success == False:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(data={'success': response.success, 'message': response.message, 'data': response.data}, status=status.HTTP_200_OK)

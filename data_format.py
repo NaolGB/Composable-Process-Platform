@@ -29,7 +29,7 @@ received_from_client_example_document_type_uuid123 = { # _id: 'example_document_
             "type": "action", # action, information
             "script_id": 'extract_free_text_script_id123',
             "input_fields": {
-                'text': {"display_name": 'Text', "type": 'string', "required": True},
+                'text': {"display_name": 'Free Text', "type": 'string', "required": True},
             },
         },
         "suggest_plant": {
@@ -42,6 +42,7 @@ received_from_client_example_document_type_uuid123 = { # _id: 'example_document_
     "attributes": {
         'name': {"display_name": 'Name', "type": 'string', "required": True, "default_value": 'Sales Order'},
         'billing_block': {"display_name": 'Billing Block', "type": 'boolean', "required": True, "default_value": False},
+        'free_text': {"display_name": 'Free Text', "type": 'string', "required": False, "default_value": ''},
         'example_master_data_type_uuid123': []
     }
 }
@@ -51,6 +52,7 @@ example_document_instance_uuid456 = { # _id: 'document_instance_uuid456'
     "content": {
         'name': 'Sales Order 123',
         'billing_block': False,
+        'free_text': 'This is a sample sales order.',
         'example_master_data_type_uuid123': [
             {'name': 'MacBook Air 2020', 'quantity': 234},
             {'name': 'iPhone 12', 'quantity': 100},
@@ -73,3 +75,33 @@ process_instance_uuid789 = { # _id: 'process_instance_uuid789'
     ]
 }
 # process ---------------------------------------------------------
+
+# organization ----------------------------------------------------
+apple = { # _id: 'apple'
+    "display_name": 'Apple Inc.',
+    "subdomain": 'apple',
+    "version": '1.0.0',
+    "databases": ['apple_db'],
+    "status": 'active', # active, inactive
+    "seat_count": {
+        "capacity": {
+            "admin": 1,
+            "user": 10
+        },
+        "usage": {
+            "admin": 1,
+            "user": 1
+        }
+    }
+}
+
+# user ------------------------------------------------------------
+user_uuid123 = { # _id: 'user_uuid123'
+    "display_name": 'John Doe',
+    "email": 'email@example.com',
+    "role": 'admin',
+    "processes": ['example_process_type_uuid123'],
+    "organization": 'apple',
+    "status": 'active', # active, inactive
+}
+# user ------------------------------------------------------------
