@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'process_engine',
+    'master_data_type',
     'design',
 ]
 

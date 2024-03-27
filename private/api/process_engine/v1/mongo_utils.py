@@ -1,13 +1,27 @@
 from pymongo import MongoClient
-import os
 
-class MongoDBClient:
-    _instance = None
+CLUSTER_URIS = {
+    'dev_cluster': f'mongodb+srv://{"x2dev"}:{"wE2xvCnjSaa"}@cluster0.eamf5pt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+} # TODO: hide username and password
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(MongoDBClient, cls).__new__(cls)
-            mongo_uri = os.getenv('MONGO_DB_URI')
-            cls._instance.client = MongoClient(mongo_uri)
-        return cls._instance.client
 
+mongo_clients = {}
+
+def get_mongo_client(cluster_identifier):
+    if cluster_identifier not in mongo_clients:
+        mongo_clients[cluster_identifier] = MongoClient(CLUSTER_URIS[cluster_identifier])
+    return mongo_clients[cluster_identifier]
+
+def get_client_for_user(user):
+    cluster_identifier = get_user_cluster_identifier(user)
+    
+    client = get_mongo_client(cluster_identifier)
+    db_name = get_user_db(user)
+    db = client[db_name]
+    return db
+
+def get_user_cluster_identifier(user):
+    return 'dev_cluster' # TODO: implement logic to determine the cluster
+
+def get_user_db(user):
+    return 'dev' # TODO: implement logic to determine the db
