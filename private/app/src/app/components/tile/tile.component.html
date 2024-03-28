@@ -1,9 +1,0 @@
-<div id="component-tile" [class.selected]="isSelected" [class.selectable]="isSelectable">
-    <div class="component-tile-header">
-        <ng-content select="[tile-header]"></ng-content>
-    </div>
-    <div class="component-tile-content">
-        <ng-content select="[tile-content]"></ng-content>
-    </div>
-    <div *ngIf="hasDivider" class="tile-divider"></div>
-</div>
