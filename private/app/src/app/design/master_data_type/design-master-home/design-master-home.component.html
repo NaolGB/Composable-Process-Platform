@@ -1,98 +1,38 @@
 <div class="selection-container">
     <div>
-      <div>not scroll</div>
-      <div>not scroll</div>
+        <h1>All Master Data</h1>
+        <p>Select to edit</p>
     </div>
-    <div class="scrollable">
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
+    <div class="list-group scrollable" *ngIf="masterDataTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let masterDataType of masterDataTypeList"
+            [class.active]="masterDataType._id === selectedMasterDataTypeId"
+            (click)="onMasterDataTypeSelected(masterDataType._id)"
+        >
+            <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
+            <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
+            
+        </button>
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let masterDataType of masterDataTypeList"
+            [class.active]="masterDataType._id === selectedMasterDataTypeId"
+            (click)="onMasterDataTypeSelected(masterDataType._id)"
+        >
+            <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
+            <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
+            
+        </button>
+        end
     </div>
-    <div>
-      <div>not scroll</div>
-      <div>not scroll</div>
-      <div>not scroll</div>
-      <div>not scroll</div>
-    </div>
-  </div>
-  <div class="working-container">
+</div>
+
+
+<div class="working-container">
     working
-  </div>
-<!-- <div>
-
-    <div id="">
-        <div class="">
-            <h1>All Master Data</h1>
-            <h6>Select to update</h6>
-        </div>
-        <div class="list-group scrollable" *ngIf="masterDataTypeList">
-            <button 
-                type="button"
-                class="list-group-item list-group-item-action" 
-                aria-current="false" 
-                *ngFor="let masterDataType of masterDataTypeList"
-                [class.active]="masterDataType._id === selectedMasterDataTypeId"
-                (click)="onMasterDataTypeSelected(masterDataType._id)"
-            >
-                <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
-                <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
-                
-            </button>
-            <button 
-                type="button"
-                class="list-group-item list-group-item-action" 
-                aria-current="false" 
-                *ngFor="let masterDataType of masterDataTypeList"
-                [class.active]="masterDataType._id === selectedMasterDataTypeId"
-                (click)="onMasterDataTypeSelected(masterDataType._id)"
-            >
-                <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
-                <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
-                
-            </button>
-            end
-        </div>
-    </div>
-    
-    <div class="">
-        working section
-    </div>
-
-</div>     -->
+</div>
