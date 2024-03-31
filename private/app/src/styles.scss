@@ -1,0 +1,31 @@
+@import 'bootstrap/scss/bootstrap';
+
+#grid-container {
+    height: 100vh;
+    width: 100vw;
+}
+.navbar {
+    width: 50px;
+    height: 100%;
+    background-color:aqua;
+    transition: width 0.3s;
+}
+.expanded {
+    width: 300px;
+}
+
+.container-fluid {
+    // background-color: bisque;
+}
+
+.black_border {
+    border: 1px solid black;
+    // height: 100%;
+}
+.yellow_border {
+    border: 3px solid purple;
+    // height: 100%;
+}
+.respect_height {
+    // height: 100%;
+}

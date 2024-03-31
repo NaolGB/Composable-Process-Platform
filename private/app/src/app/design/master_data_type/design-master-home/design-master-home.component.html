@@ -1,0 +1,35 @@
+<div class="col-3 black_border d-flex-row" >
+    <h1 class="black_border">All Master Data</h1>
+    <h6 class="black_border">Select to update</h6>
+    <div class="list-group black_border flex-grow-1 overflow-auto" *ngIf="masterDataTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let masterDataType of masterDataTypeList"
+            [class.active]="masterDataType._id === selectedMasterDataTypeId"
+            (click)="onMasterDataTypeSelected(masterDataType._id)"
+        >
+            <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
+            <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
+            
+        </button>
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let masterDataType of masterDataTypeList"
+            [class.active]="masterDataType._id === selectedMasterDataTypeId"
+            (click)="onMasterDataTypeSelected(masterDataType._id)"
+        >
+            <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
+            <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
+            
+        </button>
+        end
+    </div>
+</div>
+<div class="col-9 black_border">
+    working section
+</div>
+
