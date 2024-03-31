@@ -1,21 +1,77 @@
-<div class="container-fluid d-flex" id="grid-container">
-  <div class="row flex-grow-1">
-    <div class="col-auto">
-      <nav class="navbar" [class.expanded]="navbarExpanded">
-        
-        <button (click)="toggleNavbar()" class="navbar-toggler">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </nav>
+<!-- <div id="">
+  <nav class="navbar" [class.expanded]="navbarExpanded">
+    <button (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+
+  <app-design-master-home></app-design-master-home>
+</div> -->
+
+<div id="main-container" class="border">
+  <div id="nav-container" class="navbar" [class.expanded]="navbarExpanded">
+    <button (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+  <div id="selection-container">
+    <div>
+      <div>not scroll</div>
+      <div>not scroll</div>
     </div>
-    <div class="col d-flex">
-      <div class="row flex-grow-1">
-        <div class="col-12 d-flex">
-          <app-design-master-home class="row yellow_border flex-grow-1"></app-design-master-home>
-        </div>
-      </div>
+    <div class="scrollable">
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+    </div>
+    <div>
+      <div>not scroll</div>
+      <div>not scroll</div>
+      <div>not scroll</div>
+      <div>not scroll</div>
     </div>
   </div>
+  <div id="working-container">
+    working
+  </div>
 </div>
+
 
 <!-- <router-outlet /> -->
