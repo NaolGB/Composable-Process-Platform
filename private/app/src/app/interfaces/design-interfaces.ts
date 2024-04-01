@@ -7,3 +7,22 @@ export interface TableDataInterface {
         [key: string]: string | number | boolean;
     }[];
 }
+
+export interface MasterDataAttributeInterface {
+    display_name: string;
+    type: string;
+    is_required: boolean;
+    default_value: string;
+}
+
+export interface MasterDataTypeInterface {
+    id?: string;
+    display_name: string;
+    attributes: {[key: string]: MasterDataAttributeInterface};
+}
+
+export interface ApiResponsePackageInterface {
+    success: boolean;
+    message: string;
+    data?: any;
+}

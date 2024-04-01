@@ -1,16 +1,14 @@
-<form [formGroup]="masterDataTypeForm">
+<div class="card">
+    <div class="card-body">
+        <h2>Add New Master Data Type</h2>
+    </div>
+</div>
+<form [formGroup]="masterDataTypeForm" class="container-with-scrollable-content">
     <div class="input-group">
-        <select class="form-select" disabled>
-            <option selected>{{masterDataAttributeTypeOptions[0]}}</option>
-        </select>
-        <input formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
-        <input type="text" class="form-control" [placeholder]="displayName" disabled>
-        <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" value="" checked disabled>
-        </div>
+        <input formControlName="display_name" type="text" class="form-control" placeholder="Name of Master Data Type">
     </div>
 
-    <div formArrayName="attributes">
+    <div formArrayName="attributes" class="scrollable">
         <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i" class="input-group">
             <select class="form-select">
                 <option *ngFor="let opt of masterDataAttributeTypeOptions">{{opt}}</option>
@@ -20,7 +18,11 @@
             <div class="input-group-text">
                 <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" checked>
             </div>
+            <button (click)="removeAttribute(i)" type="button" class="btn-close"></button>
         </div>
     </div>
-    <button (click)="addAttribute()">add attr</button>
+    <div class="d-flex justify-content-between">
+        <button (click)="addAttribute()" class="btn btn-secondary flex-fill">add attr</button>
+        <button (click)="onSubmit()" class="btn btn-primary flex-fill" type="submit">Submit form</button>
+    </div>
 </form>

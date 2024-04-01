@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DesignApiService } from '../../services/design-api.service';
 import { CommonModule } from '@angular/common';
-import { TableDataInterface } from '../../../interfaces/design-interfaces';
+import { ApiResponsePackageInterface, MasterDataTypeInterface, TableDataInterface } from '../../../interfaces/design-interfaces';
 import { TableComponent } from '../../../components/table/table.component';
 import { DataService } from '../../../services/data.service';
 import { Event } from '@angular/router';
@@ -22,7 +22,7 @@ export class DesignMasterHomeComponent {
 	masterDataTypeList: any[] = [];
 	// selectedMasterDataTypeId: string = '__button_master_data_type_overview';
 	selectedMasterDataTypeId: string = '__button_master_data_type_add_new';
-	selectedMasterDataTypeObject: any = null;
+	selectedMasterDataTypeObject: MasterDataTypeInterface | undefined;
 
 	overviewMasterDataOverviewTable: TableDataInterface | undefined;
 	filteredOverviewMasterDataOverviewTable: TableDataInterface | undefined;
@@ -51,6 +51,23 @@ export class DesignMasterHomeComponent {
 
 	onMasterDataTypeSelected(id: string) {
 		this.selectedMasterDataTypeId = id;
+		if (['__button_master_data_type_overview', '__button_master_data_type_add_new'].includes(id)) {
+			this.selectedMasterDataTypeObject = undefined;
+		} else {
+			this.apiService.getMasterDataType(id).subscribe(
+				(response: any) => {
+					this.selectedMasterDataTypeObject = response;
+				}
+			);
+		}
+	}
+
+	handleMasterDataTypeAddNewApiResponse(response: ApiResponsePackageInterface) {
+		if (response.success) {
+			if (response.data) {
+				this.masterDataTypeList.push(response.data);
+			}
+		}
 	}
 
 	onFilterTextChange(event: KeyboardEvent) {

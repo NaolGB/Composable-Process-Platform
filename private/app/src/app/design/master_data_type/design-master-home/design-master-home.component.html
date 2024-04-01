@@ -37,7 +37,7 @@
             <ng-container *ngTemplateOutlet="__template_master_data_type_add_new"></ng-container>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            {{selectedMasterDataTypeId}}
+            {{selectedMasterDataTypeObject | json}}
         </ng-container>
     </ng-container>
     
@@ -66,10 +66,5 @@
 </ng-template>
 
 <ng-template #__template_master_data_type_add_new>
-    <div class="card">
-        <div class="card-body">
-            <h2>Add New Master Data Type</h2>
-        </div>
-    </div>
-    <app-design-master-add-new></app-design-master-add-new>
+    <app-design-master-add-new class="container-with-scrollable-content" (apiResposnse)="handleMasterDataTypeAddNewApiResponse($event)"></app-design-master-add-new>
 </ng-template>

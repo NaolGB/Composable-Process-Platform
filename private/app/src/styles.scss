@@ -48,3 +48,14 @@
         overflow: scroll; 
     }
 }
+
+.container-with-scrollable-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+    .scrollable {
+        flex: 1 1 0; 
+        overflow: scroll; 
+    }
+}

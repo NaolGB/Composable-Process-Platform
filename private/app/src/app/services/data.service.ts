@@ -35,4 +35,8 @@ export class DataService {
       rowValues: filteredRowValues // Use the filtered rowValues
     };
   }
+
+  nameToId(name: string) {
+    return name.toLowerCase().replace(/ /g, '_');
+  }
 }

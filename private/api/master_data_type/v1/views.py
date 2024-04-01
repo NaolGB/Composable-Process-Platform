@@ -5,6 +5,7 @@ from process_engine.v1.helpers import generate_id_from_display_name
 from process_engine.v1.mongo_utils import get_client_for_user
 from process_engine.v1.validation import validate_master_data_type
 
+# NOTE: sends id field as '_id' in the response, but accepts 'id' in the request
 class MasterDataTypeView(APIView):
     max_page_size = 50
     default_page_size = 10
@@ -50,8 +51,8 @@ class MasterDataTypeView(APIView):
                 if not doc:
                     return Response({"error": "Document not found"}, status=status.HTTP_404_NOT_FOUND)
                 return Response(doc, status=status.HTTP_200_OK)
-            else:  # List view with pagination
-                docs = list(collection.find(query, fields_dict).skip(skip_amount).limit(page_size))
+            else:  # List view, no pagination
+                docs = list(collection.find(query, fields_dict))
                 return Response(docs, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -61,6 +62,7 @@ class MasterDataTypeView(APIView):
         collection = db.master_data_type
 
         document = request.data 
+        print(document)
         
         # Validate the incoming data
         if not validate_master_data_type(document):
@@ -71,7 +73,10 @@ class MasterDataTypeView(APIView):
 
         try:
             result = collection.insert_one(document)
-            return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
+            if result.acknowledged:
+                return Response({"_id": str(result.inserted_id), 'display_name': document['display_name']}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"error": "Operation not acknowledged"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
