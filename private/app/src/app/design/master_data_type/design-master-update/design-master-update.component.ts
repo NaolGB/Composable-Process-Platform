@@ -1,6 +1,6 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { DesignApiService } from '../../services/design-api.service';
-import { MasterDataTypeInterface } from '../../../interfaces/design-interfaces';
+import { ApiResponsePackageInterface, MasterDataTypeInterface } from '../../../interfaces/design-interfaces';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../../services/data.service';
@@ -17,8 +17,10 @@ import { DataService } from '../../../services/data.service';
 })
 export class DesignMasterUpdateComponent {
   @Input() selectedMasterDataTypeId: string | undefined;
+  @Output() apiResposnse: EventEmitter<ApiResponsePackageInterface> = new EventEmitter();
 	selectedMasterDataTypeObject: MasterDataTypeInterface | undefined;
   masterDataTypeForm: FormGroup;
+	masterDataTypeList: any[] = [];
   masterDataAttributeTypeOptions: string[] = ['Text', 'Number', 'Boolean', 'Date', 'Master Data Type'];
 
   constructor(private apiService: DesignApiService, private formBuilder: FormBuilder, private dataService: DataService) {
@@ -26,6 +28,17 @@ export class DesignMasterUpdateComponent {
       display_name: ['', Validators.required],
       attributes: this.formBuilder.array([])
     });
+  }
+
+  ngOnInit(): void {
+    this.apiService.getMasterDataTypeList().subscribe(
+			(resposne: any) => {
+				this.masterDataTypeList = resposne;
+			},
+			(error: any) => {
+				console.log(error);
+			}
+		);
   }
 
   ngOnChanges(changes: SimpleChanges) { 
@@ -39,7 +52,6 @@ export class DesignMasterUpdateComponent {
   private fetchData() {
     this.apiService.getMasterDataType(this.selectedMasterDataTypeId ?? '').subscribe((response: any) => {
       this.selectedMasterDataTypeObject = response;
-      console.log(this.selectedMasterDataTypeObject);
       if (!this.selectedMasterDataTypeObject || !this.masterDataTypeForm) {
         return;
       }
@@ -79,7 +91,7 @@ export class DesignMasterUpdateComponent {
   addAttribute() {
     const attribute = this.formBuilder.group({
       display_name: ['', Validators.required],
-      type: [{value: this.masterDataAttributeTypeOptions[0], disabled: false}, Validators.required], // Set the disabled property
+      type: [this.masterDataAttributeTypeOptions[0], Validators.required], // Set the disabled property
       is_required: [false],
       default_value: ['', Validators.required],
       isNew: [true]
@@ -116,14 +128,22 @@ export class DesignMasterUpdateComponent {
       };
     });
 
-
     this.apiService.putMasterDataType(masterDataType, this.selectedMasterDataTypeId ?? '').subscribe(
       (response: any) => {
-        console.log(response);
-      },
-      (error: any) => {
-        console.log(error);
-      }
+        const apiResponsePackage: ApiResponsePackageInterface = {
+          success: true,
+          message: 'Master Data Type Updated Successfully',
+          data: response
+        };
+        this.apiResposnse.emit(apiResponsePackage);
+    },
+    (error: any) => {
+      const apiResponsePackage: ApiResponsePackageInterface = {
+        success: false,
+        message: error.message || 'An error occurred',
+      };
+      this.apiResposnse.emit(apiResponsePackage);
+    }
     );
   }
 }

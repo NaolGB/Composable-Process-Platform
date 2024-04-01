@@ -10,13 +10,34 @@
 
     <div formArrayName="attributes" class="scrollable">
         <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i" class="input-group">
-            <select class="form-select" [disabled]="!attribute.value.isNew">
+            <select formControlName="type" class="form-select" *ngIf="!attribute.value.isNew">
+                <option selected>{{attribute.value.type}}</option>
+                <option *ngFor="let opt of masterDataAttributeTypeOptions" disabled>{{opt}}</option>
+            </select>
+            <select formControlName="type" class="form-select" *ngIf="attribute.value.isNew">
                 <option *ngFor="let opt of masterDataAttributeTypeOptions">{{opt}}</option>
             </select>
-            <input formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
-            <input formControlName="default_value" type="text" class="form-control" placeholder="Default Value">
+
+            <input *ngIf="attribute.value.type !== 'Master Data Type'" formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
+            <select *ngIf="attribute.value.type === 'Master Data Type' && !attribute.value.isNew" formControlName="display_name" class="form-select">
+                <option selected>{{attribute.value.display_name}}</option>
+                <option *ngFor="let opt of masterDataTypeList" disabled>
+                    <span *ngIf="opt.display_name">{{opt.display_name}}</span>
+                    <span *ngIf="!opt.display_name">{{opt._id}}</span>
+                </option>
+            </select>
+            <select *ngIf="attribute.value.type === 'Master Data Type' && attribute.value.isNew" formControlName="display_name" class="form-select">
+                <option *ngFor="let opt of masterDataTypeList">
+                    <span *ngIf="opt.display_name">{{opt.display_name}}</span>
+                    <span *ngIf="!opt.display_name">{{opt._id}}</span>
+                </option>
+            </select>
+            
+            <input *ngIf="attribute.value.type !== 'Master Data Type'" formControlName="default_value" type="text" class="form-control" placeholder="Default Value">
+            
             <div class="input-group-text">
-                <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="">
+                <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" [checked]="attribute.get('is_required')?.value || false">
+            
             </div>
             <button (click)="removeAttribute(i)" type="button" class="btn-close" [disabled]="!attribute.value.isNew"></button>
         </div>

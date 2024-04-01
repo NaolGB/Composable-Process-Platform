@@ -88,6 +88,7 @@ class MasterDataTypeView(APIView):
             return Response({"error": "Document ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         document = request.data
+        print(document, id_param)
         if not validate_master_data_type(document):
             return Response({"error": "Invalid document format"}, status=status.HTTP_400_BAD_REQUEST)
 

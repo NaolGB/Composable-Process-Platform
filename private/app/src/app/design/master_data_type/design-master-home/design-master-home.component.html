@@ -66,11 +66,11 @@
 </ng-template>
 
 <ng-template #__template_master_data_type_add_new>
-    <app-design-master-add-new class="container-with-scrollable-content" (apiResposnse)="handleMasterDataTypeAddNewApiResponse($event)"></app-design-master-add-new>
+    <app-design-master-add-new class="container-with-scrollable-content" (apiResposnse)="handleMasterDataTypeApiResponse($event)"></app-design-master-add-new>
 </ng-template>
 
 <ng-template #__template_master_data_type_update>
-    <app-design-master-update class="container-with-scrollable-content" [selectedMasterDataTypeId]="selectedMasterDataTypeId"></app-design-master-update>
+    <app-design-master-update class="container-with-scrollable-content" [selectedMasterDataTypeId]="selectedMasterDataTypeId" (apiResposnse)="handleMasterDataTypeApiResponse($event)"></app-design-master-update>
 </ng-template>
 
 

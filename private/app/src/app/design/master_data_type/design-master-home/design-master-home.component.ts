@@ -43,8 +43,6 @@ export class DesignMasterHomeComponent {
 					rowValues: this.masterDataTypeList
 				};
 				this.filteredOverviewMasterDataOverviewTable = this.overviewMasterDataOverviewTable;
-
-				this.onMasterDataTypeSelected('materials')
 			},
 			(error: any) => {
 				console.log(error);
@@ -54,18 +52,9 @@ export class DesignMasterHomeComponent {
 
 	onMasterDataTypeSelected(id: string) {
 		this.selectedMasterDataTypeId = id;
-		// if (['__button_master_data_type_overview', '__button_master_data_type_add_new'].includes(id)) {
-		// 	this.selectedMasterDataTypeObject = undefined;
-		// } else {
-		// 	this.apiService.getMasterDataType(id).subscribe(
-		// 		(response: any) => {
-		// 			this.selectedMasterDataTypeObject = response;
-		// 		}
-		// 	);
-		// }
 	}
 
-	handleMasterDataTypeAddNewApiResponse(response: ApiResponsePackageInterface) {
+	handleMasterDataTypeApiResponse(response: ApiResponsePackageInterface) {
 		if (response.success) {
 			if (response.data) {
 				this.masterDataTypeList.push(response.data);
@@ -76,6 +65,7 @@ export class DesignMasterHomeComponent {
 				dismissed: false,
 				remainingTime: 5000,
 			});
+			this.onMasterDataTypeSelected('__button_master_data_type_overview');
 		}
 		else {
 			this.addNotification({
@@ -93,7 +83,6 @@ export class DesignMasterHomeComponent {
 
 	onNotificationDismissed(notification: NotificationInterface) {
 		this.notifications = this.notifications.filter(n => n !== notification);
-		console.log(this.notifications)
 	}
 
 	onFilterTextChange(event: KeyboardEvent) {

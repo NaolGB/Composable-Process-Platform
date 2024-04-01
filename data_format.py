@@ -4,7 +4,7 @@ received_from_client_example_master_data_type_uuid123 = { # _id: 'example_master
     "attributes": {
         'name': {"display_name": 'Name', "type": 'string', "required": True, "default_value": 'Name'},
         'quantity': {"display_name": 'Quantity', "type": 'number', "required": False, "default_value": 0.00},
-        'plant': {"display_name": 'Plant', "type": 'master_data', "required": True, "default_value": 'Plant'}
+        'plant_v02': {"display_name": 'Plant', "type": 'master_data', "required": True, "default_value": 'Plant'},
     }
 }
 

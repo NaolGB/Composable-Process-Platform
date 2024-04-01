@@ -17,6 +17,7 @@ import { DesignApiService } from '../../services/design-api.service';
 })
 export class DesignMasterAddNewComponent {
   @Output() apiResposnse: EventEmitter<ApiResponsePackageInterface> = new EventEmitter();
+	masterDataTypeList: any[] = [];
   masterDataTypeForm: FormGroup;
   masterDataAttributeTypeOptions: string[] = ['Text', 'Number', 'Boolean', 'Date', 'Master Data Type'];
   
@@ -33,6 +34,17 @@ export class DesignMasterAddNewComponent {
       ])
     });
   }
+
+  ngOnInit() {
+		this.apiService.getMasterDataTypeList().subscribe(
+			(resposne: any) => {
+				this.masterDataTypeList = resposne;
+			},
+			(error: any) => {
+				console.log(error);
+			}
+		);
+	}
 
   get attributes() {
     return this.masterDataTypeForm.get('attributes') as FormArray;
