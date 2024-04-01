@@ -1,0 +1,14 @@
+<table class="table table-hover" *ngIf="tableData">
+    <thead>
+        <tr>
+            <th scope="col" *ngFor="let header of tableData.headerValues">{{header.display_name}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let rowValue of tableData.rowValues">
+            <td *ngFor="let header of tableData.headerValues">
+                {{rowValue[header.column_identifier]}}
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,26 @@
+<form [formGroup]="masterDataTypeForm">
+    <div class="input-group">
+        <select class="form-select" disabled>
+            <option selected>{{masterDataAttributeTypeOptions[0]}}</option>
+        </select>
+        <input formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
+        <input type="text" class="form-control" [placeholder]="displayName" disabled>
+        <div class="input-group-text">
+            <input class="form-check-input mt-0" type="checkbox" value="" checked disabled>
+        </div>
+    </div>
+
+    <div formArrayName="attributes">
+        <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i" class="input-group">
+            <select class="form-select">
+                <option *ngFor="let opt of masterDataAttributeTypeOptions">{{opt}}</option>
+            </select>
+            <input formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
+            <input formControlName="default_value" type="text" class="form-control" placeholder="Default Value">
+            <div class="input-group-text">
+                <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" checked>
+            </div>
+        </div>
+    </div>
+    <button (click)="addAttribute()">add attr</button>
+</form>

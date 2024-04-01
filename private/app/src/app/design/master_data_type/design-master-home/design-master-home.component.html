@@ -7,32 +7,69 @@
         <button 
             type="button"
             class="list-group-item list-group-item-action" 
-            aria-current="false" 
-            *ngFor="let masterDataType of masterDataTypeList"
-            [class.active]="masterDataType._id === selectedMasterDataTypeId"
-            (click)="onMasterDataTypeSelected(masterDataType._id)"
+            [class.active]="selectedMasterDataTypeId === '__button_master_data_type_overview'"
+            (click)="onMasterDataTypeSelected('__button_master_data_type_overview')"
         >
-            <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
-            <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
-            
+            <p>Master Data Overview</p>
         </button>
         <button 
             type="button"
             class="list-group-item list-group-item-action" 
             aria-current="false" 
             *ngFor="let masterDataType of masterDataTypeList"
-            [class.active]="masterDataType._id === selectedMasterDataTypeId"
+            [class.active]="selectedMasterDataTypeId === masterDataType._id"
             (click)="onMasterDataTypeSelected(masterDataType._id)"
         >
             <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
             <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
             
         </button>
-        end
     </div>
 </div>
 
 
 <div class="working-container">
-    working
+    <ng-container [ngSwitch]="selectedMasterDataTypeId">
+        <ng-container *ngSwitchCase="'__button_master_data_type_overview'">
+            <ng-container *ngTemplateOutlet="__template_master_data_type_overview"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'__button_master_data_type_add_new'">
+            <ng-container *ngTemplateOutlet="__template_master_data_type_add_new"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            {{selectedMasterDataTypeId}}
+        </ng-container>
+    </ng-container>
+    
 </div>
+
+<ng-template #__template_master_data_type_overview>
+    <div class="card">
+        <div class="card-body">
+            <h2>Master Data Overview</h2>
+            <h6>List of all master data</h6>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div class="flex-fill">
+                    <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onMasterDataTypeSelected('__button_master_data_type_add_new')">Add New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-component-table [tableData]="filteredOverviewMasterDataOverviewTable"></app-component-table>
+</ng-template>
+
+<ng-template #__template_master_data_type_add_new>
+    <div class="card">
+        <div class="card-body">
+            <h2>Add New Master Data Type</h2>
+        </div>
+    </div>
+    <app-design-master-add-new></app-design-master-add-new>
+</ng-template>
