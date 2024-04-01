@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { DesignApiService } from '../../services/design-api.service';
 import { CommonModule } from '@angular/common';
-import { ApiResponsePackageInterface, MasterDataTypeInterface, TableDataInterface } from '../../../interfaces/design-interfaces';
+import { ApiResponsePackageInterface, MasterDataTypeInterface, NotificationInterface, TableDataInterface } from '../../../interfaces/design-interfaces';
 import { TableComponent } from '../../../components/table/table.component';
 import { DataService } from '../../../services/data.service';
-import { Event } from '@angular/router';
 import { DesignMasterAddNewComponent } from '../design-master-add-new/design-master-add-new.component';
+import { NotificationComponent } from '../../../components/notification/notification.component';
+import { DesignMasterUpdateComponent } from '../design-master-update/design-master-update.component';
 
 @Component({
   selector: 'app-design-master-home',
@@ -13,16 +14,17 @@ import { DesignMasterAddNewComponent } from '../design-master-add-new/design-mas
   imports: [
 	CommonModule,
 	TableComponent,
-	DesignMasterAddNewComponent
+	NotificationComponent,
+	DesignMasterAddNewComponent,
+	DesignMasterUpdateComponent
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
 })
 export class DesignMasterHomeComponent {
 	masterDataTypeList: any[] = [];
-	// selectedMasterDataTypeId: string = '__button_master_data_type_overview';
-	selectedMasterDataTypeId: string = '__button_master_data_type_add_new';
-	selectedMasterDataTypeObject: MasterDataTypeInterface | undefined;
+	selectedMasterDataTypeId: string = '__button_master_data_type_overview';
+	notifications: NotificationInterface[] = [];
 
 	overviewMasterDataOverviewTable: TableDataInterface | undefined;
 	filteredOverviewMasterDataOverviewTable: TableDataInterface | undefined;
@@ -42,6 +44,7 @@ export class DesignMasterHomeComponent {
 				};
 				this.filteredOverviewMasterDataOverviewTable = this.overviewMasterDataOverviewTable;
 
+				this.onMasterDataTypeSelected('materials')
 			},
 			(error: any) => {
 				console.log(error);
@@ -51,15 +54,15 @@ export class DesignMasterHomeComponent {
 
 	onMasterDataTypeSelected(id: string) {
 		this.selectedMasterDataTypeId = id;
-		if (['__button_master_data_type_overview', '__button_master_data_type_add_new'].includes(id)) {
-			this.selectedMasterDataTypeObject = undefined;
-		} else {
-			this.apiService.getMasterDataType(id).subscribe(
-				(response: any) => {
-					this.selectedMasterDataTypeObject = response;
-				}
-			);
-		}
+		// if (['__button_master_data_type_overview', '__button_master_data_type_add_new'].includes(id)) {
+		// 	this.selectedMasterDataTypeObject = undefined;
+		// } else {
+		// 	this.apiService.getMasterDataType(id).subscribe(
+		// 		(response: any) => {
+		// 			this.selectedMasterDataTypeObject = response;
+		// 		}
+		// 	);
+		// }
 	}
 
 	handleMasterDataTypeAddNewApiResponse(response: ApiResponsePackageInterface) {
@@ -67,7 +70,30 @@ export class DesignMasterHomeComponent {
 			if (response.data) {
 				this.masterDataTypeList.push(response.data);
 			}
+			this.addNotification({
+				message: response.message,
+				type: 'success',
+				dismissed: false,
+				remainingTime: 5000,
+			});
 		}
+		else {
+			this.addNotification({
+				message: response.message,
+				type: 'error',
+				dismissed: false,
+				remainingTime: 5000,
+			});
+		}
+	}
+
+	addNotification(notification: NotificationInterface) {
+		this.notifications = [...this.notifications, notification];
+	}
+
+	onNotificationDismissed(notification: NotificationInterface) {
+		this.notifications = this.notifications.filter(n => n !== notification);
+		console.log(this.notifications)
 	}
 
 	onFilterTextChange(event: KeyboardEvent) {

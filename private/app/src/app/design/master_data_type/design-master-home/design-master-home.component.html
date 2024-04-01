@@ -37,7 +37,7 @@
             <ng-container *ngTemplateOutlet="__template_master_data_type_add_new"></ng-container>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            {{selectedMasterDataTypeObject | json}}
+            <ng-container *ngTemplateOutlet="__template_master_data_type_update"></ng-container>
         </ng-container>
     </ng-container>
     
@@ -62,9 +62,17 @@
             </div>
         </div>
     </div>
-    <app-component-table [tableData]="filteredOverviewMasterDataOverviewTable"></app-component-table>
+    <app-component-table class="scrollable" [tableData]="filteredOverviewMasterDataOverviewTable"></app-component-table>
 </ng-template>
 
 <ng-template #__template_master_data_type_add_new>
     <app-design-master-add-new class="container-with-scrollable-content" (apiResposnse)="handleMasterDataTypeAddNewApiResponse($event)"></app-design-master-add-new>
 </ng-template>
+
+<ng-template #__template_master_data_type_update>
+    <app-design-master-update class="container-with-scrollable-content" [selectedMasterDataTypeId]="selectedMasterDataTypeId"></app-design-master-update>
+</ng-template>
+
+
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>

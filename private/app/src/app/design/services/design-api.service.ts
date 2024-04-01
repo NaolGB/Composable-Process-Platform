@@ -26,4 +26,10 @@ export class DesignApiService {
   postMasterDataType(masterDataType: MasterDataTypeInterface)  {
     return this.http.post(`${this.designBaseUrl}/master_data_type`, masterDataType);
   }
+
+  putMasterDataType(masterDataType: MasterDataTypeInterface, id: string) {
+    const params = new HttpParams()
+      .set('id', id)
+    return this.http.put(`${this.designBaseUrl}/master_data_type`, masterDataType, { params });
+  }
 }

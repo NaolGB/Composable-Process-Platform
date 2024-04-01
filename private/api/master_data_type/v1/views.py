@@ -62,7 +62,6 @@ class MasterDataTypeView(APIView):
         collection = db.master_data_type
 
         document = request.data 
-        print(document)
         
         # Validate the incoming data
         if not validate_master_data_type(document):
@@ -91,6 +90,7 @@ class MasterDataTypeView(APIView):
         document = request.data
         if not validate_master_data_type(document):
             return Response({"error": "Invalid document format"}, status=status.HTTP_400_BAD_REQUEST)
+
 
         try:
             result = collection.update_one({"_id": id_param}, {"$set": document})

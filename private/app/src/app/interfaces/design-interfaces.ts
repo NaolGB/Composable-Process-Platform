@@ -26,3 +26,11 @@ export interface ApiResponsePackageInterface {
     message: string;
     data?: any;
 }
+
+export interface NotificationInterface {
+    message: string;
+    type: 'success' | 'error' | 'info';
+    dismissed: boolean;
+    remainingTime: number;
+    intervalId?: any; // Make it optional as it will be used internally
+}
