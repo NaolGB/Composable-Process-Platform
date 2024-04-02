@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TableDataInterface } from '../interfaces/design-interfaces';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,28 @@ export class DataService {
   }
 
   nameToId(name: string) {
-    return name.toLowerCase().replace(/ /g, '_');
+    return name.trim().toLowerCase().replace(/ /g, '_');
   }
+
+  generalFormInputValidator(): ValidatorFn {
+    const reservedKeywords = [
+      'admin', 'user', 'superuser',
+      'login', 'logout', 'signup',
+      '__button_master_data_type_overview', '__button_master_data_type_add_new',
+      'start', 'end',
+    ]
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const required = control.value.trim() === '';
+      const minLength = control.value.trim().length < 1;
+      const maxLength = control.value.trim().length > 64;
+      const keywords = reservedKeywords.includes(control.value.trim().toLowerCase());
+
+      if (required || minLength || maxLength || keywords) {
+        return { 'invalidInput': { value: control.value } };
+      } else {
+        return null;
+      }
+    }
+  }
+
 }

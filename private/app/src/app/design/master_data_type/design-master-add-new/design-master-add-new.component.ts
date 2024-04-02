@@ -23,13 +23,13 @@ export class DesignMasterAddNewComponent {
   
   constructor(private formBuilder: FormBuilder, private dataService: DataService, private apiService: DesignApiService) {
     this.masterDataTypeForm = this.formBuilder.group({
-      display_name: ['', Validators.required],
+      display_name: ['', dataService.generalFormInputValidator()],
       attributes: this.formBuilder.array([
         this.formBuilder.group({
-          display_name: ['', Validators.required],
-          type: [this.masterDataAttributeTypeOptions[0], Validators.required],
+          display_name: ['', dataService.generalFormInputValidator()],
+          type: [this.masterDataAttributeTypeOptions[0], dataService.generalFormInputValidator()],
           is_required: [false, Validators.required],
-          default_value: ['', Validators.required]
+          default_value: ['', dataService.generalFormInputValidator()]
         }),
       ])
     });
@@ -56,11 +56,11 @@ export class DesignMasterAddNewComponent {
 
   addAttribute() {
     const attribute = this.formBuilder.group({
-      display_name: ['', Validators.required],
-      type: [this.masterDataAttributeTypeOptions[0], Validators.required],
+      display_name: ['', this.dataService.generalFormInputValidator()],
+      type: [this.masterDataAttributeTypeOptions[0], this.dataService.generalFormInputValidator()],
       is_required: [false, Validators.required],
-      default_value: ['', Validators.required]
-    });
+      default_value: ['', this.dataService.generalFormInputValidator()]
+    })
 
     this.attributes.push(attribute);
   }
@@ -70,6 +70,14 @@ export class DesignMasterAddNewComponent {
   }
 
   onSubmit() {
+    if (this.masterDataTypeForm.invalid) {
+      const apiResponsePackage: ApiResponsePackageInterface = {
+        success: false,
+        message: 'Input invalid\n- All fields are required\n- All fields need a minimum of 1 character and a maximum of 64\n- Reserved keywords are not allowed',
+      };
+      this.apiResposnse.emit(apiResponsePackage);
+      return;
+    }
     const masterDataType: MasterDataTypeInterface = {
       display_name: this.masterDataTypeForm.value.display_name,
       attributes: {}

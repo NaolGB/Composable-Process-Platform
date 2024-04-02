@@ -25,7 +25,7 @@ export class DesignMasterUpdateComponent {
 
   constructor(private apiService: DesignApiService, private formBuilder: FormBuilder, private dataService: DataService) {
     this.masterDataTypeForm = this.formBuilder.group({
-      display_name: ['', Validators.required],
+      display_name: ['', this.dataService.generalFormInputValidator()],
       attributes: this.formBuilder.array([])
     });
   }
@@ -34,16 +34,11 @@ export class DesignMasterUpdateComponent {
     this.apiService.getMasterDataTypeList().subscribe(
 			(resposne: any) => {
 				this.masterDataTypeList = resposne;
-			},
-			(error: any) => {
-				console.log(error);
 			}
 		);
   }
 
   ngOnChanges(changes: SimpleChanges) { 
-    // This is a lifecycle hook that is called when any data-bound property of the directive changes.
-    // Using ngOnChanges instead of ngOnInit because we want to fetch data every time the selectedMasterDataTypeId changes
     if (changes['selectedMasterDataTypeId'] && changes['selectedMasterDataTypeId'].currentValue !== changes['selectedMasterDataTypeId'].previousValue) {
       this.fetchData();
     }
@@ -90,10 +85,10 @@ export class DesignMasterUpdateComponent {
 
   addAttribute() {
     const attribute = this.formBuilder.group({
-      display_name: ['', Validators.required],
-      type: [this.masterDataAttributeTypeOptions[0], Validators.required], // Set the disabled property
-      is_required: [false],
-      default_value: ['', Validators.required],
+      display_name: ['', this.dataService.generalFormInputValidator()],
+      type: [this.masterDataAttributeTypeOptions[0], this.dataService.generalFormInputValidator()],
+      is_required: [false, Validators.required],
+      default_value: ['', this.dataService.generalFormInputValidator()],
       isNew: [true]
     });
 
@@ -105,6 +100,15 @@ export class DesignMasterUpdateComponent {
   }
 
   onSubmit() {
+    if (this.masterDataTypeForm.invalid) {
+      const apiResponsePackage: ApiResponsePackageInterface = {
+        success: false,
+        message: 'Input invalid\n- All fields are required\n- All fields need a minimum of 1 character and a maximum of 64\n- Reserved keywords are not allowed',
+      };
+      this.apiResposnse.emit(apiResponsePackage);
+      return;
+    }
+
     if (this.masterDataTypeForm.pristine) {
       return; // Exit the method if the form is pristine (no changes)
     }
