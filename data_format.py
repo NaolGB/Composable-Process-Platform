@@ -19,6 +19,20 @@ example_master_data_instance_uuid456 = { # _id: 'master_data_instance_uuid456'
 }
 # master_data -----------------------------------------------------
 
+# execution_script ------------------------------------------------
+execution_script_example_script_uuid123 = { # _id: 'example_script_uuid123'
+    "display_name": 'Parse Free Text',
+    "file_path": '/execution_script_parse_free_text.py',
+    "inut_parameters": {
+        'text': [{"display_name": 'Text', "type": 'string', "required": True}],
+    },
+    "output_parameters": {
+        'parsed_text': [{"display_name": 'Parsed Text', "type": 'string'}],
+    },
+
+}
+# execution_script ------------------------------------------------
+
 # document --------------------------------------------------------
 received_from_client_example_document_type_uuid123 = { # _id: 'example_document_type_uuid123'
     "display_name": 'Sales Order',
@@ -30,6 +44,17 @@ received_from_client_example_document_type_uuid123 = { # _id: 'example_document_
         'billing_block': {"display_name": 'Billing Block', "type": 'boolean', "required": True, "default_value": False},
         'free_text': {"display_name": 'Free Text', "type": 'string', "required": False, "default_value": ''},
         'example_master_data_type_uuid123': []
+    },
+    "execution_scripts": {
+        'example_script_uuid123': {
+            'inputs': {
+                'text': 'free_text'
+            },
+            'outputs': {
+                'parsed_text': 'example_master_data_type_uuid123'
+            },
+        }
+        
     }
 }
 
@@ -38,7 +63,7 @@ example_document_instance_uuid456 = { # _id: 'document_instance_uuid456'
     "content": {
         'name': 'Sales Order 123',
         'billing_block': False,
-        'free_text': 'This is a sample sales order.',
+        'free_text': '234 macbook air 2020, 100 iphone 12',
         'example_master_data_type_uuid123': [
             {'name': 'MacBook Air 2020', 'quantity': 234},
             {'name': 'iPhone 12', 'quantity': 100},
@@ -47,46 +72,36 @@ example_document_instance_uuid456 = { # _id: 'document_instance_uuid456'
 }
 # document --------------------------------------------------------
 
-# process ---------------------------------------------------------
-"""
-Documents 
-    - documents either manipulate master data or send out HTTP requests
-
-Process
-    - hold process steps
-    - many document types can be attached to one process (many <-> many)
-        - only one document instance of a document type can be attached to one process
-    - in each process step, event scritpts are called (executed)
-    - process can be "start" by a user or event
-
-Steps
-    - there are 4 types of steps: start, automated, manual, end
-        - start: start of the process (manual or automated, requires user input/event or another automated step or trigger event)
-        - automated: automatic execution (requires no user input/event, executed by another automated step or trigger event)
-        - manual: manual execution (requires user input/event)
-        - end: end of the process (manual or automated, requires user input/event or another automated step or trigger event)
-    - each step can have multiple next steps
-        - next step determined by the execution result of the current step
-"""
-om_steps = ['Create Sales Order', 'Check Credit Limit', 'Set Credit Block', 'Remove Credit Block (Automated)', 'Remove Credit Block (Manual)', 'Create Delivery', 'Create Invoice', 'End']
-event_check_credit_limit = {
-    "display_name": 'Check Credit Limit',
-    "next_steps": ['set_credit_block', 'create_delivery'],
-    "file_path": '/event_check_credit_limit.py',
-    "requires_manual_action": False,
-}
-event_remove_credit_block_manual = {
-    "display_name": 'Remove Credit Block (Manual)',
-    "next_steps": ['create_delivery', 'end'],
-    "file_path": '/event_remove_credit_block_manual.py',
-    "requires_manual_action": True,
-    "manual_options": {
-        'sustain_credit_block': {"display_name": 'Sustain Credit Block', "next_step": 'end'},
-        'remove_credit_block': {"display_name": 'Remove Credit Block', "next_step": 'create_delivery'},
-    },
+# event -----------------------------------------------------------
+event_instance_uuid123 = { # _id: 'event_instance_uuid123v'
+    "display_name": 'Sales Order Created',
+    "document_type": 'example_document_type_uuid123',
+    "execution_script": 'example_script_uuid123',
+    "process_type": 'example_process_type_uuid1234',
+    "started_by": 'user_uuid123',
     "responder_users": ['user_uuid123'],
-    "status": 'pending',
+    "started_at": '2021-01-01T00:00:00Z',
+    "completed_at": '2021-01-01T00:00:00Z',
+    "status": 'completed', # completed, in_progress, failed
+    "updated_document_instance": {
+        'document_instance_uuid456': {
+            "field": "billing_block",
+            "old_value": False,
+            "new_value": True,
+        }
+    },
+    "updated_master_data_instance":{
+        'master_data_instance_uuid456': {
+            "field": "quantity",
+            "old_value": 234,
+            "new_value": 100,
+        }
+    }
 }
+# event -----------------------------------------------------------
+
+# process_type ----------------------------------------------------
+om_steps = ['Create Sales Order', 'Check Credit Limit', 'Set Credit Block', 'Remove Credit Block (Automated)', 'Remove Credit Block (Manual)', 'Create Delivery', 'Create Invoice', 'End']
 process_type_uuid1234 = { # _id: 'example_process_type_uuid1234'
     "display_name": 'Sales Order Process',
     "documents": ['example_document_type_uuid123'],
@@ -94,40 +109,148 @@ process_type_uuid1234 = { # _id: 'example_process_type_uuid1234'
         'create_sales_order': {
             "display_name": 'Create Sales Order',
             "type": 'start',
-            "next_steps": ['check_credit_limit']
+            "next_step": {
+                "has_multiple_next_steps": False,
+                "next_step": 'check_credit_limit'
+            }
         }, 
         'check_credit_limit': {
             "display_name": 'Check Credit Limit',
             "type": 'automated',
-            "next_steps": ['set_credit_block', 'create_delivery']
+            "action": {
+                "document_type": 'example_document_type_uuid123',
+                "execution_script": 'example_script_uuid123',
+            },
+            "next_step": {
+                "has_multiple_next_steps": True,
+                "conditional_value": 'example_document_instance_uuid456.billing_block',
+                "conditions": {
+                    "condition_1": {
+                        "comparison": {
+                            '01': {'operator': '==', 'value': '01', 'logic': 'or', 'next_comparison': '02'}, # billing_block == '01' or billing_block == '02' and billing_block != '00' then next step is set_credit_block
+                            '02': {'operator': '==', 'value': '02', 'logic': 'and', 'next_comparison': '03'},
+                            '03': {'operator': '!=', 'value': '00', 'logic': 'and', 'next_comparison': None},
+                        },
+                        "next_step": "set_credit_block"
+                    },
+                    "condition_2": {
+                        "comparison": {
+                            '01': {'operator': '==', 'value': '00', 'logic': 'or', 'next_comparison': '02'}, # billing_block == '00' or billing_block == '01' and billing_block != '02' then next step is remove_credit_block_manual
+                            '02': {'operator': '==', 'value': '01', 'logic': 'and', 'next_comparison': '03'},
+                            '03': {'operator': '!=', 'value': '02', 'logic': 'and', 'next_comparison': None},
+                        },
+                        "next_step": "remove_credit_block_manual"
+                    },                    
+                }
+            } 
         },
         'set_credit_block': {
             "display_name": 'Set Credit Block',
             "type": 'automated',
-            "next_steps": ['remove_credit_block_manual', 'remove_credit_block_automated']
+            "action": {
+                "document_type": 'example_document_type_uuid123',
+                "execution_script": 'example_script_uuid123',
+            },
+            "next_step":{
+                "has_multiple_next_steps": True,
+                "conditional_value": 'example_document_instance_uuid456.billing_block',
+                "conditions": {
+                    "condition_1": {
+                        "comparison": {
+                            '01': {'operator': '==', 'value': '01', 'logic': 'or', 'next_comparison': '02'}, # billing_block == '01' or billing_block == '02' and billing_block != '00' then next step is set_credit_block
+                            '02': {'operator': '==', 'value': '02', 'logic': 'and', 'next_comparison': '03'},
+                            '03': {'operator': '!=', 'value': '00', 'logic': 'and', 'next_comparison': None},
+                        },
+                        "next_step": "set_credit_block"
+                    },
+                    "condition_2": {
+                        "comparison": {
+                            '01': {'operator': '==', 'value': '00', 'logic': 'or', 'next_comparison': '02'}, # billing_block == '00' or billing_block == '01' and billing_block != '02' then next step is remove_credit_block_manual
+                            '02': {'operator': '==', 'value': '01', 'logic': 'and', 'next_comparison': '03'},
+                            '03': {'operator': '!=', 'value': '02', 'logic': 'and', 'next_comparison': None},
+                        },
+                        "next_step": "remove_credit_block_manual"
+                    },                    
+                }
+            }
         },
         'remove_credit_block_manual': {
             "display_name": 'Remove Credit Block (Manual)',
             "type": 'manual', # we do not encode responder_users in the process type, but in the process instance
             "manual_options": {
-                'sustain_credit_block': {"display_name": 'Sustain Credit Block', "next_step": 'end'},
-                'remove_credit_block': {"display_name": 'Remove Credit Block', "next_step": 'create_delivery'},
+                'sustain_credit_block': {
+                    "display_name": 'Sustain Credit Block',
+                    'action': {
+                        "document_type": 'example_document_type_uuid123',
+                        "execution_script": 'example_script_uuid123', # changes the billing_block attribute to True
+                    },
+                },
+                'remove_credit_block': {
+                    "display_name": 'Remove Credit Block',
+                    'action': {
+                        "document_type": 'example_document_type_uuid123',
+                        "execution_script": 'example_script_uuid123', # changes the billing_block attribute to False
+                    },
+                },
+            },
+            "next_step": {
+                "has_multiple_next_steps": True,
+                "conditional_value": 'example_document_instance_uuid456.billing_block',
+                "conditions": {
+                    "condition_1": {
+                        "comparison": {
+                            '01': {'operator': '==', 'value': '01', 'logic': 'or', 'next_comparison': '02'}, # billing_block == '01' or billing_block == '02' and billing_block != '00' then next step is set_credit_block
+                            '02': {'operator': '==', 'value': '02', 'logic': 'and', 'next_comparison': '03'},
+                            '03': {'operator': '!=', 'value': '00', 'logic': 'and', 'next_comparison': None},
+                        },
+                        "next_step": "set_credit_block"
+                    },
+                    "condition_2": {
+                        "comparison": {
+                            '01': {'operator': '==', 'value': '00', 'logic': 'or', 'next_comparison': '02'}, # billing_block == '00' or billing_block == '01' and billing_block != '02' then next step is remove_credit_block_manual
+                            '02': {'operator': '==', 'value': '01', 'logic': 'and', 'next_comparison': '03'},
+                            '03': {'operator': '!=', 'value': '02', 'logic': 'and', 'next_comparison': None},
+                        },
+                        "next_step": "remove_credit_block_manual"
+                    },                    
+                }
             }
         },
         'remove_credit_block_automated': {
             "display_name": 'Remove Credit Block (Automated)',
             "type": 'automated',
-            "next_steps": ['create_delivery']
+            "action": {
+                "document_type": 'example_document_type_uuid123',
+                "execution_script": 'example_script_uuid123', # changes the billing_block attribute to False
+            },
+            "next_step": {
+                "has_multiple_next_steps": False,
+                "next_step": 'create_delivery'
+            }
         },
         'create_delivery': {
             "display_name": 'Create Delivery',
             "type": 'automated',
-            "next_steps": ['create_invoice', 'end']
+            "action": {
+                "document_type": 'example_document_type_uuid123',
+                "execution_script": 'example_script_uuid123', # creates a delivery document
+            },
+            "next_step": {
+                "has_multiple_next_steps": False,
+                "next_step": 'create_invoice'
+            }
         },
         'create_invoice': {
             "display_name": 'Create Invoice',
             "type": 'automated',
-            "next_steps": ['end']
+            "action": {
+                "document_type": 'example_document_type_uuid123',
+                "execution_script": 'example_script_uuid123', # creates an invoice document
+            },
+            "next_step": {
+                "has_multiple_next_steps": False,
+                "next_step": 'end'
+            }
         },
         'end': {
             "display_name": 'End',
@@ -135,49 +258,18 @@ process_type_uuid1234 = { # _id: 'example_process_type_uuid1234'
         },
     }
 }
+# process_type ----------------------------------------------------
+
+# process_instance ------------------------------------------------
 example_process_instance_uuid123 = { # _id: 'example_process_instance_uuid123'
     "process_type": 'example_process_type_uuid1234',
     "document_instances": ['example_document_instance_uuid456'],
-    "steps": {
-        'create_sales_order': {
-            "status": 'completed',
-            "result": 'success',
-            "next_step": 'check_credit_limit'
-        },
-        'check_credit_limit': {
-            "status": 'completed',
-            "result": 'success',
-            "next_step": 'set_credit_block'
-        },
-        'set_credit_block': {
-            "status": 'completed',
-            "result": 'success',
-            "next_step": 'remove_credit_block_manual'
-        },
-        'remove_credit_block_manual': {
-            "status": 'pending',
-            "result": 'pending',
-            "responder": 'user_uuid123',
-            "selected_option": '',
-            "next_step": 'create_delivery'
-        },
-        'create_delivery': {
-            "status": 'pending',
-            "result": 'pending',
-            "next_step": 'create_invoice'
-        },
-        'create_invoice': {
-            "status": 'pending',
-            "result": 'pending',
-            "next_step": 'end'
-        },
-        'end': {
-            "status": 'pending',
-            "result": 'pending',
-        },
-    }
+    "current_step": 'check_credit_limit',
+    "responder_users": ['user_uuid123'],
+    "status": 'in_progress', # in_progress, completed, failed
+    "events": ['event_instance_uuid123'],
 }
-# process ---------------------------------------------------------
+# process_instance ------------------------------------------------
 
 # organization ----------------------------------------------------
 apple = { # _id: 'apple'
