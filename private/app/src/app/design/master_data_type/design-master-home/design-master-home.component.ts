@@ -33,7 +33,11 @@ export class DesignMasterHomeComponent {
 	constructor(
 		private apiService: DesignApiService, 
 		private dataService: DataService, private router: Router
-	) { }
+	) { 
+		this.router.events.subscribe(event => {
+			console.log(event);
+		  });
+	}
 
 	ngOnInit() {
 		this.apiService.getMasterDataTypeList().subscribe(
@@ -50,10 +54,11 @@ export class DesignMasterHomeComponent {
 			},
 			(error: any) => {
 				if(error.status === 401) {
-					// this.router.navigate(['/login']);
+					console.log('401 error');
+					this.router.navigate(['/login'], {queryParams: {callerMessage: '401_error'}});
 				}
 				else {
-					console.log(error);
+					this.router.navigate(['/login'], {queryParams: {callerMessage: 'error'}});
 				}
 			}
 		);

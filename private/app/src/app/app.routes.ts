@@ -4,5 +4,5 @@ import { LoginComponent } from './general/user/login/login.component';
 
 export const routes: Routes = [
     {path: 'design/master-data-type', component: DesignMasterHomeComponent, pathMatch: 'full'},
-    {path: 'login', component: LoginComponent, pathMatch: 'full'},
+    {path: 'login', component: LoginComponent},
 ];
