@@ -17,8 +17,8 @@ const firebaseConfig = {
   projectId: "project-x2-0",
   storageBucket: "project-x2-0.appspot.com",
   messagingSenderId: "689501773952",
-  appId: "1:689501773952:web:cddae3be72052a76104665",
-  measurementId: "G-ZM2SLWJM35"
+  appId: "1:689501773952:web:a4eb7a02e9733cd8104665",
+  measurementId: "G-GTD3ZW2ERZ"
 };
 
 export const appConfig: ApplicationConfig = {
@@ -26,10 +26,12 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes), 
     provideClientHydration(), 
     provideHttpClient(),
+
     importProvidersFrom([
       provideFirebaseApp(() => initializeApp(firebaseConfig)),
       provideAuth(() => getAuth())
     ])
+    
   ]
 };
 

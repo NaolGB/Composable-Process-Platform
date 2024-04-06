@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DesignMasterHomeComponent } from './design/master_data_type/design-master-home/design-master-home.component';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
+import { LoginComponent } from './general/user/login/login.component';
+
 
 @Component({
   selector: 'app-root',
@@ -9,14 +12,29 @@ import { CommonModule } from '@angular/common';
   imports: [
     RouterOutlet,
     CommonModule,
-    DesignMasterHomeComponent
+    DesignMasterHomeComponent,
+    LoginComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
+  authService = inject(AuthService);
   navbarExpanded = false; 
 
+  ngOnInit(): void {
+    this.authService.user$.subscribe((user) => {
+      if(user) {
+        this.authService.currentUserSignal.set({
+          email: user.email!,
+        });
+      } 
+      else {
+        this.authService.currentUserSignal.set(null);
+      }
+    })
+  }
+  
   toggleNavbar() {
     this.navbarExpanded = !this.navbarExpanded; 
   }

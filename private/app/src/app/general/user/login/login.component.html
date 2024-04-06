@@ -1,3 +1,33 @@
-{{callerMessage}}
+<div class="selection-container">
+    selection-container works!
+</div>
 
-<p>login works!</p>
+
+<div class="working-container">
+    <form [formGroup]="rawLoginForm" class="container-with-limited-input" (ngSubmit)="onSubmit()">
+        <h2>Sign in</h2>
+        <div *ngIf="errorMessage">
+            <div class="alert alert-danger" role="alert">
+                {{errorMessage}}
+            </div>  
+        </div>
+        <div *ngIf="callerMessage">
+            <div class="alert alert-danger" role="alert">
+                {{callerMessage}}
+            </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <input formControlName="email" type="email" class="form-control" (keyup)="onKeyboardChange($event)" placeholder="email">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col">
+            <input formControlName="password" type="password" class="form-control" (keyup)="onKeyboardChange($event)" placeholder="password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="!rawLoginForm.valid">Sign in</button>
+    </form>1
+</div>

@@ -33,11 +33,7 @@ export class DesignMasterHomeComponent {
 	constructor(
 		private apiService: DesignApiService, 
 		private dataService: DataService, private router: Router
-	) { 
-		this.router.events.subscribe(event => {
-			console.log(event);
-		  });
-	}
+	) {}
 
 	ngOnInit() {
 		this.apiService.getMasterDataTypeList().subscribe(

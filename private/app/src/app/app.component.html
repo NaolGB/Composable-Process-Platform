@@ -4,8 +4,11 @@
       <span class="navbar-toggler-icon"></span>
     </button>
   </div>
-  <div class="content-container">
+  <div class="content-container" *ngIf="authService.currentUserSignal()">
     <router-outlet />
+  </div>
+  <div class="content-container" *ngIf="authService.currentUserSignal() == null">
+    <app-login></app-login>
   </div>
 </div>
 
