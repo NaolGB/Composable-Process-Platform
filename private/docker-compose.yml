@@ -4,9 +4,6 @@ services:
     build:
       context: ./api
     container_name: django-dev
-    environment:
-      - MONGO_DB_URI
-      - ORGANIZATION
     ports:
       - 8000:8000
     mem_limit: 2g

@@ -1,4 +1,7 @@
+import os
 from pathlib import Path
+import firebase_admin
+from firebase_admin import credentials
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,6 +18,20 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200"
 ]
 
+# firebase settings ------------------------------------------------
+cred = credentials.Certificate(os.path.join(BASE_DIR, 'api/secret_firebase_service_account_key.json'))
+firebase_admin.initialize_app(cred)
+# -------------------------------------------------------------------
+
+
+# Rest Framework settings ------------------------------------------
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'tenant_provision.__firebase__auth.FirebaseAuthentication',
+    ],
+}
+# -------------------------------------------------------------------
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -30,6 +47,7 @@ INSTALLED_APPS = [
 
     'process_engine',
     'master_data_type',
+    'tenant_provision',
 ]
 
 MIDDLEWARE = [
@@ -39,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'tenant_provision.__auth__mixin.FirebaseAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
