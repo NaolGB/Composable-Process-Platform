@@ -7,6 +7,7 @@ import { DataService } from '../../../services/data.service';
 import { DesignMasterAddNewComponent } from '../design-master-add-new/design-master-add-new.component';
 import { NotificationComponent } from '../../../components/notification/notification.component';
 import { DesignMasterUpdateComponent } from '../design-master-update/design-master-update.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-design-master-home',
@@ -16,7 +17,7 @@ import { DesignMasterUpdateComponent } from '../design-master-update/design-mast
 	TableComponent,
 	NotificationComponent,
 	DesignMasterAddNewComponent,
-	DesignMasterUpdateComponent
+	DesignMasterUpdateComponent,
   ],
   templateUrl: './design-master-home.component.html',
   styleUrl: './design-master-home.component.scss'
@@ -29,7 +30,10 @@ export class DesignMasterHomeComponent {
 	overviewMasterDataOverviewTable: TableDataInterface | undefined;
 	filteredOverviewMasterDataOverviewTable: TableDataInterface | undefined;
 
-	constructor(private apiService: DesignApiService, private dataService: DataService) { }
+	constructor(
+		private apiService: DesignApiService, 
+		private dataService: DataService, private router: Router
+	) { }
 
 	ngOnInit() {
 		this.apiService.getMasterDataTypeList().subscribe(
@@ -45,7 +49,12 @@ export class DesignMasterHomeComponent {
 				this.filteredOverviewMasterDataOverviewTable = this.overviewMasterDataOverviewTable;
 			},
 			(error: any) => {
-				console.log(error);
+				if(error.status === 401) {
+					// this.router.navigate(['/login']);
+				}
+				else {
+					console.log(error);
+				}
 			}
 		);
 	}

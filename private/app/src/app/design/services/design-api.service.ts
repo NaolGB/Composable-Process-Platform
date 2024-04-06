@@ -6,8 +6,7 @@ import { MasterDataTypeInterface } from '../../interfaces/design-interfaces';
   providedIn: 'root'
 })
 export class DesignApiService {
-  private designApiVersion = 'v1';
-  private designBaseUrl = `http://localhost:8000/api/${this.designApiVersion}`;
+  private designBaseUrl = `http://localhost:8000/api`;
 
   constructor(private http: HttpClient) { }
 
