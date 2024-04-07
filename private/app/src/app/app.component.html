@@ -1,11 +1,10 @@
-{{authService.currentUserSignal() |json}}
-{{authService.idTokenSignal() |json}}
-
 <div class="main-container">
   <div class="navbar" [class.navbar-expanded]="navbarExpanded">
     <button (click)="toggleNavbar()">
       <span class="navbar-toggler-icon"></span>
     </button>
+    <a routerLink="/design/master-data-type" routerLinkActive="active">Master Data Type</a>
+    <a routerLink="/profile" routerLinkActive="active">Profile</a>
   </div>
   <div class="content-container" *ngIf="authService.currentUserSignal()">
     <router-outlet />

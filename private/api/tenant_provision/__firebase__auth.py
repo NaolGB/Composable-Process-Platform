@@ -9,10 +9,11 @@ class Profile(AnonymousUser):
     Custom user model for Firebase authentication.
     Becase BasedAuthentication expects a user object, we need to create a custom user.
     """
-    def __init__(self, uid, profile=None) -> None:
+    def __init__(self, uid, _id=None, tenant_id=None) -> None:
         super().__init__()
+        self._id = _id
         self.uid = uid
-        self.profile = profile
+        self.tenant_id = tenant_id
 
     @property
     def is_authenticated(self):
@@ -48,6 +49,11 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
                 raise exceptions.AuthenticationFailed('User not found')
         except Exception:
             raise exceptions.AuthenticationFailed('Error fetching user profile')
+        
 
-        print('Profile:', profile)
-        return (Profile(uid, profile), token)
+        # build the user profile object
+        try:
+            profile = Profile(uid, profile['_id'], profile['tenant_id'])
+            return (profile, token)
+        except KeyError:
+            raise exceptions.AuthenticationFailed('Error fetching user profile')

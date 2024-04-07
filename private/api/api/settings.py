@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'process_engine',
     'master_data_type',
     'tenant_provision',
+    'user_profile',
 ]
 
 MIDDLEWARE = [

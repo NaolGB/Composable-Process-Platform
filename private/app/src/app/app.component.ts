@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { DesignMasterHomeComponent } from './design/master_data_type/design-master-home/design-master-home.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
@@ -12,6 +12,8 @@ import { idToken } from '@angular/fire/auth';
   standalone: true,
   imports: [
     RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
     CommonModule,
     DesignMasterHomeComponent,
     LoginComponent
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit{
         user.getIdToken().then((idToken) => {
           this.authService.idTokenSignal.set(idToken);
         });
+        this.authService.currentUserUidSignal.set(user.uid);
       } 
       else {
         this.authService.currentUserSignal.set(null);

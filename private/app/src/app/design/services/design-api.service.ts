@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class DesignApiService {
   authService = inject(AuthService);
-  private designBaseUrl = `http://localhost:8000/api`;
+  private designBaseUrl = `http://localhost:8000/api/design`;
 
   constructor(private http: HttpClient) {}
 
@@ -22,18 +22,27 @@ export class DesignApiService {
   }
 
   getMasterDataType(id: string) {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
     const params = new HttpParams()
       .set('id', id)
-    return this.http.get(`${this.designBaseUrl}/master_data_type` , { params });
+    return this.http.get(`${this.designBaseUrl}/master_data_type` , { headers, params });
   }
 
   postMasterDataType(masterDataType: MasterDataTypeInterface)  {
-    return this.http.post(`${this.designBaseUrl}/master_data_type`, masterDataType);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
+    return this.http.post(`${this.designBaseUrl}/master_data_type`, masterDataType, { headers });
   }
 
   putMasterDataType(masterDataType: MasterDataTypeInterface, id: string) {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
     const params = new HttpParams()
       .set('id', id)
-    return this.http.put(`${this.designBaseUrl}/master_data_type`, masterDataType, { params });
+    return this.http.put(`${this.designBaseUrl}/master_data_type`, masterDataType, { headers, params });
   }
 }

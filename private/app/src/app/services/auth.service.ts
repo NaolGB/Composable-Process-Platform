@@ -14,6 +14,7 @@ export class AuthService {
   user$ = user(this.firebaseAuth);
   currentUserSignal = signal<UserInterface | null | undefined>(undefined)
   idTokenSignal = signal<string | null | undefined>(undefined)
+  currentUserUidSignal = signal<string | null | undefined>(undefined)
 
   constructor() { }
 
