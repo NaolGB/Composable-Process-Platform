@@ -4,6 +4,7 @@ import { DesignMasterHomeComponent } from './design/master_data_type/design-mast
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './general/user/login/login.component';
+import { idToken } from '@angular/fire/auth';
 
 
 @Component({
@@ -28,11 +29,14 @@ export class AppComponent implements OnInit{
         this.authService.currentUserSignal.set({
           email: user.email!,
         });
+        user.getIdToken().then((idToken) => {
+          this.authService.idTokenSignal.set(idToken);
+        });
       } 
       else {
         this.authService.currentUserSignal.set(null);
       }
-    })
+    });
   }
   
   toggleNavbar() {

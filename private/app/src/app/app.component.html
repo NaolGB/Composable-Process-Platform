@@ -1,3 +1,6 @@
+{{authService.currentUserSignal() |json}}
+{{authService.idTokenSignal() |json}}
+
 <div class="main-container">
   <div class="navbar" [class.navbar-expanded]="navbarExpanded">
     <button (click)="toggleNavbar()">

@@ -21,24 +21,33 @@ class Profile(AnonymousUser):
 
 class FirebaseAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        db = get_services_client()
-        collection = db.profiles
+        mongo_client = get_services_client()
+        db = mongo_client['dev']
+        profile_collection = db.profile
+        
 
         token = request.headers.get('Authorization')
+        
+        token_parts = token.split()
+        if token_parts[0].lower() != 'bearer' or len(token_parts) != 2:
+            raise exceptions.AuthenticationFailed('Invalid authentication token format')
+        token = token_parts[1]
+        
         if not token:
             raise exceptions.AuthenticationFailed('No authentication token provided')
 
         try:
             decoded_token = auth.verify_id_token(token)
             uid = decoded_token["uid"]
-        except auth.FirebaseError:
+        except auth.AuthError:
             raise exceptions.AuthenticationFailed('Invalid authentication token')
         
         try:
-            profile = collection.find_one({'uid': uid})
+            profile = profile_collection.find_one({'uid': uid})
             if not profile:
                 raise exceptions.AuthenticationFailed('User not found')
         except Exception:
             raise exceptions.AuthenticationFailed('Error fetching user profile')
 
+        print('Profile:', profile)
         return (Profile(uid, profile), token)

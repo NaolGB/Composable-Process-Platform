@@ -1,19 +1,24 @@
-import { HttpClient, HttpParams, HttpResponse, HttpResponseBase } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpResponseBase } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { MasterDataTypeInterface } from '../../interfaces/design-interfaces';
+import { AuthService } from '../../services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DesignApiService {
+  authService = inject(AuthService);
   private designBaseUrl = `http://localhost:8000/api`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getMasterDataTypeList(){
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
     const params = new HttpParams()
       .set('fields', '_id,display_name')
-    return this.http.get(`${this.designBaseUrl}/master_data_type`, { params });
+    return this.http.get(`${this.designBaseUrl}/master_data_type`, { headers, params });
   }
 
   getMasterDataType(id: string) {
