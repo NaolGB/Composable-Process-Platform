@@ -4,6 +4,6 @@ export interface UserInterface {
 
 export interface UserProfileInterface {
     email: string
-    uid: string
-    displayName: string
+    role: string
+    displayName?: string
 }

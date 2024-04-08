@@ -4,7 +4,9 @@ import { DesignMasterHomeComponent } from './design/master_data_type/design-mast
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './general/user/login/login.component';
-import { idToken } from '@angular/fire/auth';
+import { UserProfile, idToken } from '@angular/fire/auth';
+import { GeneralApiService } from './general/services/general-api.service';
+import { UserProfileInterface } from './interfaces/userInterfaces';
 
 
 @Component({
@@ -23,6 +25,7 @@ import { idToken } from '@angular/fire/auth';
 })
 export class AppComponent implements OnInit{
   authService = inject(AuthService);
+  generalApiService = inject(GeneralApiService)
   navbarExpanded = false; 
 
   ngOnInit(): void {
@@ -33,8 +36,15 @@ export class AppComponent implements OnInit{
         });
         user.getIdToken().then((idToken) => {
           this.authService.idTokenSignal.set(idToken);
+
+          // needs to be inside the getIdToken promise to ensure the idToken is set
+          this.generalApiService.getUserProfile().subscribe(
+            (response: any) => {
+              const userProfile: UserProfileInterface = response;
+              this.authService.currentUserProfileSignal.set(userProfile);
+            }
+          )
         });
-        this.authService.currentUserUidSignal.set(user.uid);
       } 
       else {
         this.authService.currentUserSignal.set(null);

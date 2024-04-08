@@ -14,15 +14,9 @@ export class ProfileComponent {
   authService = inject(AuthService);
   currentUserProfile: UserProfileInterface | undefined;
 
-  constructor(private apiService: GeneralApiService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.apiService.getUserProfile().subscribe(
-      (response: any) => {
-        this.currentUserProfile = response;
-      }
-    )
-  }
+  ngOnInit(): void {}
 
   onLogout() {
     this.authService.logout();

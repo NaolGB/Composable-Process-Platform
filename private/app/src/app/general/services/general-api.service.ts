@@ -15,6 +15,8 @@ export class GeneralApiService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.idTokenSignal()}`
     })
-    return this.http.get(`${this.generalBaseUrl}/user_profile`, { headers });
+    const params = new HttpParams()
+      .set('fields', 'role')
+    return this.http.get(`${this.generalBaseUrl}/user_profile`, { headers, params });
   }
 }

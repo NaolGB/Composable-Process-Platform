@@ -306,7 +306,7 @@ apple = { # _id: 'apple'
 user_uuid123 = { # _id: 'user_uuid123'
     "display_name": 'John Doe',
     "email": 'email@example.com',
-    "role": 'admin',
+    "role": 'admin', # admin, analyst, business_user
     "processes": ['example_process_type_uuid123'],
     "organization": 'apple',
     "status": 'active', # active, inactive
