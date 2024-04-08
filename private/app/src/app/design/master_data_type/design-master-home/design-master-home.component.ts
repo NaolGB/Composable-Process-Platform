@@ -50,11 +50,10 @@ export class DesignMasterHomeComponent {
 			},
 			(error: any) => {
 				if(error.status === 401) {
-					console.log('401 error');
-					this.router.navigate(['/login'], {queryParams: {callerMessage: '401_error'}});
+					this.router.navigate(['/not-allowed'], {queryParams: {callerMessage: '401_error'}});
 				}
 				else {
-					this.router.navigate(['/login'], {queryParams: {callerMessage: 'error'}});
+					this.router.navigate(['/not-allowed'], {queryParams: {callerMessage: 'error'}});
 				}
 			}
 		);

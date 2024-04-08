@@ -3,9 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from process_engine.mongo_utils import get_services_client
 from tenant_provision.__firebase__auth import Profile, FirebaseAuthentication
+from tenant_provision.__permission__classes import IsUserAuthenticated, IsUserProfileAdmin, IsUserProfileAnalyst, IsUserProfileBusinessUser
 
 
 class UserProfileView(APIView):
+    permission_classes = [IsUserAuthenticated, IsUserProfileBusinessUser]
+    
     def get(self, request):
         db = get_services_client()
         collection = db.profile
