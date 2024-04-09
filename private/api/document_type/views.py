@@ -1,14 +1,14 @@
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from process_engine.helpers import generate_id_from_display_name
 from process_engine.mongo_utils import get_client_for_user
-from process_engine.validation import validate_master_data_type
+from process_engine.validation import validate_document_type
 from tenant_provision.__permission__classes import IsUserAuthenticated, IsUserProfileAdmin, IsUserProfileAnalyst, IsUserProfileBusinessUser
 
 
-# NOTE: sends id field as '_id' in the response, but accepts 'id' in the request
-class MasterDataTypeView(APIView):
+class DocumentTypeView(APIView):
     permission_classes = [IsUserAuthenticated, IsUserProfileAnalyst]
     max_page_size = 50
     default_page_size = 10
@@ -16,7 +16,7 @@ class MasterDataTypeView(APIView):
     def get(self, request):
         
         db = get_client_for_user(request.user)
-        collection = db.master_data_type
+        collection = db.document_type
 
         # Handle dynamic page size with limits
         try:
@@ -60,17 +60,17 @@ class MasterDataTypeView(APIView):
                 return Response(docs, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+    
     def post(self, request):
         db = get_client_for_user(request.user)
-        collection = db.master_data_type
+        collection = db.document_type
 
-        document = request.data 
-        
+        document = request.data
+
         # Validate the incoming data
-        if not validate_master_data_type(document):
+        if not validate_document_type(document):
             return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         base_id = generate_id_from_display_name(document['display_name'])
         document['_id'] = self.ensure_unique_id(collection, base_id)
 
@@ -83,9 +83,10 @@ class MasterDataTypeView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+    
     def put(self, request):
         db = get_client_for_user(request.user)
-        collection = db.master_data_type
+        collection = db.document_type
 
         id_param = request.query_params.get('id')
         if not id_param:
@@ -98,20 +99,19 @@ class MasterDataTypeView(APIView):
             del document['_id']
 
         # Validate the incoming data
-        if not validate_master_data_type(document):
+        if not validate_document_type(document):
             return Response({"error": "Invalid document format"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             result = collection.update_one({"_id": id_param}, {"$set": document})
             if not result.acknowledged:
-                return Response({"error": "Operation was not acknowledged."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            if result.matched_count == 0:
-                return Response({"error": "Document not found."}, status=status.HTTP_404_NOT_FOUND)
-            return Response({"success": "Document updated successfully.", "id": id_param}, status=status.HTTP_200_OK)
+                return Response({"error": "Operation not acknowledged"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            elif result.matched_count == 0:
+                return Response({"error": "Document not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"Success": "Document updated successfully", "id": id_param}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-    
     # helper methods that need access to the database
     def ensure_unique_id(self, collection, base_id):
         # Check if the base_id exists; if so, create a variation until a unique id is found

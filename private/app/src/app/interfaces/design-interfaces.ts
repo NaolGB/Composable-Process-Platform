@@ -8,6 +8,7 @@ export interface TableDataInterface {
     }[];
 }
 
+// Master Data Type --------------------------------------------------------
 export interface MasterDataAttributeInterface {
     display_name: string;
     type: string;
@@ -20,6 +21,23 @@ export interface MasterDataTypeInterface {
     display_name: string;
     attributes: {[key: string]: MasterDataAttributeInterface};
 }
+// Master Data Type --------------------------------------------------------
+
+// Document Type --------------------------------------------------------
+export interface DocumentAttributeInterface {
+    display_name: string;
+    type: string;
+    is_required: boolean;
+    default_value: string;
+}
+
+export interface DocumentTypeInterface {
+    id?: string;
+    display_name: string;
+    attributes: {[key: string]: DocumentAttributeInterface};
+}
+// Document Type --------------------------------------------------------
+
 
 export interface ApiResponsePackageInterface {
     success: boolean;

@@ -45,4 +45,13 @@ export class DesignApiService {
       .set('id', id)
     return this.http.put(`${this.designBaseUrl}/master_data_type`, masterDataType, { headers, params });
   }
+
+  getDocumentTypeList() {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
+    const params = new HttpParams()
+      .set('fields', '_id,display_name')
+    return this.http.get(`${this.designBaseUrl}/document_type`, { headers, params });
+  }
 }

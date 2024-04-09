@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'process_engine',
     'master_data_type',
+    'document_type',
     'tenant_provision',
     'user_profile',
 ]

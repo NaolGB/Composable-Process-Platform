@@ -1,0 +1,50 @@
+{
+    "tenant_data": {
+        "tenant_1": {
+            "display_name": "Tenant 1",
+            "subdomain": "tenant1",
+            "status": "active",
+            "created_at": "2019-01-01T00:00:00Z",
+            "updated_at": "2019-01-01T00:00:00Z",
+            "seat_count": 10,
+            "consumption": {
+                "resources": {
+                    "low_consumtion": {
+                        "max_memory_mb": 512,
+                        "max_cpu_vcpu": 0.333,
+                        "total_invocations": 1000,
+                        "total_execution_time_ms": 1000
+                    },
+                    "high_consumtion": {
+                        "max_memory_mb": 8192,
+                        "max_cpu_vcpu": 2,
+                        "total_invocations": 2000,
+                        "total_execution_time_ms": 2000
+                    }
+                },
+                "data": {
+                    "storage": {
+                        "total_gb": 100,
+                        "used_gb": 50
+                    },
+                    "outbound_traffic": {
+                        "total_gb": 100,
+                        "used_gb": 50
+                    }
+                }
+
+            }
+        }
+    },
+    "user_data": {
+        "user_1": {
+            "display_name": "User 1",
+            "email": "user_1@email.com",
+            "status": "active",
+            "created_at": "2019-01-01T00:00:00Z",
+            "updated_at": "2019-01-01T00:00:00Z",
+            "tenant_id": "tenant_1",
+            "role": "admin"
+        }
+    }
+}

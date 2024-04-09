@@ -32,7 +32,8 @@ export class DesignMasterHomeComponent {
 
 	constructor(
 		private apiService: DesignApiService, 
-		private dataService: DataService, private router: Router
+		private dataService: DataService, 
+		private router: Router
 	) {}
 
 	ngOnInit() {
@@ -49,12 +50,7 @@ export class DesignMasterHomeComponent {
 				this.filteredOverviewMasterDataOverviewTable = this.overviewMasterDataOverviewTable;
 			},
 			(error: any) => {
-				if(error.status === 401) {
-					this.router.navigate(['/not-allowed'], {queryParams: {callerMessage: '401_error'}});
-				}
-				else {
-					this.router.navigate(['/not-allowed'], {queryParams: {callerMessage: 'error'}});
-				}
+				this.router.navigate(['/not-allowed'], {queryParams: {callerMessage: ''}});
 			}
 		);
 	}
@@ -102,5 +98,5 @@ export class DesignMasterHomeComponent {
 			  filterText
 			);
 		}
-	  }
+	}
 }

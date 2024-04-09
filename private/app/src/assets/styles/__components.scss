@@ -1,0 +1,11 @@
+/*
+IMPORTANT: import this file in the home component's scss file
+each home component will need to take full width and height of the available space
+but since componenets are embaded via router-outlet, we need to make sure that the
+router-outlet takes full width and height of the available space
+*/
+:host { 
+    display: flex;
+    height: 100%;
+    width: 100%;
+}

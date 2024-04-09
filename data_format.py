@@ -37,7 +37,7 @@ execution_script_example_script_uuid123 = { # _id: 'example_script_uuid123'
 received_from_client_example_document_type_uuid123 = { # _id: 'example_document_type_uuid123'
     "display_name": 'Sales Order',
     "master_data_type": {
-        'master_data_type_uuid123': {'fields_to_update': ['quantity'], 'fields_to_display': ['name', 'quantity']},
+        'master_data_type_uuid123': {'fields_to_update': ['quantity'], 'fields_to_display': ['name', 'quantity']}, # NOTE: only one master data type per document type
     },
     "attributes": {
         'name': {"display_name": 'Name', "type": 'string', "required": True, "default_value": 'Sales Order'},
@@ -45,7 +45,7 @@ received_from_client_example_document_type_uuid123 = { # _id: 'example_document_
         'free_text': {"display_name": 'Free Text', "type": 'string', "required": False, "default_value": ''},
         'example_master_data_type_uuid123': []
     },
-    "execution_scripts": {
+    "functions": {
         'example_script_uuid123': {
             'inputs': {
                 'text': 'free_text'
@@ -60,7 +60,7 @@ received_from_client_example_document_type_uuid123 = { # _id: 'example_document_
 
 example_document_instance_uuid456 = { # _id: 'document_instance_uuid456'
     "document_type": 'example_document_type_uuid123',
-    "content": {
+    "attributes": {
         'name': 'Sales Order 123',
         'billing_block': False,
         'free_text': '234 macbook air 2020, 100 iphone 12',
@@ -68,6 +68,16 @@ example_document_instance_uuid456 = { # _id: 'document_instance_uuid456'
             {'name': 'MacBook Air 2020', 'quantity': 234},
             {'name': 'iPhone 12', 'quantity': 100},
         ]
+    },
+    "master_data_references": {
+        'example_master_data_type_uuid123': {
+            'fields_to_update': ['quantity'],
+            'fields_to_display': ['name', 'quantity'],
+            'content': {
+                'example_master_data_instance_uuid456': {'name': 'MacBook Air 2020', 'quantity': 234},
+                'example_master_data_instance_uuid789': {'name': 'iPhone 12', 'quantity': 100},
+            }
+        }
     }
 }
 # document --------------------------------------------------------

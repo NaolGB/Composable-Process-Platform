@@ -1,0 +1,70 @@
+<div class="selection-container">
+    <div>
+        <h1>All Document Type</h1>
+        <p>Select to edit</p>
+    </div>
+    <div class="list-group scrollable" *ngIf="documentTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            [class.active]="selectedDocumentTypeId === '__button_document_type_overview'"
+            (click)="onDocumentTypeSelected('__button_document_type_overview')"
+        >
+            <p>Master Data Overview</p>
+        </button>
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let documentType of documentTypeList"
+            [class.active]="selectedDocumentTypeId === documentType._id"
+            (click)="onDocumentTypeSelected(documentType._id)"
+        >
+            <span *ngIf="documentType.display_name">{{documentType.display_name}}</span>
+            <span *ngIf="!documentType.display_name">{{documentType._id}}</span>
+            
+        </button>
+    </div>
+</div>
+
+
+<div class="working-container">
+    <ng-container [ngSwitch]="selectedDocumentTypeId">
+        <ng-container *ngSwitchCase="'__button_document_type_overview'">
+            <ng-container *ngTemplateOutlet="__template_document_type_overview"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'__button_document_type_add_new'">
+            <ng-container *ngTemplateOutlet="__template_document_type_add_new"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <!-- <ng-container *ngTemplateOutlet="__template_master_data_type_update"></ng-container> -->
+        </ng-container>
+    </ng-container>
+</div>
+
+<ng-template #__template_document_type_overview>
+    <div class="card">
+        <div class="card-body">
+            <h2>Document Type Overview</h2>
+            <h6>List of all document types</h6>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div class="flex-fill">
+                    <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onDocumentTypeSelected('__button_document_type_add_new')">Add New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-component-table class="scrollable" [tableData]="filteredOverviewDocumentTypeOverviewTable"></app-component-table>
+</ng-template>
+
+<ng-template #__template_document_type_add_new>
+    <app-design-document-add-new class="container-with-scrollable-content" (apiResposnse)="handleDocumentTypeApiResponse($event)"></app-design-document-add-new>
+</ng-template>
+
