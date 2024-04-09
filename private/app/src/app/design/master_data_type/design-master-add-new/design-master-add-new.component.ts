@@ -69,6 +69,13 @@ export class DesignMasterAddNewComponent {
     this.attributes.removeAt(index);
   }
 
+  assignDefaultValue(index: number) {
+    const attribute = this.attributes.controls[index];
+    if (attribute.get('type')?.value === 'Master Data Type') {
+      attribute.get('default_value')?.setValue(attribute.get('display_name')?.value ?attribute.get('display_name')?.value :this.masterDataTypeList[0]?._id);
+    }
+  }
+
   onSubmit() {
     if (this.masterDataTypeForm.invalid) {
       const apiResponsePackage: ApiResponsePackageInterface = {

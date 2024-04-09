@@ -15,7 +15,7 @@
             </select>
 
             <input *ngIf="attribute.value.type !== 'Master Data Type'" formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
-            <select *ngIf="attribute.value.type === 'Master Data Type'" formControlName="display_name" class="form-select">
+            <select *ngIf="attribute.value.type === 'Master Data Type'" formControlName="display_name" class="form-select" (ngModelChange)="assignDefaultValue(i)">
                 <option *ngFor="let opt of masterDataTypeList">
                     <span *ngIf="opt.display_name">{{opt.display_name}}</span>
                     <span *ngIf="!opt.display_name">{{opt._id}}</span>
