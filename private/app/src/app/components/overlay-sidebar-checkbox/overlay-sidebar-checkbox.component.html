@@ -1,0 +1,24 @@
+<div class="sidebar-container">
+    <div class="overlay" (click)="onToggleSidebar()"></div>
+    <div class="sidebar">
+        <button (click)="onToggleSidebar()">Close</button>
+        <div class="card">
+            <div class="card-body">
+                <h2>{{sidebarTitle}}</h2>
+                <h6>{{sidebarSubtitle}}</h6>
+            </div>
+        </div>
+
+        <form [formGroup]="formGroup" (ngSubmit)="onSave()">
+            <div formArrayName="checkboxes">
+                <div *ngFor="let checkboxControl of checkboxes.controls; let i = index" [formGroupName]="i">
+                    <input formControlName="is_checked" class="form-check-input" type="checkbox" value="" [id]="i">
+                    <label class="form-check-label" [for]="i">
+                        {{checkboxControl.get('display_name')!.value || 'defaultChec'}}
+                    </label>
+                </div>
+                <button type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -3,14 +3,16 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../../services/data.service';
 import { DesignApiService } from '../../services/design-api.service';
-import { ApiResponsePackageInterface, DocumentTypeInterface } from '../../../interfaces/design-interfaces';
+import { ApiResponsePackageInterface, CheckboxDataInterface, DocumentTypeInterface } from '../../../interfaces/design-interfaces';
+import { OverlaySidebarCheckboxComponent } from '../../../components/overlay-sidebar-checkbox/overlay-sidebar-checkbox.component';
 
 @Component({
   selector: 'app-design-document-add-new',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    OverlaySidebarCheckboxComponent
   ],
   templateUrl: './design-document-add-new.component.html',
   styleUrl: './design-document-add-new.component.scss'
@@ -18,12 +20,23 @@ import { ApiResponsePackageInterface, DocumentTypeInterface } from '../../../int
 export class DesignDocumentAddNewComponent {
   @Output() apiResposnse: EventEmitter<ApiResponsePackageInterface> = new EventEmitter();
   masterDataTypeList: any[] = [];
+  masterDataTypeId: string | undefined;
   documentTypeForm: FormGroup;
-  documentAttributeTypeOptions: string[] = ['Text', 'Number', 'Boolean', 'Date', 'Master Data Type'];
+  selectedTab: string = 'attribute';
+
+  documentAttributeTypeOptions: string[] = ['Text', 'Number', 'Boolean', 'Date'];
+
+  showSidebar = false;
+  masterDataTypeAttributesAsCheckboxData: CheckboxDataInterface[] = [];
 
   constructor(private formBuilder: FormBuilder, private dataService: DataService, private apiService: DesignApiService) {
     this.documentTypeForm = this.formBuilder.group({
       display_name: ['', dataService.generalFormInputValidator()],
+      master_data_type: this.formBuilder.group({
+        id: ['', Validators.required],
+        fields_to_update: this.formBuilder.array([]),
+        fields_to_display: this.formBuilder.array([]),
+      }),
       attributes: this.formBuilder.array([
         this.formBuilder.group({
           display_name: ['', dataService.generalFormInputValidator()],
@@ -39,9 +52,7 @@ export class DesignDocumentAddNewComponent {
     this.apiService.getMasterDataTypeList().subscribe(
 			(resposne: any) => {
 				this.masterDataTypeList = resposne;
-			},
-			(error: any) => {
-				console.log(error);
+        this.masterDataTypeId = this.masterDataTypeList[0]._id;
 			}
 		);
   }
@@ -52,6 +63,37 @@ export class DesignDocumentAddNewComponent {
 
   get displayName()  {
     return this.documentTypeForm.get('display_name')?.value;
+  }
+
+  onSelectedTab(tab: string) {
+    this.selectedTab = tab;
+  }
+
+  onSelectMasterDataType(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.masterDataTypeId = target.value;
+    
+    const checkboxData: CheckboxDataInterface[] = [];
+    if (this.masterDataTypeId) {
+      this.apiService.getMasterDataType(this.masterDataTypeId).subscribe(
+        (response: any) => {
+          Object.keys(response.attributes).forEach(element => {
+            console.log(element);
+            const display_name = response.attributes[element].display_name;
+            checkboxData.push({id: element, display_name: display_name, checked: false} as CheckboxDataInterface);
+          });
+        });
+      this.masterDataTypeAttributesAsCheckboxData = checkboxData;
+    }
+    
+  }
+
+  onToggleSidebar() {
+    this.showSidebar = !this.showSidebar;
+  }
+
+  handleCloseSidebar() {
+    this.showSidebar = false;
   }
 
   addAttribute() {
@@ -66,13 +108,6 @@ export class DesignDocumentAddNewComponent {
 
   removeAttribute(index: number) {
     this.attributes.removeAt(index);
-  }
-
-  assignDefaultValue(index: number) {
-    const attribute = this.attributes.controls[index];
-    if (attribute.get('type')?.value === 'Master Data Type') {
-      attribute.get('default_value')?.setValue(attribute.get('display_name')?.value ?attribute.get('display_name')?.value :this.masterDataTypeList[0]?._id);
-    }
   }
 
   onSubmit() {

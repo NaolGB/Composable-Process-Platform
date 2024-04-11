@@ -39,6 +39,12 @@ export interface DocumentTypeInterface {
 // Document Type --------------------------------------------------------
 
 
+export interface CheckboxDataInterface {
+    id: string;
+    display_name: string;
+    checked: boolean;
+}
+
 export interface ApiResponsePackageInterface {
     success: boolean;
     message: string;
