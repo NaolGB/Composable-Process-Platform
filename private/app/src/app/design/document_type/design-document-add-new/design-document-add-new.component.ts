@@ -28,14 +28,15 @@ export class DesignDocumentAddNewComponent {
 
   showSidebar = false;
   masterDataTypeAttributesAsCheckboxData: CheckboxDataInterface[] = [];
+  master_data_type_options: string | undefined;
 
   constructor(private formBuilder: FormBuilder, private dataService: DataService, private apiService: DesignApiService) {
     this.documentTypeForm = this.formBuilder.group({
       display_name: ['', dataService.generalFormInputValidator()],
       master_data_type: this.formBuilder.group({
-        id: ['', Validators.required],
-        fields_to_update: this.formBuilder.array([]),
-        fields_to_display: this.formBuilder.array([]),
+        id: [''],
+        fields_to_update: [''],
+        fields_to_display: ['']
       }),
       attributes: this.formBuilder.array([
         this.formBuilder.group({
@@ -65,6 +66,10 @@ export class DesignDocumentAddNewComponent {
     return this.documentTypeForm.get('display_name')?.value;
   }
 
+  get master_data_type() {
+    return this.documentTypeForm.get('master_data_type') as FormGroup;
+  }
+
   onSelectedTab(tab: string) {
     this.selectedTab = tab;
   }
@@ -80,7 +85,7 @@ export class DesignDocumentAddNewComponent {
           Object.keys(response.attributes).forEach(element => {
             console.log(element);
             const display_name = response.attributes[element].display_name;
-            checkboxData.push({id: element, display_name: display_name, checked: false} as CheckboxDataInterface);
+            checkboxData.push({id: element, display_name: display_name, is_checked: false} as CheckboxDataInterface);
           });
         });
       this.masterDataTypeAttributesAsCheckboxData = checkboxData;
@@ -92,7 +97,22 @@ export class DesignDocumentAddNewComponent {
     this.showSidebar = !this.showSidebar;
   }
 
+  onOpenSidebar(master_data_typeFieldOption: string) {
+    this.master_data_type_options = master_data_typeFieldOption;
+    this.showSidebar = true;
+  }
+
   handleCloseSidebar() {
+    this.showSidebar = false;
+  }
+
+  handleSidebarData(checkedBoxIds: string) {
+    if (this.master_data_type_options === 'fields_to_display') {
+      this.master_data_type.controls['fields_to_display'].setValue(checkedBoxIds);
+    }
+    else if (this.master_data_type_options === 'fields_to_update') {
+      this.master_data_type.controls['fields_to_update'].setValue(checkedBoxIds);
+    }
     this.showSidebar = false;
   }
 
@@ -120,6 +140,11 @@ export class DesignDocumentAddNewComponent {
 
     const documentType: DocumentTypeInterface = {
       display_name: this.documentTypeForm.value.display_name,
+      master_data_type: {
+        id: this.masterDataTypeId!,
+        fields_to_update: this.documentTypeForm.value.master_data_type.fields_to_update,
+        fields_to_display: this.documentTypeForm.value.master_data_type.fields_to_display
+      },
       attributes: {}
     };
 

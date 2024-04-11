@@ -15,6 +15,7 @@ import { CheckboxDataInterface } from '../../interfaces/design-interfaces';
 })
 export class OverlaySidebarCheckboxComponent {
   @Output() closeSidebar: EventEmitter<any> = new EventEmitter();
+  @Output() emmiterOnSave: EventEmitter<string> = new EventEmitter();
   @Input() sidebarTitle: string | undefined;
   @Input() sidebarSubtitle: string | undefined;
   @Input() inputData: CheckboxDataInterface[] | undefined;
@@ -38,7 +39,7 @@ export class OverlaySidebarCheckboxComponent {
         const control = this.formBuilder.group({
           id: [checkbox.id],
           display_name: [checkbox.display_name],
-          is_checked: [checkbox.checked]
+          is_checked: [checkbox.is_checked]
         });
         this.checkboxes.push(control); 
       })
@@ -50,6 +51,10 @@ export class OverlaySidebarCheckboxComponent {
   }
 
   onSave() {
-    console.log(this.formGroup.value); 
+    const checkedCheckboxes = this.checkboxes.value.filter((checkbox: CheckboxDataInterface) => checkbox.is_checked);
+    const checkedCheckboxesIds = checkedCheckboxes.map((checkbox: CheckboxDataInterface) => checkbox.id).join(',');
+    this.emmiterOnSave.emit(checkedCheckboxesIds);
+    this.formGroup.reset();
+    this.isVisible = false;
   }
 }

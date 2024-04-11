@@ -37,7 +37,8 @@
                     {{opt.display_name || opt._id}}
                 </option>
             </select>
-            <button type="button" (click)="onToggleSidebar()">Select fields to display</button>
+            <button type="button" (click)="onOpenSidebar('fields_to_display')">Select fields to display</button>
+            <button type="button" (click)="onOpenSidebar('fields_to_update')">Select fields to update</button>
         </div>
     
         <div formArrayName="attributes" class="scrollable">
@@ -56,8 +57,6 @@
         <div class="d-flex justify-content-between">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <button (click)="addAttribute()" class="btn btn-secondary flex-fill" type="button">add attr</button>
-                <button (click)="addAttribute()" class="btn btn-secondary flex-fill" type="button">add master data</button>
-                <button (click)="addAttribute()" class="btn btn-secondary flex-fill" type="button">add function</button>
             </div>
             <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Submit form</button>
         </div>
@@ -68,4 +67,4 @@
    hi NY!
 </ng-template>
 
-<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="masterDataTypeAttributesAsCheckboxData"></app-overlay-sidebar-checkbox>
+<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="masterDataTypeAttributesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)"></app-overlay-sidebar-checkbox>

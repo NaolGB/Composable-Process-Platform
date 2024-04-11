@@ -34,6 +34,11 @@ export interface DocumentAttributeInterface {
 export interface DocumentTypeInterface {
     id?: string;
     display_name: string;
+    master_data_type: {
+        id: string;
+        fields_to_update: string;
+        fields_to_display: string;
+    };
     attributes: {[key: string]: DocumentAttributeInterface};
 }
 // Document Type --------------------------------------------------------
@@ -42,7 +47,7 @@ export interface DocumentTypeInterface {
 export interface CheckboxDataInterface {
     id: string;
     display_name: string;
-    checked: boolean;
+    is_checked: boolean;
 }
 
 export interface ApiResponsePackageInterface {
