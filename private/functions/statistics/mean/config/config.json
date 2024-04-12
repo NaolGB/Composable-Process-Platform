@@ -1,0 +1,27 @@
+{
+    "name": "Mean",
+    "version": "1.0.0",
+    "base_class_version": "0.0.1",
+    "description": "This funciton calculates the mean of the input values",
+    "maximum_retries": 5,
+    "inputs": {
+      "args": {
+            "required": true,
+            "type": "list(string|number)"
+        },
+        "kwargs": {
+            "required": false,
+            "type": "dict(string|number)"
+        }
+    },
+    "outputs": {
+        "args": {
+            "required": true,
+            "type": "number"
+        },
+        "kwargs": {
+            "required": false,
+            "type": "number"
+        }
+    }
+  }
