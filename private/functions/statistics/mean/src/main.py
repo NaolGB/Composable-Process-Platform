@@ -1,5 +1,7 @@
+from config.config import config
+
 class Mean:
-    def __init__(self, config, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         :param args: A list of numbers to calculate the mean.
         """

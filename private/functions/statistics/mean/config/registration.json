@@ -1,0 +1,21 @@
+{
+    "_id": "__function_statistics_mean_v_1_0_0",
+    "display_name": "Mean",
+    "version": "1.0.0",
+    "function_group": "statistics",
+    "description": "Calculates the mean of a list of numbers",
+    "created_at": "2024-04-12T00:00:00Z",
+    "updated_at": "2024-04-12T00:00:00Z",
+    "tags": ["statistics"],
+    "access_control": {
+      "public": false,
+      "authorized_tenants": ["__all___"]
+    },
+    "deployment_info": {
+      "platform": "GCP",
+      "trigger_endpoint": "",
+      "status": "deployed",
+      "last_deployed_at": "2024-04-12T00:00:00Z"
+    }
+}
+  

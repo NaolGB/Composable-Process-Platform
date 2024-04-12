@@ -1,4 +1,4 @@
-{
+config = {
     "name": "Mean",
     "version": "1.0.0",
     "base_class_version": "0.0.1",
@@ -6,22 +6,22 @@
     "maximum_retries": 5,
     "inputs": {
       "args": {
-            "required": true,
+            "required": True,
             "type": "list(string|number)"
         },
         "kwargs": {
-            "required": false,
+            "required": False,
             "type": "dict(string|number)"
         }
     },
     "outputs": {
         "args": {
-            "required": true,
+            "required": True,
             "type": "number"
         },
         "kwargs": {
-            "required": false,
+            "required": False,
             "type": "number"
         }
     }
-  }
+}
