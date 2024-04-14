@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../../services/data.service';
 import { DesignApiService } from '../../services/design-api.service';
 import { ApiResponsePackageInterface, CheckboxDataInterface, DocumentTypeInterface } from '../../../interfaces/design-interfaces';
 import { OverlaySidebarCheckboxComponent } from '../../../components/overlay-sidebar-checkbox/overlay-sidebar-checkbox.component';
+import { FunctionApiService } from '../../../general/services/function-api.service';
 
 @Component({
   selector: 'app-design-document-add-new',
@@ -30,7 +31,9 @@ export class DesignDocumentAddNewComponent {
   masterDataTypeAttributesAsCheckboxData: CheckboxDataInterface[] = [];
   master_data_type_options: string | undefined;
 
-  constructor(private formBuilder: FormBuilder, private dataService: DataService, private apiService: DesignApiService) {
+  functionsList: any[] = [];
+
+  constructor(private formBuilder: FormBuilder, private dataService: DataService, private apiService: DesignApiService, private functionApiService: FunctionApiService) {
     this.documentTypeForm = this.formBuilder.group({
       display_name: ['', dataService.generalFormInputValidator()],
       master_data_type: this.formBuilder.group({
@@ -38,6 +41,7 @@ export class DesignDocumentAddNewComponent {
         fields_to_update: [''],
         fields_to_display: ['']
       }),
+      functions: this.formBuilder.array([]),
       attributes: this.formBuilder.array([
         this.formBuilder.group({
           display_name: ['', dataService.generalFormInputValidator()],
@@ -56,6 +60,16 @@ export class DesignDocumentAddNewComponent {
         this.masterDataTypeId = this.masterDataTypeList[0]._id;
 			}
 		);
+    this.functionApiService.getFunctionList().subscribe(
+      (response: any) => {
+        this.functionsList = response;
+        console.log(response);
+        console.log(this.functionsList);
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    )
   }
 
   get attributes() {
@@ -68,6 +82,10 @@ export class DesignDocumentAddNewComponent {
 
   get master_data_type() {
     return this.documentTypeForm.get('master_data_type') as FormGroup;
+  }
+
+  get functions() {
+    return this.documentTypeForm.get('functions') as FormArray;
   }
 
   onSelectedTab(tab: string) {
@@ -90,7 +108,6 @@ export class DesignDocumentAddNewComponent {
         });
       this.masterDataTypeAttributesAsCheckboxData = checkboxData;
     }
-    
   }
 
   onToggleSidebar() {
@@ -116,7 +133,7 @@ export class DesignDocumentAddNewComponent {
     this.showSidebar = false;
   }
 
-  addAttribute() {
+  onAddAttribute() {
     const attribute = this.formBuilder.group({
       display_name: ['', this.dataService.generalFormInputValidator()],
       type: [this.documentAttributeTypeOptions[0], this.dataService.generalFormInputValidator()],
@@ -126,8 +143,54 @@ export class DesignDocumentAddNewComponent {
     this.attributes.push(attribute);
   }
 
-  removeAttribute(index: number) {
+  onAddFunction() {
+    const functionGroup = this.formBuilder.group({
+      function_id: [''],
+      function_inputs: this.formBuilder.array([]),
+      function_outputs: this.formBuilder.array([])
+    });
+    this.functions.push(functionGroup);
+  }
+  
+  onFunctionSelect(index: number) {
+    const selectedFunctionId = this.functions.at(index).get('function_id')?.value;
+    const functionFromFunctionListBySelectedId = this.functionsList.find((func: any) => func._id === selectedFunctionId);
+    const currentFunctionGroup = this.functions.at(index) as FormGroup;
+    
+    const inputsArray: AbstractControl[] = [];
+    Object.keys(functionFromFunctionListBySelectedId.inputs).forEach((key: string) => {
+      inputsArray.push(this.formBuilder.group({
+        source: [''],
+        field: ['']
+      }));
+    })
+    currentFunctionGroup.setControl('function_inputs', this.formBuilder.array(inputsArray));
+
+    const outputsArray: AbstractControl[] = [];
+    Object.keys(functionFromFunctionListBySelectedId.outputs).forEach((key: string) => {
+      outputsArray.push(this.formBuilder.group({
+        destination: [''],
+        field: ['']
+      }));
+    })
+    currentFunctionGroup.setControl('function_outputs', this.formBuilder.array(outputsArray));
+  }
+
+  getFuncitonInputs(index: number): FormArray {
+    return this.functions.at(index).get('function_inputs') as FormArray;
+  }
+
+  getFunctionOutputs(index: number): FormArray {
+    return this.functions.at(index).get('function_outputs') as FormArray;
+  }
+
+  onRemoveAttribute(index: number) {
     this.attributes.removeAt(index);
+    this.functions
+  }
+
+  onRemoveFunction(index: number) {
+    this.functions.removeAt(index);
   }
 
   onSubmit() {
@@ -145,11 +208,24 @@ export class DesignDocumentAddNewComponent {
         fields_to_update: this.documentTypeForm.value.master_data_type.fields_to_update,
         fields_to_display: this.documentTypeForm.value.master_data_type.fields_to_display
       },
+      functions: {},
       attributes: {}
     };
 
     this.attributes.controls.forEach((control, index) => {
       const attribute = control.value;
+      
+      let attribute_id = this.dataService.nameToId(attribute.display_name);
+      let attribute_id_is_unique = false;
+      let attribute_id_variation = 1;
+      while (!attribute_id_is_unique) {
+        if (documentType.attributes[attribute_id]) {
+          attribute_id = this.dataService.nameToId(attribute.display_name, attribute_id_variation++);
+        } else {
+          attribute_id_is_unique = true;
+        }
+      }
+
       documentType.attributes[this.dataService.nameToId(attribute.display_name)] = {
         display_name: attribute.display_name,
         type: attribute.type,

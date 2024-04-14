@@ -11,23 +11,8 @@
       <a class="nav-link" [class.active]="selectedTab === 'function'" (click)="onSelectedTab('function')">Function</a>
     </li>
 </ul>
-<ng-container [ngSwitch]="selectedTab">
-    <ng-container *ngSwitchCase="'attribute'">
-        <ng-container *ngTemplateOutlet="__template_document_type_attribute"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="'function'">
-        <ng-container *ngTemplateOutlet="__template_document_type_function"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchDefault>
-        <ng-container *ngTemplateOutlet="__template_document_type_attribute"></ng-container>
-    </ng-container>
-</ng-container>
-
-
-
-
-<ng-template #__template_document_type_attribute>
-    <form [formGroup]="documentTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
+<form [formGroup]="documentTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
+    <div *ngIf="selectedTab === 'attribute'" class="container-with-scrollable-content">
         <div class="input-group">
             <input formControlName="display_name" type="text" class="form-control" placeholder="Name of Document Type">
         </div>
@@ -40,7 +25,7 @@
             <button type="button" (click)="onOpenSidebar('fields_to_display')">Select fields to display</button>
             <button type="button" (click)="onOpenSidebar('fields_to_update')">Select fields to update</button>
         </div>
-    
+
         <div formArrayName="attributes" class="scrollable">
             <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i" class="input-group">
                 <select formControlName="type" class="form-select">
@@ -51,20 +36,81 @@
                 <div class="input-group-text">
                     <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" [checked]="attribute.get('is_required')?.value || false">
                 </div>
-                <button (click)="removeAttribute(i)" type="button" class="btn-close"></button>
+                <button (click)="onRemoveAttribute(i)" type="button" class="btn-close"></button>
             </div>
         </div>
         <div class="d-flex justify-content-between">
             <div class="btn-group" role="group" aria-label="Basic example">
-                <button (click)="addAttribute()" class="btn btn-secondary flex-fill" type="button">add attr</button>
+                <button (click)="onAddAttribute()" class="btn btn-secondary flex-fill" type="button">add attr</button>
             </div>
             <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Submit form</button>
         </div>
-    </form>
-</ng-template>
+    </div>
+    <div *ngIf="selectedTab === 'function'" class="container-with-scrollable-content">
+        <div formArrayName="functions" class="scrollable">
+            <div *ngFor="let functionCtrl of functions.controls; let i = index" [formGroupName]="i">
+              <select formControlName="function_id" (change)="onFunctionSelect(i)">
+                <option *ngFor="let func of functionsList" [ngValue]="func._idid">
+                  {{ func._id }}
+                </option>
+              </select>
 
-<ng-template #__template_document_type_function>
-   hi NY!
-</ng-template>
+              <div formGroupName="function_inputs">
+                <div *ngFor="let inputCtrl of getFuncitonInputs(i).controls; let key = index" [formGroupName]="key">
+                  <input type="text" formControlName="source" placeholder="Enter source">
+                  <input type="text" formControlName="field" placeholder="Enter field name">
+                </div>
+              </div>
+              <div formGroupName="function_outputs">
+                <div *ngFor="let outputCtrl of getFunctionOutputs(i).controls; let key = index" [formGroupName]="key">
+                  <input type="text" formControlName="destination" placeholder="Enter destination">
+                  <input type="text" formControlName="field" placeholder="Enter field name">
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        <div formArrayName="functions" class="scrollable">
+            <div *ngFor="let function of functions.controls; let i=index" [formGroupName]="i" class="input-group">
+                {{functionsList | json}}
+                <select formControlName="function_id" class="form-select">
+                    <option *ngFor="let opt of functionsList">{{opt._id}}</option>
+                </select>
+
+                <div *ngFor="let input of ">
+
+                </div>
+                <div formControlName="function_inputs">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="master_data">
+                        <label class="form-check-label" for="inlineRadio1">Master Data</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="daocument">
+                        <label class="form-check-label" for="inlineRadio1">Document</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="static">
+                        <label class="form-check-label" for="inlineRadio1">Static</label>
+                    </div>
+                </div>
+
+
+                <!-- <input formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
+                <input formControlName="default_value" type="text" class="form-control" placeholder="Default Value">
+                <div class="input-group-text">
+                    <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" [checked]="attribute.get('is_required')?.value || false">
+                </div> -->
+                <button (click)="onRemoveFunction(i)" type="button" class="btn-close"></button>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button (click)="onAddFunction()" class="btn btn-secondary flex-fill" type="button">add func</button>
+            </div>
+            <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Submit form</button>
+        </div>
+    </div>
+</form>
 
 <app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="masterDataTypeAttributesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)"></app-overlay-sidebar-checkbox>

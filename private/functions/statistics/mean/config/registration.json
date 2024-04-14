@@ -16,6 +16,22 @@
       "trigger_endpoint": "",
       "status": "deployed",
       "last_deployed_at": "2024-04-12T00:00:00Z"
-    }
+    },
+    "inputs": {
+        "numbers_list": {
+            "required": true,
+            "display_name": "Numbers List",
+            "description": "List of numbers to calculate the mean of",
+            "type": "list",
+            "element_type": "number"
+        }
+    },
+      "outputs": {
+        "mean": {
+            "display_name": "Mean",
+            "description": "Mean of the numbers list",
+            "type": "number"
+        }
+      }
 }
   

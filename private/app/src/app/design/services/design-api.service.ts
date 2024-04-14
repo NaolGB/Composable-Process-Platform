@@ -11,7 +11,7 @@ export class DesignApiService {
   private designBaseUrl = `http://localhost:8000/api/design`;
 
   constructor(private http: HttpClient) {}
-
+  // Master Data Type ---------------------------------------------------------
   getMasterDataTypeList(){
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.idTokenSignal()}`
@@ -46,6 +46,7 @@ export class DesignApiService {
     return this.http.put(`${this.designBaseUrl}/master_data_type`, masterDataType, { headers, params });
   }
 
+  // Document Type ---------------------------------------------------------
   getDocumentTypeList() {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.idTokenSignal()}`

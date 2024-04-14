@@ -36,8 +36,10 @@ execution_script_example_script_uuid123 = { # _id: 'example_script_uuid123'
 # document --------------------------------------------------------
 received_from_client_example_document_type_uuid123 = { # _id: 'example_document_type_uuid123'
     "display_name": 'Sales Order',
-    "master_data_type": {
-        'master_data_type_uuid123': {'fields_to_update': ['quantity'], 'fields_to_display': ['name', 'quantity']}, # NOTE: only one master data type per document type
+    "master_data_type": { # NOTE: only one master data type per document type - master data has ability to reference other master data by itself
+        'id': 'master_data_type_uuid123',
+        'fields_to_update': ['quantity'], 
+        'fields_to_display': ['name', 'quantity']
     },
     "attributes": {
         'name': {"display_name": 'Name', "type": 'string', "required": True, "default_value": 'Sales Order'},
@@ -48,13 +50,22 @@ received_from_client_example_document_type_uuid123 = { # _id: 'example_document_
     "functions": {
         'example_script_uuid123': {
             'inputs': {
-                'text': 'free_text'
+                'free_text': {
+                    'source': 'document',
+                    'field': 'free_text',
+                },
+                'quantities': {
+                    'source': 'master_data',
+                    'field': 'quantity',
+                }
             },
             'outputs': {
-                'parsed_text': 'example_master_data_type_uuid123'
+                'parsed_text': {
+                    'destination': 'document',
+                    'field': 'free_text',
+                }
             },
         }
-        
     }
 }
 

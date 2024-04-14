@@ -37,8 +37,11 @@ export class DataService {
     };
   }
 
-  nameToId(name: string) {
-    return name.trim().toLowerCase().replace(/ /g, '_');
+  nameToId(name: string, variaiton: number = 0): string {
+    if (variaiton === 0) {
+      return name.trim().toLowerCase().replace(/ /g, '_');
+    }
+    return `${name.trim().toLowerCase().replace(/ /g, '_')}_${variaiton}`;
   }
 
   generalFormInputValidator(): ValidatorFn {

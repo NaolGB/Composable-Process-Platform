@@ -39,6 +39,16 @@ export interface DocumentTypeInterface {
         fields_to_update: string;
         fields_to_display: string;
     };
+    functions: {
+        [key: string]: {
+            inputs: {
+                [key: string]: string;
+            };
+            outputs: {
+                [key: string]: string;
+            };
+        };
+    };
     attributes: {[key: string]: DocumentAttributeInterface};
 }
 // Document Type --------------------------------------------------------

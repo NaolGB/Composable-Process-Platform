@@ -2,9 +2,12 @@ from pymongo import MongoClient
 
 CLUSTER_URIS = {
     'dev_cluster': f'mongodb+srv://{"x2dev"}:{"wE2xvCnjSaa"}@cluster0.eamf5pt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
-    '__internal__services': f'mongodb+srv://{"x2dev"}:{"wE2xvCnjSaa"}@cluster0.eamf5pt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    '__internal__services': f'mongodb+srv://{"x2dev"}:{"wE2xvCnjSaa"}@cluster0.eamf5pt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
 } # TODO: hide username and password
 
+FUNCTION_CLUSTERS_URIS = {
+    'dev_cluster': f'mongodb+srv://{"x2dev"}:{"wE2xvCnjSaa"}@cluster0.eamf5pt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+}
 
 mongo_clients = {}
 
@@ -31,3 +34,12 @@ def get_user_cluster_identifier(user):
 
 def get_user_db(user):
     return 'dev' # TODO: implement logic to determine the db
+
+
+def get_function_client_for_user(user):
+    cluster_identifier = get_user_cluster_identifier(user)
+    
+    client = MongoClient(FUNCTION_CLUSTERS_URIS[cluster_identifier])
+    db_name = get_user_db('function')
+    db = client['function']
+    return db
