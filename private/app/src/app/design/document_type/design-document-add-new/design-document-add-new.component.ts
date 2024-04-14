@@ -6,6 +6,7 @@ import { DesignApiService } from '../../services/design-api.service';
 import { ApiResponsePackageInterface, CheckboxDataInterface, DocumentTypeInterface } from '../../../interfaces/design-interfaces';
 import { OverlaySidebarCheckboxComponent } from '../../../components/overlay-sidebar-checkbox/overlay-sidebar-checkbox.component';
 import { FunctionApiService } from '../../../general/services/function-api.service';
+import { FunctionGroup, FunctionInputGroup } from '../../../types/function-form-types';
 
 @Component({
   selector: 'app-design-document-add-new',
@@ -41,7 +42,7 @@ export class DesignDocumentAddNewComponent {
         fields_to_update: [''],
         fields_to_display: ['']
       }),
-      functions: this.formBuilder.array([]),
+      functions: this.formBuilder.array<FunctionGroup>([]),
       attributes: this.formBuilder.array([
         this.formBuilder.group({
           display_name: ['', dataService.generalFormInputValidator()],
@@ -145,27 +146,28 @@ export class DesignDocumentAddNewComponent {
 
   onAddFunction() {
     const functionGroup = this.formBuilder.group({
-      function_id: [''],
-      function_inputs: this.formBuilder.array([]),
-      function_outputs: this.formBuilder.array([])
+      functionId: [''],
+      functionInputs: this.formBuilder.array<FunctionInputGroup>([]),
+      functionOutputs: this.formBuilder.array<FunctionInputGroup>([])
     });
     this.functions.push(functionGroup);
   }
   
   onFunctionSelect(index: number) {
-    const selectedFunctionId = this.functions.at(index).get('function_id')?.value;
+    const selectedFunctionId = this.functions.at(index).get('functionId')?.value;
     const functionFromFunctionListBySelectedId = this.functionsList.find((func: any) => func._id === selectedFunctionId);
+    console.log(index, this.functionsList, selectedFunctionId, functionFromFunctionListBySelectedId);
     const currentFunctionGroup = this.functions.at(index) as FormGroup;
     
     const inputsArray: AbstractControl[] = [];
     Object.keys(functionFromFunctionListBySelectedId.inputs).forEach((key: string) => {
       inputsArray.push(this.formBuilder.group({
-        source: [''],
+        source: ['static'],
         field: ['']
       }));
     })
-    currentFunctionGroup.setControl('function_inputs', this.formBuilder.array(inputsArray));
-
+    currentFunctionGroup.setControl('functionInputs', this.formBuilder.array(inputsArray));
+    
     const outputsArray: AbstractControl[] = [];
     Object.keys(functionFromFunctionListBySelectedId.outputs).forEach((key: string) => {
       outputsArray.push(this.formBuilder.group({
@@ -173,15 +175,7 @@ export class DesignDocumentAddNewComponent {
         field: ['']
       }));
     })
-    currentFunctionGroup.setControl('function_outputs', this.formBuilder.array(outputsArray));
-  }
-
-  getFuncitonInputs(index: number): FormArray {
-    return this.functions.at(index).get('function_inputs') as FormArray;
-  }
-
-  getFunctionOutputs(index: number): FormArray {
-    return this.functions.at(index).get('function_outputs') as FormArray;
+    currentFunctionGroup.setControl('functionOutputs', this.formBuilder.array(outputsArray));
   }
 
   onRemoveAttribute(index: number) {
@@ -234,7 +228,20 @@ export class DesignDocumentAddNewComponent {
       };
     });
 
-    console.log(documentType);
+    // console.log(documentType);
+    console.log(this.documentTypeForm.getRawValue());
 
+  }
+
+  functionTrackBy(index: number, item: any) {
+    return index;
+  }
+
+  inputTrackBy(index: number, item: any) {
+    return index;
+  }
+
+  outputTrackBy(index: number, item: any) {
+    return index;
   }
 }

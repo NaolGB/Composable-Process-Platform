@@ -46,62 +46,43 @@
             <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Submit form</button>
         </div>
     </div>
-    <div *ngIf="selectedTab === 'function'" class="container-with-scrollable-content">
-        <div formArrayName="functions" class="scrollable">
-            <div *ngFor="let functionCtrl of functions.controls; let i = index" [formGroupName]="i">
-              <select formControlName="function_id" (change)="onFunctionSelect(i)">
-                <option *ngFor="let func of functionsList" [ngValue]="func._idid">
-                  {{ func._id }}
-                </option>
-              </select>
 
-              <div formGroupName="function_inputs">
-                <div *ngFor="let inputCtrl of getFuncitonInputs(i).controls; let key = index" [formGroupName]="key">
-                  <input type="text" formControlName="source" placeholder="Enter source">
-                  <input type="text" formControlName="field" placeholder="Enter field name">
-                </div>
-              </div>
-              <div formGroupName="function_outputs">
-                <div *ngFor="let outputCtrl of getFunctionOutputs(i).controls; let key = index" [formGroupName]="key">
-                  <input type="text" formControlName="destination" placeholder="Enter destination">
-                  <input type="text" formControlName="field" placeholder="Enter field name">
-                </div>
-              </div>
-            </div>
-        </div>
-        
+    <div *ngIf="selectedTab === 'function'" class="container-with-scrollable-content">       
         <div formArrayName="functions" class="scrollable">
-            <div *ngFor="let function of functions.controls; let i=index" [formGroupName]="i" class="input-group">
-                {{functionsList | json}}
-                <select formControlName="function_id" class="form-select">
-                    <option *ngFor="let opt of functionsList">{{opt._id}}</option>
+            <div *ngFor="let function of functions.controls; let functionIndex=index trackBy: functionTrackBy" [formGroupName]="functionIndex" class="input-group">
+                <select formControlName="functionId" class="form-select" (change)="onFunctionSelect(functionIndex)">
+                    <option *ngFor="let opt of functionsList" [ngValue]="opt._id">{{opt._id}}</option>
                 </select>
 
-                <div *ngFor="let input of ">
-
+                <!-- the the input control at index inputIndex of the funciton_inputs control for function at index i -->
+                <div formArrayName="functionInputs">
+                    <div *ngFor="let input of functions.value[functionIndex].functionInputs let inputIndex=index; trackBy: inputTrackBy" [formGroupName]="inputIndex" >
+                        <label>Source:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="source" [value]="'master_data'">
+                            <label class="form-check-label">Master Data</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="source" [value]="'document'">
+                            <label class="form-check-label">Document</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="source" [value]="'static'">
+                            <label class="form-check-label">Static Value</label>
+                        </div>
+                        <input formControlName="source" type="text" class="form-control" placeholder="Source">
+                        <input formControlName="field" type="text" class="form-control" placeholder="Feild">
+                    </div>
                 </div>
-                <div formControlName="function_inputs">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="master_data">
-                        <label class="form-check-label" for="inlineRadio1">Master Data</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="daocument">
-                        <label class="form-check-label" for="inlineRadio1">Document</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="static">
-                        <label class="form-check-label" for="inlineRadio1">Static</label>
+
+                <div formArrayName="functionOutputs">
+                    <div *ngFor="let output of functions.value[functionIndex].functionOutputs let outputIndex=index; trackBy: outputTrackBy" [formGroupName]="outputIndex" >
+                        <input formControlName="destination" type="text" class="form-control" placeholder="Destination">
+                        <input formControlName="field" type="text" class="form-control" placeholder="Feild">
                     </div>
                 </div>
 
-
-                <!-- <input formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
-                <input formControlName="default_value" type="text" class="form-control" placeholder="Default Value">
-                <div class="input-group-text">
-                    <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" [checked]="attribute.get('is_required')?.value || false">
-                </div> -->
-                <button (click)="onRemoveFunction(i)" type="button" class="btn-close"></button>
+                <button (click)="onRemoveFunction(functionIndex)" type="button" class="btn-close"></button>
             </div>
         </div>
         <div class="d-flex justify-content-between">

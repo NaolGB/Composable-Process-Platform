@@ -24,7 +24,21 @@
             "description": "List of numbers to calculate the mean of",
             "type": "list",
             "element_type": "number"
-        }
+        },
+        "numberaas_list": {
+          "required": true,
+          "display_name": "Numbers List",
+          "description": "List of numbers to calculate the mean of",
+          "type": "list",
+          "element_type": "number"
+      },
+      "numbesrs_list": {
+        "required": true,
+        "display_name": "Numbers List",
+        "description": "List of numbers to calculate the mean of",
+        "type": "list",
+        "element_type": "number"
+    }
     },
       "outputs": {
         "mean": {
