@@ -27,7 +27,6 @@ class UserProfileView(APIView):
             fields_dict = {field: 1 for field in requested_fields}
         else:
             fields_dict = None
-        print(user_profile.__dict__)
 
         try:
             if fields_dict:

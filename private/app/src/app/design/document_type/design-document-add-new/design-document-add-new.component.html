@@ -76,20 +76,37 @@
                                 {{masterData.value['display_name'] || masterData.key}}
                             </option>
                         </select>
-                        <input formControlName="field" *ngIf="input.source === 'static'" type="text" class="form-control" placeholder="Feild">
                         <select formControlName="field" *ngIf="input.source === 'document'" class="form-select">
                             <option *ngFor="let attribute of attributes.controls; let attributeIndex = index" [value]="attributeIndex">
                                 {{ attribute.get('display_name')?.value || attributeIndex }}
-                              </option>
-                        </select>
-                          
+                            </option>
+                        </select> 
+                        <input formControlName="field" *ngIf="input.source === 'static'" type="text" class="form-control" placeholder="Feild">
                     </div>
                 </div>
 
                 <div formArrayName="functionOutputs">
                     <div *ngFor="let output of functions.value[functionIndex].functionOutputs let outputIndex=index; trackBy: outputTrackBy" [formGroupName]="outputIndex" >
-                        <input formControlName="destination" type="text" class="form-control" placeholder="Destination">
-                        <input formControlName="field" type="text" class="form-control" placeholder="Feild">
+                        <label>Destination:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="destination" [value]="'master_data'">
+                            <label class="form-check-label">Master Data</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="destination" [value]="'document'">
+                            <label class="form-check-label">Document</label>
+                        </div>
+
+                        <select formControlName="field" *ngIf="output.destination === 'master_data'" class="form-select">
+                            <option *ngFor="let masterData of selectedMasterData.attributes | keyvalue" [value]="masterData.key">
+                                {{masterData.value['display_name'] || masterData.key}}
+                            </option>
+                        </select>
+                        <select formControlName="field" *ngIf="output.destination === 'document'" class="form-select">
+                            <option *ngFor="let attribute of attributes.controls; let attributeIndex = index" [value]="attributeIndex">
+                                {{ attribute.get('display_name')?.value || attributeIndex }}
+                            </option>
+                        </select> 
                     </div>
                 </div>
 

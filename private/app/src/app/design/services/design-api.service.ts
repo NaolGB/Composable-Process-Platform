@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { MasterDataTypeInterface } from '../../interfaces/design-interfaces';
+import { DocumentTypeInterface, MasterDataTypeInterface } from '../../interfaces/design-interfaces';
 import { AuthService } from '../../services/auth.service';
 
 @Injectable({
@@ -54,5 +54,12 @@ export class DesignApiService {
     const params = new HttpParams()
       .set('fields', '_id,display_name')
     return this.http.get(`${this.designBaseUrl}/document_type`, { headers, params });
+  }
+
+  postDocumentType(documentType: DocumentTypeInterface) {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
+    return this.http.post(`${this.designBaseUrl}/document_type`, documentType, { headers });
   }
 }

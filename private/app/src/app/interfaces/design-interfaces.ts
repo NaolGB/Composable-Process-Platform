@@ -42,10 +42,16 @@ export interface DocumentTypeInterface {
     functions: {
         [key: string]: {
             inputs: {
-                [key: string]: string;
+                [key: string]:  {
+                    source: string;
+                    field: string;
+                }
             };
             outputs: {
-                [key: string]: string;
+                [key: string]: {
+                    destination: string;
+                    field: string;
+                }
             };
         };
     };

@@ -66,6 +66,7 @@ class DocumentTypeView(APIView):
         collection = db.document_type
 
         document = request.data
+        print(document)
 
         # Validate the incoming data
         if not validate_document_type(document):

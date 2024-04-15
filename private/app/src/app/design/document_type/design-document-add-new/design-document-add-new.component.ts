@@ -158,10 +158,6 @@ export class DesignDocumentAddNewComponent {
     });
     this.functions.push(functionGroup);
   }
-
-  onSelectDocumentField(index: number) {
-
-  }
   
   onFunctionSelect(index: number) {
     const selectedFunctionId = this.functions.at(index).get('functionId')?.value;
@@ -172,6 +168,7 @@ export class DesignDocumentAddNewComponent {
     const inputsArray: AbstractControl[] = [];
     Object.keys(functionFromFunctionListBySelectedId.inputs).forEach((key: string) => {
       inputsArray.push(this.formBuilder.group({
+        id: key,
         source: ['static'],
         field: ['']
       }));
@@ -181,7 +178,8 @@ export class DesignDocumentAddNewComponent {
     const outputsArray: AbstractControl[] = [];
     Object.keys(functionFromFunctionListBySelectedId.outputs).forEach((key: string) => {
       outputsArray.push(this.formBuilder.group({
-        destination: [''],
+        id: key,
+        destination: ['document'],
         field: ['']
       }));
     })
@@ -201,7 +199,20 @@ export class DesignDocumentAddNewComponent {
         return;
       }
       });
+
+      const functionOutputs = control.get('functionOutputs') as FormArray;
+      functionOutputs.controls.forEach((outputControl, outputIndex) => {
+      const destination = outputControl.get('destination')?.value;
+      const field = outputControl.get('field')?.value;
+      if (destination === 'document' && Number(field) === index) {
+        // field is a string and index is a number so we cast field to a number
+        this.functions.removeAt(functionIndex);
+        return;
+      }
+      });
+
     });
+
 
     // Update field indexes for functions with field index greater than the removed field
     this.functions.controls.forEach((control, functionIndex) => {
@@ -214,7 +225,19 @@ export class DesignDocumentAddNewComponent {
         inputControl.get('field')?.setValue(Number(field) - 1);
       }
       });
+
+      const functionOutputs = control.get('functionOutputs') as FormArray;
+      functionOutputs.controls.forEach((outputControl, outputIndex) => {
+      const destination = outputControl.get('destination')?.value;
+      const field = outputControl.get('field')?.value;
+      if (destination === 'document' && Number(field) > index) {
+        // field is a string and index is a number so we cast field to a number
+        outputControl.get('field')?.setValue(Number(field) - 1);
+      }
+      });
     });
+
+
 
     // Remove field needs to come after updating field indexes because the field index is 
     // bound to the attribute index
@@ -232,6 +255,8 @@ export class DesignDocumentAddNewComponent {
         message: 'Input invalid\n- All fields are required\n- All fields need a minimum of 1 character and a maximum of 64\n- Reserved keywords are not allowed',
       };
     };
+
+    const attributesIdMap: {[key: number]: string} = {}; // to store the final attribute id for each attribute index
 
     const documentType: DocumentTypeInterface = {
       display_name: this.documentTypeForm.value.display_name,
@@ -258,8 +283,9 @@ export class DesignDocumentAddNewComponent {
           attribute_id_is_unique = true;
         }
       }
-
-      documentType.attributes[this.dataService.nameToId(attribute.display_name)] = {
+      
+      attributesIdMap[index] = attribute_id;
+      documentType.attributes[attribute_id] = {
         display_name: attribute.display_name,
         type: attribute.type,
         is_required: attribute.is_required,
@@ -274,15 +300,26 @@ export class DesignDocumentAddNewComponent {
       const functionInputs = functionGroup.functionInputs;
       const functionOutputs = functionGroup.functionOutputs;
 
-      const inputs: {[key: string]: string} = {};
+      const inputs: {[key: string]: {source: string, field: string}} = {};
       functionInputs.forEach((input: any) => {
-        
-        inputs[input.field] = input.source;
+        if (input.source === 'document') {
+          input.field = attributesIdMap[Number(input.field)];
+        }
+        inputs[input.id] = {
+          source: input.source,
+          field: input.field
+        };
       });
 
-      const outputs: {[key: string]: string} = {};
+      const outputs: {[key: string]: {destination: string, field: string}} = {};
       functionOutputs.forEach((output: any) => {
-        outputs[output.field] = output.destination;
+        if (output.destination === 'document') {
+          output.field = attributesIdMap[Number(output.field)];
+        }
+        outputs[output.id] = {
+          destination: output.destination,
+          field: output.field
+        };
       });
 
       documentType.functions[functionId] = {
@@ -291,7 +328,26 @@ export class DesignDocumentAddNewComponent {
       };
     });
 
-    // console.log(documentType);
+    this.apiService.postDocumentType(documentType).subscribe(
+      (response: any) => {
+        const apiResponsePackage: ApiResponsePackageInterface = {
+          success: true,
+          message: 'Document Type Added',
+          data: response
+        };
+        this.apiResposnse.emit(apiResponsePackage);
+      },
+      (error: any) => {
+        const apiResponsePackage: ApiResponsePackageInterface = {
+          success: false,
+          message: error.message || 'Failed to add Document Type',
+          data: error
+        };
+        this.apiResposnse.emit(apiResponsePackage);
+      }
+    );
+
+    console.log(documentType);
     console.log(this.documentTypeForm.getRawValue());
 
   }
