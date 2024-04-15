@@ -21,7 +21,6 @@ export interface MasterDataTypeInterface {
     display_name: string;
     attributes: {[key: string]: MasterDataAttributeInterface};
 }
-// Master Data Type --------------------------------------------------------
 
 // Document Type --------------------------------------------------------
 export interface DocumentAttributeInterface {
@@ -57,9 +56,8 @@ export interface DocumentTypeInterface {
     };
     attributes: {[key: string]: DocumentAttributeInterface};
 }
-// Document Type --------------------------------------------------------
 
-
+// Support Type --------------------------------------------------------
 export interface CheckboxDataInterface {
     id: string;
     display_name: string;
@@ -79,3 +77,48 @@ export interface NotificationInterface {
     remainingTime: number;
     intervalId?: any; // Make it optional as it will be used internally
 }
+
+// Process Type --------------------------------------------------------
+export interface ProcessStep {
+    display_name: string;
+    type: string;
+    __function?: __Function;
+    next_step: NextStep;
+    manual_options?: { [key: string]: ManualOption };
+  }
+  
+  export interface __Function {
+    document_type: string;
+    function_script: string;
+  }
+  
+  export interface ManualOption {
+    display_name: string;
+    __function: __Function;
+  }
+  
+  export interface NextStep {
+    has_multiple_next_steps: boolean;
+    next_step?: string;
+    conditional_value?: string;
+    conditions?: { [key: string]: Condition };
+  }
+  
+  export interface Condition {
+    comparison: { [key: string]: Comparison };
+    next_step: string;
+  }
+  
+  export interface Comparison {
+    operator: string;
+    value: string;
+    logic: string;
+    next_comparison?: string;
+  }
+  
+  export interface ProcessTypeInterface {
+    display_name: string;
+    documents: string[];
+    steps: { [key: string]: ProcessStep };
+  }
+  

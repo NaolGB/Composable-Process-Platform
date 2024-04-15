@@ -134,9 +134,8 @@ export class GraphsProcessFlowComponent {
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.1, 100])
       .on('zoom', (event) => {
-        group.attr('transform', event.transform);
-      });
-  
+      group.attr('transform', event.transform);
+    });
   
     svg.call(zoom);
   

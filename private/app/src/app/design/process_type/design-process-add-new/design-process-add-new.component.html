@@ -1,8 +1,23 @@
-<div class="selection-container">
-    {{selectedStepId}}
+<div class="selection-container" >
+    <form [formGroup]="processTypeForm" class="container-with-scrollable-content">
+
+        <div *ngIf="selectedStepId === '__select_process_type'">
+            <div class="input-group">
+                <input formControlName="display_name" type="text" class="form-control" placeholder="Process Type Name">
+            </div>
+
+        </div>
+
+        <div *ngIf="selectedStepId !== '__select_process_type'">
+            hello NY!
+        </div>
+
+    </form>
 </div>
 
 
 <div class="working-container">
-    <app-graphs-process-flow class="container-with-scrollable-content" [processFlow]="processFlow" (processFlowSelector)="handleProcessFlowSelectorEvent($event)"></app-graphs-process-flow>
+    <app-graphs-process-flow class="container-with-scrollable-content" [processFlow]="processType" (processFlowSelector)="handleProcessFlowSelectorEvent($event)"></app-graphs-process-flow>
 </div>
+
+<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()"></app-overlay-sidebar-checkbox>
