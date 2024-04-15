@@ -50,6 +50,9 @@ export class DesignProcessHomeComponent {
 
   onProcessTypeSelected(id: string) {
     this.selectedProcessTypeId = id;
+    if (id === '__button_process_type_add_new') {
+      this.router.navigate(['/design/process-type/add-new']);
+    }
   }
 
   onFilterTextChange(event: KeyboardEvent) {
