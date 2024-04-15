@@ -62,4 +62,14 @@ export class DesignApiService {
     })
     return this.http.post(`${this.designBaseUrl}/document_type/`, documentType, { headers });
   }
+
+  // Process Type ---------------------------------------------------------
+  getProcessTypeList() {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
+    const params = new HttpParams()
+      .set('fields', '_id,display_name')
+    return this.http.get(`${this.designBaseUrl}/process_type`, { headers, params });
+  }
 }
