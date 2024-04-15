@@ -1,8 +1,8 @@
 <div class="selection-container">
-    hi NY!
+    {{selectedStepId}}
 </div>
 
 
 <div class="working-container">
-    <app-graphs-process-flow class="container-with-scrollable-content" [processFlow]="processFlow"></app-graphs-process-flow>
+    <app-graphs-process-flow class="container-with-scrollable-content" [processFlow]="processFlow" (processFlowSelector)="handleProcessFlowSelectorEvent($event)"></app-graphs-process-flow>
 </div>
