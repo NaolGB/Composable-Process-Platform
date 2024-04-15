@@ -71,6 +71,10 @@ class MasterDataTypeView(APIView):
         if not validate_master_data_type(document):
             return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
         
+        # remove ID - we don't want to update the ID, this is not an upsert
+        if '_id' in document:
+            del document['_id']
+            
         base_id = generate_id_from_display_name(document['display_name'])
         document['_id'] = self.ensure_unique_id(collection, base_id)
 

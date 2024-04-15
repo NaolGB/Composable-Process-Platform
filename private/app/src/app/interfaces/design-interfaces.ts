@@ -17,7 +17,7 @@ export interface MasterDataAttributeInterface {
 }
 
 export interface MasterDataTypeInterface {
-    id?: string;
+    _id: string;
     display_name: string;
     attributes: {[key: string]: MasterDataAttributeInterface};
 }

@@ -79,6 +79,7 @@ export class DesignMasterAddNewComponent {
       return;
     }
     const masterDataType: MasterDataTypeInterface = {
+      _id: '',
       display_name: this.masterDataTypeForm.value.display_name,
       attributes: {}
     };

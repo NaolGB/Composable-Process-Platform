@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../../services/data.service';
 import { DesignApiService } from '../../services/design-api.service';
-import { ApiResponsePackageInterface, CheckboxDataInterface, DocumentTypeInterface } from '../../../interfaces/design-interfaces';
+import { ApiResponsePackageInterface, CheckboxDataInterface, DocumentTypeInterface, MasterDataTypeInterface } from '../../../interfaces/design-interfaces';
 import { OverlaySidebarCheckboxComponent } from '../../../components/overlay-sidebar-checkbox/overlay-sidebar-checkbox.component';
 import { FunctionApiService } from '../../../general/services/function-api.service';
 import { FunctionGroup, FunctionInputGroup } from '../../../types/function-form-types';
@@ -23,6 +23,7 @@ export class DesignDocumentAddNewComponent {
   @Output() apiResposnse: EventEmitter<ApiResponsePackageInterface> = new EventEmitter();
   masterDataTypeList: any[] = [];
   masterDataTypeId: string | undefined;
+  selectedMasterData: MasterDataTypeInterface;
   documentTypeForm: FormGroup;
   selectedTab: string = 'attribute';
 
@@ -52,6 +53,12 @@ export class DesignDocumentAddNewComponent {
         }),
       ])
     });
+
+    this.selectedMasterData = {
+      _id: '',
+      display_name: '',
+      attributes: {}
+    };
   }
 
   ngOnInit(): void {
@@ -64,8 +71,6 @@ export class DesignDocumentAddNewComponent {
     this.functionApiService.getFunctionList().subscribe(
       (response: any) => {
         this.functionsList = response;
-        console.log(response);
-        console.log(this.functionsList);
       },
       (error: any) => {
         console.log(error);
@@ -101,8 +106,9 @@ export class DesignDocumentAddNewComponent {
     if (this.masterDataTypeId) {
       this.apiService.getMasterDataType(this.masterDataTypeId).subscribe(
         (response: any) => {
+          this.selectedMasterData = response;
+          console.log(this.selectedMasterData)
           Object.keys(response.attributes).forEach(element => {
-            console.log(element);
             const display_name = response.attributes[element].display_name;
             checkboxData.push({id: element, display_name: display_name, is_checked: false} as CheckboxDataInterface);
           });
@@ -152,6 +158,10 @@ export class DesignDocumentAddNewComponent {
     });
     this.functions.push(functionGroup);
   }
+
+  onSelectDocumentField(index: number) {
+
+  }
   
   onFunctionSelect(index: number) {
     const selectedFunctionId = this.functions.at(index).get('functionId')?.value;
@@ -179,8 +189,36 @@ export class DesignDocumentAddNewComponent {
   }
 
   onRemoveAttribute(index: number) {
+    // Remove functions with matching field index
+    this.functions.controls.forEach((control, functionIndex) => {
+      const functionInputs = control.get('functionInputs') as FormArray;
+      functionInputs.controls.forEach((inputControl, inputIndex) => {
+      const source = inputControl.get('source')?.value;
+      const field = inputControl.get('field')?.value;
+      if (source === 'document' && Number(field) === index) { 
+        // field is a string and index is a number so we cast field to a number
+        this.functions.removeAt(functionIndex);
+        return;
+      }
+      });
+    });
+
+    // Update field indexes for functions with field index greater than the removed field
+    this.functions.controls.forEach((control, functionIndex) => {
+      const functionInputs = control.get('functionInputs') as FormArray;
+      functionInputs.controls.forEach((inputControl, inputIndex) => {
+      const source = inputControl.get('source')?.value;
+      const field = inputControl.get('field')?.value;
+      if (source === 'document' &&  Number(field) > index) {
+        // field is a string and index is a number so we cast field to a number
+        inputControl.get('field')?.setValue(Number(field) - 1);
+      }
+      });
+    });
+
+    // Remove field needs to come after updating field indexes because the field index is 
+    // bound to the attribute index
     this.attributes.removeAt(index);
-    this.functions
   }
 
   onRemoveFunction(index: number) {
@@ -206,6 +244,7 @@ export class DesignDocumentAddNewComponent {
       attributes: {}
     };
 
+    // parse attributes
     this.attributes.controls.forEach((control, index) => {
       const attribute = control.value;
       
@@ -225,6 +264,30 @@ export class DesignDocumentAddNewComponent {
         type: attribute.type,
         is_required: attribute.is_required,
         default_value: attribute.default_value
+      };
+    });
+
+    // parse functions
+    this.functions.controls.forEach((control, index) => {
+      const functionGroup = control.value;
+      const functionId = functionGroup.functionId;
+      const functionInputs = functionGroup.functionInputs;
+      const functionOutputs = functionGroup.functionOutputs;
+
+      const inputs: {[key: string]: string} = {};
+      functionInputs.forEach((input: any) => {
+        
+        inputs[input.field] = input.source;
+      });
+
+      const outputs: {[key: string]: string} = {};
+      functionOutputs.forEach((output: any) => {
+        outputs[output.field] = output.destination;
+      });
+
+      documentType.functions[functionId] = {
+        inputs: inputs,
+        outputs: outputs
       };
     });
 

@@ -114,6 +114,7 @@ export class DesignMasterUpdateComponent {
     }
 
     const masterDataType: MasterDataTypeInterface = {
+      _id: this.selectedMasterDataTypeId ?? '',
       display_name: this.masterDataTypeForm.value.display_name,
       attributes: {}
     };

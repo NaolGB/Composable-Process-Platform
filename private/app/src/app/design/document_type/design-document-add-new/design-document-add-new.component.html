@@ -70,8 +70,19 @@
                             <input class="form-check-input" type="radio" formControlName="source" [value]="'static'">
                             <label class="form-check-label">Static Value</label>
                         </div>
-                        <input formControlName="source" type="text" class="form-control" placeholder="Source">
-                        <input formControlName="field" type="text" class="form-control" placeholder="Feild">
+                        
+                        <select formControlName="field" *ngIf="input.source === 'master_data'" class="form-select">
+                            <option *ngFor="let masterData of selectedMasterData.attributes | keyvalue" [value]="masterData.key">
+                                {{masterData.value['display_name'] || masterData.key}}
+                            </option>
+                        </select>
+                        <input formControlName="field" *ngIf="input.source === 'static'" type="text" class="form-control" placeholder="Feild">
+                        <select formControlName="field" *ngIf="input.source === 'document'" class="form-select">
+                            <option *ngFor="let attribute of attributes.controls; let attributeIndex = index" [value]="attributeIndex">
+                                {{ attribute.get('display_name')?.value || attributeIndex }}
+                              </option>
+                        </select>
+                          
                     </div>
                 </div>
 
