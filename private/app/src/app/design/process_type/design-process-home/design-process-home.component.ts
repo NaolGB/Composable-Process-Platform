@@ -5,13 +5,14 @@ import { CommonModule } from '@angular/common';
 import { TableComponent } from '../../../components/table/table.component';
 import { TableDataInterface } from '../../../interfaces/design-interfaces';
 import { DataService } from '../../../services/data.service';
+import { GraphsProcessFlowComponent } from '../../../components/graphs-process-flow/graphs-process-flow.component';
 
 @Component({
   selector: 'app-design-process-home',
   standalone: true,
   imports: [
     CommonModule,
-    TableComponent
+    TableComponent,
   ],
   templateUrl: './design-process-home.component.html',
   styleUrl: './design-process-home.component.scss'
