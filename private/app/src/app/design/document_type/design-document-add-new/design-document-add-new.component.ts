@@ -335,6 +335,7 @@ export class DesignDocumentAddNewComponent {
           message: 'Document Type Added',
           data: response
         };
+        console.log(apiResponsePackage);
         this.apiResposnse.emit(apiResponsePackage);
       },
       (error: any) => {
@@ -346,10 +347,6 @@ export class DesignDocumentAddNewComponent {
         this.apiResposnse.emit(apiResponsePackage);
       }
     );
-
-    console.log(documentType);
-    console.log(this.documentTypeForm.getRawValue());
-
   }
 
   functionTrackBy(index: number, item: any) {

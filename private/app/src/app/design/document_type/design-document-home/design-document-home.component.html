@@ -68,3 +68,5 @@
     <app-design-document-add-new class="container-with-scrollable-content" (apiResposnse)="handleDocumentTypeApiResponse($event)"></app-design-document-add-new>
 </ng-template>
 
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TableComponent } from '../../../components/table/table.component';
 import { DataService } from '../../../services/data.service';
 import { DesignDocumentAddNewComponent } from '../design-document-add-new/design-document-add-new.component';
+import { NotificationComponent } from '../../../components/notification/notification.component';
 
 @Component({
   selector: 'app-design-document-home',
@@ -13,7 +14,8 @@ import { DesignDocumentAddNewComponent } from '../design-document-add-new/design
   imports: [
     CommonModule,
 	TableComponent,
-	DesignDocumentAddNewComponent
+	DesignDocumentAddNewComponent,
+	NotificationComponent
   ],
   templateUrl: './design-document-home.component.html',
   styleUrl: './design-document-home.component.scss'
@@ -57,7 +59,34 @@ export class DesignDocumentHomeComponent {
 	}
 
 	handleDocumentTypeApiResponse(response: ApiResponsePackageInterface) {
-		
+		if(response.success) {
+			if(response.data) {
+				this.documentTypeList.push(response.data);
+			}
+			this.addNotification({
+				message: response.message,
+				type: 'success',
+				dismissed: false,
+				remainingTime: 5000,
+			});
+			this.selectedDocumentTypeId = '__button_document_type_overview';
+		}
+		else {
+			this.addNotification({
+				message: response.message,
+				type: 'error',
+				dismissed: false,
+				remainingTime: 5000,
+			});
+		}
+	}
+
+	addNotification(notification: NotificationInterface) {
+		this.notifications = [...this.notifications, notification];
+	}
+
+	onNotificationDismissed(notification: NotificationInterface) {
+		this.notifications = this.notifications.filter(n => n !== notification);
 	}
 
 	onFilterTextChange(event: KeyboardEvent) {

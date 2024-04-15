@@ -60,6 +60,6 @@ export class DesignApiService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.idTokenSignal()}`
     })
-    return this.http.post(`${this.designBaseUrl}/document_type`, documentType, { headers });
+    return this.http.post(`${this.designBaseUrl}/document_type/`, documentType, { headers });
   }
 }
