@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { GraphsProcessFlowComponent } from '../../../components/graphs-process-flow/graphs-process-flow.component';
 import { CheckboxDataInterface, ProcessStep, ProcessTypeInterface } from '../../../interfaces/design-interfaces';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OverlaySidebarCheckboxComponent } from '../../../components/overlay-sidebar-checkbox/overlay-sidebar-checkbox.component';
 import { DataService } from '../../../services/data.service';
 import { DesignApiService } from '../../services/design-api.service';
@@ -21,6 +21,7 @@ import { DesignApiService } from '../../services/design-api.service';
 })
 export class DesignProcessAddNewComponent {
   selectedStepId: string = '__select_process_type';
+  selectedStepType: string = 'start';
   processTypeForm: FormGroup;
 
   temp: string = 'start';
@@ -44,12 +45,18 @@ export class DesignProcessAddNewComponent {
     this.processTypeForm = this.formBuilder.group({ // initialize form with start step
       display_name: [''],
       documents: [''],
-      steps: this.formBuilder.array([this.stepsTracker[startStepUid].form]) // all process types will have a start step
+      steps: this.formBuilder.group({
+        [startStepUid]: this.generateStepForm('start', startStepUid) // all process types will have a start step
+      })
     });
   }
 
   handleProcessFlowSelectorEvent(event: string) {
     this.selectedStepId = event;
+    
+    if (this.selectedStepId !== '__select_process_type') {
+      this.selectedStepType = this.stepsTracker[this.selectedStepId].type;
+    }
   }
 
   ngOnInit(): void {
@@ -82,10 +89,10 @@ export class DesignProcessAddNewComponent {
 
     // steps
     const processTypeFormSteps = this.processTypeForm.getRawValue().steps;
-    processTypeFormSteps.forEach((step: any) => {
-      const stepUid = step['step_uid'];
-      
-      if (stepUid) {
+    Object.keys(processTypeFormSteps).forEach((stepUid: string) => {
+      const step = processTypeFormSteps[stepUid];
+
+      if (step) {
         const tempStep = {} as ProcessStep;
         tempStep.display_name = step['display_name'];
         tempStep.type = step['type'];
@@ -104,10 +111,14 @@ export class DesignProcessAddNewComponent {
         // add step to process type
         tempProcessType.steps[stepUid] = tempStep;
       }
+      
     });
     
-    console.log(tempProcessType);
     return tempProcessType;
+  }
+
+  get processTypeFormStepsForm() {
+    return this.processTypeForm.get('steps') as FormGroup;
   }
 
   onOpentSidebar() {
@@ -132,8 +143,8 @@ export class DesignProcessAddNewComponent {
     if (stepType === 'start') {
       return this.formBuilder.group({
         step_uid: [stepId],
-        display_name: ['Start'],
-        type: ['start'],
+        display_name: new FormControl({value: 'Start', disabled: true}),
+        type: new FormControl({value: 'start', disabled: true}),
         next_step: this.formBuilder.group({
           has_multiple_next_steps: [false],
           next_step: [''],
@@ -151,6 +162,10 @@ export class DesignProcessAddNewComponent {
     else { // automated
       return this.formBuilder.group({});
     }
+  }
+
+  onSubmit() {
+    console.log(this.processTypeForm.getRawValue());
   }
 
 }

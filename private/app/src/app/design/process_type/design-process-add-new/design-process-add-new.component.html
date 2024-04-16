@@ -1,5 +1,5 @@
 <div class="selection-container" >
-    <form [formGroup]="processTypeForm" class="container-with-scrollable-content">
+    <form [formGroup]="processTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
 
         <div *ngIf="selectedStepId === '__select_process_type'">
             <div class="input-group">
@@ -20,8 +20,26 @@
             </div>
         </div>
 
-        <div *ngIf="selectedStepId !== '__select_process_type'">
-            {{selectedStepId}}
+        <div formGroupName="steps" *ngIf="selectedStepId !== '__select_process_type'">
+            <div *ngFor="let stepForm of processTypeFormStepsForm.controls | keyvalue">
+                <!-- Start step -->
+                <div *ngIf="selectedStepType === 'start'" [formGroupName]="stepForm.key">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2>Start Step</h2>
+                            <div class="input-group">
+                                <input formControlName="display_name" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary" [disabled]="!processTypeForm.valid">Submit form</button>
         </div>
 
     </form>
