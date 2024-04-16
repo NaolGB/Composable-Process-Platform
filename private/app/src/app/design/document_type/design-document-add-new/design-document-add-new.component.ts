@@ -107,7 +107,6 @@ export class DesignDocumentAddNewComponent {
       this.apiService.getMasterDataType(this.masterDataTypeId).subscribe(
         (response: any) => {
           this.selectedMasterData = response;
-          console.log(this.selectedMasterData)
           Object.keys(response.attributes).forEach(element => {
             const display_name = response.attributes[element].display_name;
             checkboxData.push({id: element, display_name: display_name, is_checked: false} as CheckboxDataInterface);

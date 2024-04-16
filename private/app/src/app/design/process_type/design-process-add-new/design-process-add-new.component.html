@@ -5,11 +5,23 @@
             <div class="input-group">
                 <input formControlName="display_name" type="text" class="form-control" placeholder="Process Type Name">
             </div>
-
+            <div class="card">
+                <div class="card-body">
+                  <p class="card-text">Documents</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li *ngFor="let id of processType.documents" class="list-group-item">
+                            {{getDocumentDisplayNameById(id)}}
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <button (click)="onOpentSidebar()">open sidebar</button>
+                </div>
+            </div>
         </div>
 
         <div *ngIf="selectedStepId !== '__select_process_type'">
-            hello NY!
+            {{selectedStepId}}
         </div>
 
     </form>
@@ -20,4 +32,4 @@
     <app-graphs-process-flow class="container-with-scrollable-content" [processFlow]="processType" (processFlowSelector)="handleProcessFlowSelectorEvent($event)"></app-graphs-process-flow>
 </div>
 
-<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()"></app-overlay-sidebar-checkbox>
+<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="documentTypesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)"></app-overlay-sidebar-checkbox>
