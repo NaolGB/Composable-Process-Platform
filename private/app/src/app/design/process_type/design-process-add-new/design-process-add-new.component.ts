@@ -31,14 +31,14 @@ export class DesignProcessAddNewComponent {
   documentTypesAsCheckboxData: CheckboxDataInterface[] = [];
 
   // keep track of all steps and their forms to facilitate next_step connection and form data
-  stepsTracker: {[key: string]: {type: string, form: FormGroup}} = {}; 
+  stepsTracker: {[key: string]: {type: string, displayName: string}} = {}; 
 
   constructor(private formBuilder: FormBuilder, private dataService: DataService, private designApiService: DesignApiService) { 
     // create start step
     const startStepUid = dataService.generateUUID();
     this.stepsTracker[startStepUid] = { // start step
       type: 'start', 
-      form: this.generateStepForm('start', startStepUid)
+      displayName: 'Start'
     };
 
     // initialize form with start step
@@ -146,8 +146,8 @@ export class DesignProcessAddNewComponent {
         display_name: new FormControl({value: 'Start', disabled: true}),
         type: new FormControl({value: 'start', disabled: true}),
         next_step: this.formBuilder.group({
-          has_multiple_next_steps: [false],
-          next_step: [''],
+          next_steps_count: new FormControl({value: 0, disabled: true}),
+          next_step: this.formBuilder.group({}),
           conditional_value: [''],
           conditions: this.formBuilder.array([])
         })
@@ -162,6 +162,29 @@ export class DesignProcessAddNewComponent {
     else { // automated
       return this.formBuilder.group({});
     }
+  }
+
+  onAddStep(stepId: string) {
+    const currentNextStepCount = this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('next_steps_count')!.value || 0;
+    this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('next_steps_count')!.setValue(currentNextStepCount + 1);
+  }
+
+  onGenerateNewNextStep(type: string, displayName: string, currentStepId: string) {
+    const newStepUid = this.dataService.generateUUID();
+    this.stepsTracker[newStepUid] = {
+      type: type,
+      displayName: displayName
+    };
+
+    // add new step to form
+    const newStepForm = this.generateStepForm(type, newStepUid);
+    this.processTypeFormStepsForm.addControl(newStepUid, newStepForm);
+
+    // connect new step to selected step
+    // const selectedStepForm = this.processTypeFormStepsForm.get(currentStepId) as FormGroup;
+    // const selectedStepFormCurrentNextSteps = selectedStepForm.get('next_step')?.value;
+    // selectedStepForm.get('next_step')!.setValue(selectedStepFormCurrentNextSteps + ',' + newStepUid);
+
   }
 
   onSubmit() {
