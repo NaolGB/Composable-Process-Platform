@@ -23,8 +23,8 @@ export class DesignProcessAddNewComponent {
   selectedStepId: string = '__select_process_type';
   selectedStepType: string = 'start';
   processTypeForm: FormGroup;
-
-  temp: string = 'start';
+  processFlowGraphComponentKey: number = 0;
+  showProcessGraph: boolean = true;
 
   showSidebar: boolean = false;
   documnetTypeList: any[] = [];
@@ -51,10 +51,24 @@ export class DesignProcessAddNewComponent {
 
   handleProcessFlowSelectorEvent(event: string) {
     this.selectedStepId = event;
+    console.log(event)
+    console.log(this.selectedStepId);
     
     if (this.selectedStepId !== '__select_process_type') {
       this.selectedStepType = this.processTypeFormStepsForm.get(this.selectedStepId)!.get('type')!.value;
     }
+  }
+
+  reloadProcessFlowGraph() {
+    // Toggle Visibility: Temporarily setting showProcessGraph to false removes the component from the view.
+    // This is combined with setTimeout to allow the JavaScript event loop to process the removal of the component from the DOM.
+    // Change Key: Incrementing processFlowGraphComponentKey provides a new key each time, causing Angular to treat it as a completely new component when showProcessGraph is set to true again.
+    // Reinsert Component: After incrementing the key, the component is added back to the DOM, forcing it to reinitialize.
+    this.showProcessGraph = false;
+    setTimeout(() => {
+      this.processFlowGraphComponentKey++;
+      this.showProcessGraph = true;
+    }, 0);
   }
 
   ngOnInit(): void {
@@ -73,59 +87,6 @@ export class DesignProcessAddNewComponent {
 
   get processType(): ProcessTypeInterface {
     return this.processTypeForm.getRawValue() as ProcessTypeInterface;
-    const tempProcessType: ProcessTypeInterface = {
-      display_name: '',
-      documents: [],
-      steps: {}
-    };
-    tempProcessType.display_name = this.processTypeForm.value.display_name;
-
-    // documents
-    const processTypeFormDocuments = this.processTypeForm.get('documents')!.value;
-    if (processTypeFormDocuments) {
-      tempProcessType.documents = processTypeFormDocuments.split(',');
-    }
-
-    // steps
-    const processTypeFormSteps = this.processTypeForm.getRawValue().steps;
-    Object.keys(processTypeFormSteps).forEach((stepUid: string) => {
-      const step = processTypeFormSteps[stepUid];
-
-      if (step) {
-        const tempStep = {} as ProcessStep;
-        tempStep.display_name = step['display_name'];
-        tempStep.type = step['type'];
-
-        // next_step
-        const nextStep = step['next_step'];
-        if (nextStep) {
-          tempStep.next_step = {
-            has_multiple_next_steps: true, // TODO: remove deprecated field
-            next_step: nextStep,
-            conditional_value: nextStep.conditional_value,
-            conditions: {}
-          };
-        }
-
-        // conditions
-        // const conditions = nextStep.conditions;
-        // if (conditions) {
-        //   Object.keys(conditions).forEach((conditionKey: string) => {
-        //     const condition = conditions[conditionKey];
-        //     const tempCondition = {};
-        //     tempCondition.comparison = condition.comparison;
-        //     tempCondition.next_step = condition.next_step;
-        //     tempStep.next_step.conditions[conditionKey] = tempCondition;
-        //   });
-        // }
-
-        // add step to process type
-        tempProcessType.steps[stepUid] = tempStep;
-      }
-      
-    });
-    
-    return tempProcessType;
   }
 
   get processTypeFormStepsForm() {
@@ -190,8 +151,7 @@ export class DesignProcessAddNewComponent {
 
     // connect new step to selected step
     this.addCondition(currentStepId, newStepUid);
-    console.log(this.processTypeForm.getRawValue());
-    console.log(this.processType)
+    this.reloadProcessFlowGraph();
   }
 
   generateArrayFromNumber(num: number): number[] {

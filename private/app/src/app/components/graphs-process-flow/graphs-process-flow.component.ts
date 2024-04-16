@@ -13,6 +13,7 @@ import * as d3 from 'd3';
 })
 export class GraphsProcessFlowComponent {
   @Input() processFlow: any;
+  @Input() key: number | undefined;
   @ViewChild('chartContainer', { static: false }) private chartContainer!: ElementRef;
 
   @Output() processFlowSelector: EventEmitter<string> = new EventEmitter();
