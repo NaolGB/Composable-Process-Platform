@@ -31,13 +31,12 @@ export class DesignProcessAddNewComponent {
   documentTypesAsCheckboxData: CheckboxDataInterface[] = [];
 
   // keep track of all steps and their forms to facilitate next_step connection and form data
-  stepsTracker: {[key: string]: {type: string, displayName: string}} = {}; 
+  stepsTracker: {[key: string]: {displayName: string}} = {}; 
 
   constructor(private formBuilder: FormBuilder, private dataService: DataService, private designApiService: DesignApiService) { 
     // create start step
     const startStepUid = dataService.generateUUID();
     this.stepsTracker[startStepUid] = { // start step
-      type: 'start', 
       displayName: 'Start'
     };
 
@@ -55,7 +54,7 @@ export class DesignProcessAddNewComponent {
     this.selectedStepId = event;
     
     if (this.selectedStepId !== '__select_process_type') {
-      this.selectedStepType = this.stepsTracker[this.selectedStepId].type;
+      this.selectedStepType = this.processTypeFormStepsForm.get(this.selectedStepId)!.get('type')!.value;
     }
   }
 
@@ -139,7 +138,7 @@ export class DesignProcessAddNewComponent {
     return this.documnetTypeList.find((documentType: any) => documentType._id === documentId).display_name || documentId;
   }
 
-  generateStepForm(stepType: string, stepId: string) {
+  generateStepForm(stepType: string, stepId: string, displayName: string = '') {
     if (stepType === 'start') {
       return this.formBuilder.group({
         step_uid: [stepId],
@@ -147,9 +146,10 @@ export class DesignProcessAddNewComponent {
         type: new FormControl({value: 'start', disabled: true}),
         next_step: this.formBuilder.group({
           next_steps_count: new FormControl({value: 0, disabled: true}),
-          next_step: this.formBuilder.group({}),
-          conditional_value: [''],
-          conditions: this.formBuilder.array([])
+          next_step: this.formBuilder.group({
+            conditional_value: [''],
+            conditions: this.formBuilder.group({})
+          }),
         })
       });
     }
@@ -164,27 +164,46 @@ export class DesignProcessAddNewComponent {
     }
   }
 
-  onAddStep(stepId: string) {
+  addCondition(stepId: string, nextStepId: string) {
+    const conditionsFormArray = this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('conditions') as FormArray;
+    conditionsFormArray.push(this.formBuilder.group({
+      comparison: this.formBuilder.array([
+        this.formBuilder.group({operator: [''], value: [''], logic: [''], 
+        next_comparison: new FormControl({value: nextStepId, disabled: true})})
+      ]),
+      next_step: ['']
+    }));
+  }
+
+  onAddStepCounter(stepId: string) {
     const currentNextStepCount = this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('next_steps_count')!.value || 0;
     this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('next_steps_count')!.setValue(currentNextStepCount + 1);
   }
 
-  onGenerateNewNextStep(type: string, displayName: string, currentStepId: string) {
+  onGenerateNewNextStep(displayName: string, currentStepId: string) {
     const newStepUid = this.dataService.generateUUID();
     this.stepsTracker[newStepUid] = {
-      type: type,
       displayName: displayName
     };
 
     // add new step to form
-    const newStepForm = this.generateStepForm(type, newStepUid);
+    const newStepForm = this.generateStepForm('automated', newStepUid, displayName);
     this.processTypeFormStepsForm.addControl(newStepUid, newStepForm);
 
     // connect new step to selected step
-    // const selectedStepForm = this.processTypeFormStepsForm.get(currentStepId) as FormGroup;
-    // const selectedStepFormCurrentNextSteps = selectedStepForm.get('next_step')?.value;
-    // selectedStepForm.get('next_step')!.setValue(selectedStepFormCurrentNextSteps + ',' + newStepUid);
+    const selectedStepForm = this.processTypeFormStepsForm.get(currentStepId) as FormGroup;
+    const selectedStepFormCurrentNextStepCount = selectedStepForm.get('next_step')!.get('next_steps_count')!.value || 0;
+    if(selectedStepFormCurrentNextStepCount < 1) {
+      selectedStepForm.get('next_step')!.get('next_step')!.setValue(newStepUid);
+    }
+    else {
+      
+    }
 
+  }
+
+  generateArrayFromNumber(num: number): number[] {
+    return Array(num).fill(0).map((x, i) => i);
   }
 
   onSubmit() {

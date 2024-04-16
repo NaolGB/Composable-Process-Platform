@@ -27,7 +27,6 @@ const processFlow = {
           execution_script: 'example_script_uuid123',
         },
         next_step: {
-          has_multiple_next_steps: true,
           conditional_value: 'example_document_instance_uuid456.billing_block',
           conditions: {
             condition_1: {
