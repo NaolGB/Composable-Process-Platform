@@ -120,9 +120,6 @@ export class GraphsProcessFlowComponent {
         this.relationship[key].y = maxy + 1;
       }
     })
-
-    console.log(this.relationship);
-    
   }
 
   private createChart(): void {

@@ -1,4 +1,5 @@
 <div class="selection-container" >
+    <button type="button" (click)="reloadProcessFlowGraph()">Reload</button>
     <form [formGroup]="processTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
 
         <div *ngIf="selectedStepId === '__select_process_type'">
@@ -10,8 +11,8 @@
                   <p class="card-text">Documents</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li *ngFor="let id of processType.documents" class="list-group-item">
-                            {{getDocumentDisplayNameById(id)}}
+                    <li *ngFor="let document of selectedDocumentTypes" class="list-group-item">
+                            {{document.display_name || document.id}}
                     </li>
                 </ul>
                 <div class="card-body">
@@ -48,12 +49,25 @@
                         </div>
                     </div>
                 </div>
+
                 <div formGroupName="next_step" class="card">
                     <div class="card-body">
                         <h2>Next Steps</h2>
                         <button type="button" (click)="onGenerateNewNextStep(selectedStepId)">Add Next Step</button>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Document</h2>
+                        <select formControlName="document_type" class="form-select">
+                            <option *ngFor="let document of selectedDocumentTypes; let listIndex=index" [value]="document.id">
+                                {{ document.display_name || document.id}}
+                            </option>
+                        </select> 
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -67,7 +81,13 @@
 
 
 <div class="working-container">
-    <app-graphs-process-flow *ngIf="showProcessGraph" [key]="processFlowGraphComponentKey" class="container-with-scrollable-content" [processFlow]="processType" (processFlowSelector)="handleProcessFlowSelectorEvent($event)"></app-graphs-process-flow>
+    <app-graphs-process-flow 
+        *ngIf="showProcessGraph" 
+        [key]="processFlowGraphComponentKey" 
+        class="container-with-scrollable-content" 
+        [processFlow]="processType" 
+        (processFlowSelector)="handleProcessFlowSelectorEvent($event)"
+    ></app-graphs-process-flow>
 </div>
 
 <app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="documentTypesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)"></app-overlay-sidebar-checkbox>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { GraphsProcessFlowComponent } from '../../../components/graphs-process-flow/graphs-process-flow.component';
-import { CheckboxDataInterface, ProcessStep, ProcessTypeInterface } from '../../../interfaces/design-interfaces';
+import { CheckboxDataInterface, DocumentTypeInterface, ProcessStep, ProcessTypeInterface } from '../../../interfaces/design-interfaces';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OverlaySidebarCheckboxComponent } from '../../../components/overlay-sidebar-checkbox/overlay-sidebar-checkbox.component';
 import { DataService } from '../../../services/data.service';
@@ -29,6 +29,7 @@ export class DesignProcessAddNewComponent {
   showSidebar: boolean = false;
   documnetTypeList: any[] = [];
   documentTypesAsCheckboxData: CheckboxDataInterface[] = [];
+  selectedDocumentTypeObject: DocumentTypeInterface | undefined;
 
   // keep track of all stepIds separately from the form to ensure change detection traks the correct step
   // this is necessary because the form is a nested object and change detection does not work as expected
@@ -51,12 +52,6 @@ export class DesignProcessAddNewComponent {
 
   handleProcessFlowSelectorEvent(event: string) {
     this.selectedStepId = event;
-    console.log(event)
-    console.log(this.selectedStepId);
-    
-    if (this.selectedStepId !== '__select_process_type') {
-      this.selectedStepType = this.processTypeFormStepsForm.get(this.selectedStepId)!.get('type')!.value;
-    }
   }
 
   reloadProcessFlowGraph() {
@@ -93,6 +88,22 @@ export class DesignProcessAddNewComponent {
     return this.processTypeForm.get('steps') as FormGroup;
   }
 
+  get selectedDocumentTypes(): {id: string, display_name: string}[] {
+    const tempDocumentTypes: {id: string, display_name: string}[] = [];
+
+    const processDocuments = this.processTypeForm.get('documents')!.value.split(',');
+    if (!processDocuments[0]) return [];
+
+    processDocuments.forEach((documentId: string) => {
+      tempDocumentTypes.push({
+        id: documentId,
+        display_name: this.documnetTypeList.find((documentType: any) => documentType._id === documentId)!.display_name || ''
+      });
+    });
+
+    return tempDocumentTypes;
+  }
+
   getProcessStepFormById(stepId: string): FormGroup {
     return this.processTypeFormStepsForm.get(stepId) as FormGroup;
   }
@@ -100,6 +111,14 @@ export class DesignProcessAddNewComponent {
   onOpentSidebar() {
     this.showSidebar = true;
   }
+
+  onSelectDocumentType(documentTypeId: string) {
+    this.designApiService.getDocumentType(documentTypeId).subscribe(
+      (response: any) => {
+      this.selectedDocumentTypeObject = response;
+    });
+  }
+
 
   handleCloseSidebar() {
     this.showSidebar = false;
@@ -110,15 +129,13 @@ export class DesignProcessAddNewComponent {
     this.showSidebar = false;
   }
 
-  getDocumentDisplayNameById(documentId: string): string {
-    return this.documnetTypeList.find((documentType: any) => documentType._id === documentId).display_name || documentId;
-  }
-
   generateStepForm(stepType: string = 'automated', stepId: string, displayName: string = '') {
     return this.formBuilder.group({
       step_uid: [stepId],
       display_name: new FormControl({value: displayName, disabled: ((stepType === 'start') || (stepType === 'end'))}),
       type: new FormControl({value: stepType, disabled: ((stepType === 'start') || (stepType === 'end'))}),
+      document_type: [''],
+      __function: [''],
       manual_options: this.formBuilder.group({}),
       next_step: this.formBuilder.group({
         conditional_value: [''],
@@ -143,6 +160,7 @@ export class DesignProcessAddNewComponent {
 
   onGenerateNewNextStep(currentStepId: string) {
     const newStepUid: string = this.dataService.generateUUID();
+    this.stepsTracker[newStepUid] = [];
     this.stepsTracker[currentStepId].push(newStepUid);
 
     // add new step to form

@@ -82,9 +82,10 @@ export interface NotificationInterface {
 export interface ProcessStep {
     display_name: string;
     type: string;
-    __function?: __Function;
-    next_step: NextStep;
+    document_type: string;
+    __function: __Function;
     manual_options?: { [key: string]: ManualOption };
+    next_step: NextStep;
   }
   
   export interface __Function {
@@ -99,7 +100,6 @@ export interface ProcessStep {
   
   export interface NextStep {
     has_multiple_next_steps: boolean;
-    next_step?: string;
     conditional_value?: string;
     conditions?: { [key: string]: Condition };
   }

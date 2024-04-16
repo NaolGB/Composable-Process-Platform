@@ -56,6 +56,15 @@ export class DesignApiService {
     return this.http.get(`${this.designBaseUrl}/document_type`, { headers, params });
   }
 
+  getDocumentType(id: string) {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
+    const params = new HttpParams()
+      .set('id', id)
+    return this.http.get(`${this.designBaseUrl}/document_type`, { headers, params });
+  }
+
   postDocumentType(documentType: DocumentTypeInterface) {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.idTokenSignal()}`
