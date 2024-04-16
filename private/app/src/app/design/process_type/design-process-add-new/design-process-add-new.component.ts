@@ -30,22 +30,21 @@ export class DesignProcessAddNewComponent {
   documnetTypeList: any[] = [];
   documentTypesAsCheckboxData: CheckboxDataInterface[] = [];
 
-  // keep track of all steps and their forms to facilitate next_step connection and form data
-  stepsTracker: {[key: string]: {displayName: string}} = {}; 
+  // keep track of all stepIds separately from the form to ensure change detection traks the correct step
+  // this is necessary because the form is a nested object and change detection does not work as expected
+  stepsTracker: {[key:string]: string[]} = {};
 
   constructor(private formBuilder: FormBuilder, private dataService: DataService, private designApiService: DesignApiService) { 
     // create start step
     const startStepUid = dataService.generateUUID();
-    this.stepsTracker[startStepUid] = { // start step
-      displayName: 'Start'
-    };
+    this.stepsTracker[startStepUid] = [startStepUid];
 
     // initialize form with start step
     this.processTypeForm = this.formBuilder.group({ // initialize form with start step
       display_name: [''],
       documents: [''],
       steps: this.formBuilder.group({
-        [startStepUid]: this.generateStepForm('start', startStepUid) // all process types will have a start step
+        [startStepUid]: this.generateStepForm('start', startStepUid, 'Start') // all process types will have a start step
       })
     });
   }
@@ -73,6 +72,7 @@ export class DesignProcessAddNewComponent {
   }
 
   get processType(): ProcessTypeInterface {
+    return this.processTypeForm.getRawValue() as ProcessTypeInterface;
     const tempProcessType: ProcessTypeInterface = {
       display_name: '',
       documents: [],
@@ -96,16 +96,28 @@ export class DesignProcessAddNewComponent {
         tempStep.display_name = step['display_name'];
         tempStep.type = step['type'];
 
-        // TODO: next_step
+        // next_step
         const nextStep = step['next_step'];
         if (nextStep) {
           tempStep.next_step = {
-            has_multiple_next_steps: false,
+            has_multiple_next_steps: true, // TODO: remove deprecated field
             next_step: nextStep,
-            conditional_value: '',
+            conditional_value: nextStep.conditional_value,
             conditions: {}
           };
         }
+
+        // conditions
+        // const conditions = nextStep.conditions;
+        // if (conditions) {
+        //   Object.keys(conditions).forEach((conditionKey: string) => {
+        //     const condition = conditions[conditionKey];
+        //     const tempCondition = {};
+        //     tempCondition.comparison = condition.comparison;
+        //     tempCondition.next_step = condition.next_step;
+        //     tempStep.next_step.conditions[conditionKey] = tempCondition;
+        //   });
+        // }
 
         // add step to process type
         tempProcessType.steps[stepUid] = tempStep;
@@ -120,6 +132,10 @@ export class DesignProcessAddNewComponent {
     return this.processTypeForm.get('steps') as FormGroup;
   }
 
+  getProcessStepFormById(stepId: string): FormGroup {
+    return this.processTypeFormStepsForm.get(stepId) as FormGroup;
+  }
+
   onOpentSidebar() {
     this.showSidebar = true;
   }
@@ -130,7 +146,6 @@ export class DesignProcessAddNewComponent {
 
   handleSidebarData(checkedBoxIds: string) {
     this.processTypeForm.get('documents')!.setValue(checkedBoxIds);
-    console.log(this.processTypeForm.getRawValue());
     this.showSidebar = false;
   }
 
@@ -138,68 +153,45 @@ export class DesignProcessAddNewComponent {
     return this.documnetTypeList.find((documentType: any) => documentType._id === documentId).display_name || documentId;
   }
 
-  generateStepForm(stepType: string, stepId: string, displayName: string = '') {
-    if (stepType === 'start') {
-      return this.formBuilder.group({
-        step_uid: [stepId],
-        display_name: new FormControl({value: 'Start', disabled: true}),
-        type: new FormControl({value: 'start', disabled: true}),
-        next_step: this.formBuilder.group({
-          next_steps_count: new FormControl({value: 0, disabled: true}),
-          next_step: this.formBuilder.group({
-            conditional_value: [''],
-            conditions: this.formBuilder.group({})
-          }),
-        })
-      });
-    }
-    else if (stepType === 'end') {
-      return this.formBuilder.group({});
-    }
-    else if (stepType === 'manual') {
-      return this.formBuilder.group({});
-    }
-    else { // automated
-      return this.formBuilder.group({});
-    }
+  generateStepForm(stepType: string = 'automated', stepId: string, displayName: string = '') {
+    return this.formBuilder.group({
+      step_uid: [stepId],
+      display_name: new FormControl({value: displayName, disabled: ((stepType === 'start') || (stepType === 'end'))}),
+      type: new FormControl({value: stepType, disabled: ((stepType === 'start') || (stepType === 'end'))}),
+      manual_options: this.formBuilder.group({}),
+      next_step: this.formBuilder.group({
+        conditional_value: [''],
+        conditions: this.formBuilder.group({})
+      })
+    });
   }
 
   addCondition(stepId: string, nextStepId: string) {
-    const conditionsFormArray = this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('conditions') as FormArray;
-    conditionsFormArray.push(this.formBuilder.group({
-      comparison: this.formBuilder.array([
-        this.formBuilder.group({operator: [''], value: [''], logic: [''], 
-        next_comparison: new FormControl({value: nextStepId, disabled: true})})
-      ]),
-      next_step: ['']
-    }));
+    const conditionsFormGroup = this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('conditions') as FormGroup;
+    
+    conditionsFormGroup.addControl(
+      nextStepId, 
+      this.formBuilder.group({
+        comparison: this.formBuilder.array([
+          this.formBuilder.group({operator: [''], value: [''], logic: [''], next_comparison: ['']}),
+        ]),
+        next_step: new FormControl({value: nextStepId, disabled: true})
+      })
+    );
   }
 
-  onAddStepCounter(stepId: string) {
-    const currentNextStepCount = this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('next_steps_count')!.value || 0;
-    this.processTypeFormStepsForm.get(stepId)!.get('next_step')!.get('next_steps_count')!.setValue(currentNextStepCount + 1);
-  }
-
-  onGenerateNewNextStep(displayName: string, currentStepId: string) {
-    const newStepUid = this.dataService.generateUUID();
-    this.stepsTracker[newStepUid] = {
-      displayName: displayName
-    };
+  onGenerateNewNextStep(currentStepId: string) {
+    const newStepUid: string = this.dataService.generateUUID();
+    this.stepsTracker[currentStepId].push(newStepUid);
 
     // add new step to form
-    const newStepForm = this.generateStepForm('automated', newStepUid, displayName);
+    const newStepForm = this.generateStepForm('automated', newStepUid);
     this.processTypeFormStepsForm.addControl(newStepUid, newStepForm);
 
     // connect new step to selected step
-    const selectedStepForm = this.processTypeFormStepsForm.get(currentStepId) as FormGroup;
-    const selectedStepFormCurrentNextStepCount = selectedStepForm.get('next_step')!.get('next_steps_count')!.value || 0;
-    if(selectedStepFormCurrentNextStepCount < 1) {
-      selectedStepForm.get('next_step')!.get('next_step')!.setValue(newStepUid);
-    }
-    else {
-      
-    }
-
+    this.addCondition(currentStepId, newStepUid);
+    console.log(this.processTypeForm.getRawValue());
+    console.log(this.processType)
   }
 
   generateArrayFromNumber(num: number): number[] {
@@ -210,4 +202,8 @@ export class DesignProcessAddNewComponent {
     console.log(this.processTypeForm.getRawValue());
   }
 
+  trackByStepId(index: number, stepId: string): string {
+    return stepId;
+  }
+  
 }

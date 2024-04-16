@@ -17,7 +17,7 @@ export class GraphsProcessFlowComponent {
 
   @Output() processFlowSelector: EventEmitter<string> = new EventEmitter();
 
-  relationship: {[key: string]: {x: number, y: number, next_steps: string[], display_name: string}} = {};
+  relationship: {[key: string]: {x: number, y: number, next_steps: string[], parent_steps: string[], display_name: string}} = {};
 
   ngOnInit(): void {
     this.createRelationship();
@@ -43,31 +43,56 @@ export class GraphsProcessFlowComponent {
         display_name: this.processFlow.steps[stepId].display_name,
         x: 0,
         y: 0,
-        next_steps: []
+        next_steps: [],
+        parent_steps: []
       }
     })
+
+    // create relationship object
     const steps = this.processFlow.steps;
     for (let stepKey in steps) {
       const step = steps[stepKey];
+
       if (step.next_step) {
-        if (step.next_step.has_multiple_next_steps) {
-          for (let conditionKey in step.next_step.conditions) {
-            const condition = step.next_step.conditions[conditionKey];
-            this.relationship[stepKey].next_steps.push(condition.next_step);
-          }
-        } else {
-          this.relationship[stepKey].next_steps.push(step.next_step.next_step);
+        for (let conditionKey in step.next_step.conditions) {
+          const condition = step.next_step.conditions[conditionKey];
+          this.relationship[stepKey].next_steps.push(condition.next_step);
+          this.relationship[condition.next_step].parent_steps.push(stepKey);
         }
       }
     }
 
-    // calculate x and y for connected nodes
-    const startStep = this.relationship['start'];
-    const visited = new Set<string>('start');
-    if (startStep) {
-      visited.add('start');
+    const connectedNodes = new Set<string>();
+    Object.keys(this.relationship).forEach(key => {
+      if (this.relationship[key].next_steps.length > 0) {
+        connectedNodes.add(key);
+        this.relationship[key].next_steps.forEach(nextStep => {
+          connectedNodes.add(nextStep);
+        });
+      }
+    });
 
-      const queue: string[] = ['start'];
+    const unconnectedNodes = stepIds.filter(key => !connectedNodes.has(key));
+
+    // identify start node
+    let startStepId: string | undefined = undefined;
+    connectedNodes.forEach(key => {
+      if (this.relationship[key].parent_steps.length === 0) {
+        startStepId = key;
+      }
+    })
+
+    if (!startStepId) {
+      startStepId = unconnectedNodes[0];
+    }
+
+    // calculate x and y for connected nodes
+    const startStep = this.relationship[startStepId];
+    const visited = new Set<string>(startStepId);
+    if (startStep) {
+      visited.add(startStepId);
+
+      const queue: string[] = [startStepId];
       let currentY = 0;
       while (queue.length > 0) {
         currentY = currentY + 1;
@@ -84,6 +109,7 @@ export class GraphsProcessFlowComponent {
         });
       }
     }
+    
 
     // calculat x and y for unconnected nodes
     const maxy = Math.max(...stepIds.map(key => this.relationship[key].y));
@@ -93,6 +119,8 @@ export class GraphsProcessFlowComponent {
         this.relationship[key].y = maxy + 1;
       }
     })
+
+    console.log(this.relationship);
     
   }
 

@@ -21,25 +21,52 @@
         </div>
 
         <div formGroupName="steps" *ngIf="selectedStepId !== '__select_process_type'">
-            <div *ngFor="let stepForm of processTypeFormStepsForm.controls | keyvalue">
-                <!-- Start step -->
-                <div *ngIf="selectedStepType === 'start'" [formGroupName]="stepForm.key">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2>Start Step</h2>
-                            <div class="input-group">
-                                <input formControlName="display_name" type="text" class="form-control">
+            <div [formGroupName]="selectedStepId">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Step</h2>
+                        <div class="input-group">
+                            <input formControlName="display_name" type="text" class="form-control">
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="start" [value]="'start'">
+                                <label class="form-check-label" for="start">Start</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="automated" [value]="'automated'">
+                                <label class="form-check-label" for="automated">Automated</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="manual" [value]="'manual'">
+                                <label class="form-check-label" for="manual">Manual</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="end" [value]="'end'">
+                                <label class="form-check-label" for="end">End</label>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div formGroupName="next_step" class="card">
+                    <div class="card-body">
+                        <h2>Next Steps</h2>
+                        <button type="button" (click)="onGenerateNewNextStep(selectedStepId)">Add Next Step</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- <div *ngFor="let stepForm of processTypeFormStepsForm.controls | keyvalue; trackBy: trackByStepId;">
+                <div *ngIf="selectedStepType === 'start'" [formGroupName]="stepForm.key">
+
                     
                     <div class="card">
                         <div class="card-body">
                             <h2>Next Steps</h2>
-                            <button (click)="onAddStepCounter(stepForm.key)">Add Next Step</button>
+                            <button (click)="onGenerateNewNextStep(stepForm.key)">Add Next Step</button>
                             <div *ngFor="let index of generateArrayFromNumber(stepForm.value.get('next_step.next_steps_count')!.value)">
                                 <div class="input-group">
-                                    <input formControlName="display_name" type="text" class="form-control">
+                                    <input type="text" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -47,7 +74,7 @@
 
                 </div>
 
-            </div>
+            </div> -->
 
         </div>
 

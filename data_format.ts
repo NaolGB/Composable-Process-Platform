@@ -162,3 +162,30 @@ const processFlow = {
       },
     }
   };
+
+const x = {
+    "display_name": "", 
+    "documents": "", 
+    "steps": { 
+        "4cafce83-dd74-4f3a-91ab-06b14b17c349": 
+            { 
+                "step_uid": "4cafce83-dd74-4f3a-91ab-06b14b17c349", 
+                "display_name": "Start", "type": "start", "manual_options": {}, 
+                "next_step": { 
+                    "conditional_value": "", 
+                    "conditions": { 
+                        "bfddc1e3-a739-4758-b8fc-2d12f9ac31e9": {
+                            "comparison": [ { "operator": "", "value": "", "logic": "", "next_comparison": "" } ], 
+                            "next_step": "bfddc1e3-a739-4758-b8fc-2d12f9ac31e9" 
+                        }, 
+                        "974d369f-d386-497c-b66f-72d11abdbdf9": { 
+                            "comparison": [ { "operator": "", "value": "", "logic": "", "next_comparison": "" } ], 
+                            "next_step": "974d369f-d386-497c-b66f-72d11abdbdf9" 
+                        } 
+                    } 
+                } 
+            }, 
+        "bfddc1e3-a739-4758-b8fc-2d12f9ac31e9": { "step_uid": "bfddc1e3-a739-4758-b8fc-2d12f9ac31e9", "display_name": "", "type": "automated", "manual_options": {}, "next_step": { "conditional_value": "", "conditions": {} } }, "974d369f-d386-497c-b66f-72d11abdbdf9": { "step_uid": "974d369f-d386-497c-b66f-72d11abdbdf9", "display_name": "", "type": "automated", "manual_options": {}, "next_step": { "conditional_value": "", "conditions": {} } } } } 
+
+
+        
