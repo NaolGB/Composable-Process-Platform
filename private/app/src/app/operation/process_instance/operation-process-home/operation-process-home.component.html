@@ -19,7 +19,10 @@
 </div>
 
 <div class="working-container">
-    <ng-container [ngSwitch]="selectedProcessTypeId">
+    <ng-container [ngSwitch]="selectedWorkingSectionMode">
+        <ng-container *ngSwitchCase="'__working_section_create_new_process_instance'">
+            <ng-container *ngTemplateOutlet="__template_process_instance_create"></ng-container>
+        </ng-container>
         <ng-container *ngSwitchDefault>
             <ng-container *ngTemplateOutlet="__template_process_instance_overview"></ng-container>
         </ng-container>
@@ -40,9 +43,20 @@
                     <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary" (click)="onMasterDataTypeSelected('__button_master_data_type_add_new')">Add New</button>
+                    <button type="button" class="btn btn-primary" (click)="onSelectCreateNewProcessInstance()">Add New</button>
                 </div>
             </div>
         </div>
     </div>
+    <app-component-table [tableData]="filteredProcessInstanceOverviewTable" class="scrollable"></app-component-table>
 </ng-template>
+
+<ng-template #__template_process_instance_create>
+    ji NY! Create new
+</ng-template>
+
+
+<ng-template #__template_process_instance_control>
+    hi NY!
+</ng-template>
+

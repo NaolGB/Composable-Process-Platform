@@ -41,11 +41,6 @@ class ProcessTypeView(APIView):
             fields_dict = None
 
         query = {}
-        # filter by process_type
-        process_type = request.query_params.get('process_type')
-        if process_type:
-            query = {"process_type": process_type}
-
         # ID handling 
         id_param = request.query_params.get('id')
         if id_param:
