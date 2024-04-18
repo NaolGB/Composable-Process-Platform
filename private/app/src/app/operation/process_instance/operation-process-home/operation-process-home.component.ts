@@ -5,13 +5,15 @@ import { CommonModule } from '@angular/common';
 import { TableDataInterface } from '../../../interfaces/design-interfaces';
 import { DataService } from '../../../services/data.service';
 import { TableComponent } from '../../../components/table/table.component';
+import { OperationProcessCreateNewComponent } from '../operation-process-create-new/operation-process-create-new.component';
 
 @Component({
   selector: 'app-operation-process-home',
   standalone: true,
   imports: [
     CommonModule,
-    TableComponent
+    TableComponent,
+    OperationProcessCreateNewComponent
   ],
   templateUrl: './operation-process-home.component.html',
   styleUrl: './operation-process-home.component.scss'
@@ -20,7 +22,7 @@ export class OperationProcessHomeComponent {
   processInstanceList: any[] = [];
   processTypeList: any[] = [];
   selectedProcessTypeId: string = '__button_process_type_overview';
-  selectedProcessInstanceId: string = '__button_process_instance_overview';
+  selectedProcessInstanceId: string | undefined;
   selectedWorkingSectionMode: string = '__working_section_overview';
 
   processInstanceOverviewTable: TableDataInterface | undefined;
@@ -70,8 +72,16 @@ export class OperationProcessHomeComponent {
       }
     );
   }
-  onSelectCreateNewProcessInstance() {
-    this.selectedWorkingSectionMode = '__working_section_create_new_process_instance';
+  onCreateNewProcessInstance() {
+    this.operationAiService.createProcessInstance(this.selectedProcessTypeId).subscribe(
+      (response: any) => {
+        this.selectedProcessInstanceId = response._id;
+        this.selectedWorkingSectionMode = '__working_section_create_new_process_instance';
+      },
+      (error: any) => {
+        console.log('Error: ', error);
+      }
+    );
   }
 
   onFilterTextChange(event: KeyboardEvent) {

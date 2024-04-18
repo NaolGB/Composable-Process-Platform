@@ -75,19 +75,30 @@ example_document_instance_uuid456 = { # _id: 'document_instance_uuid456'
         'name': 'Sales Order 123',
         'billing_block': False,
         'free_text': '234 macbook air 2020, 100 iphone 12',
-        'example_master_data_type_uuid123': [
-            {'name': 'MacBook Air 2020', 'quantity': 234},
-            {'name': 'iPhone 12', 'quantity': 100},
-        ]
     },
-    "master_data_references": {
-        'example_master_data_type_uuid123': {
-            'fields_to_update': ['quantity'],
-            'fields_to_display': ['name', 'quantity'],
-            'content': {
-                'example_master_data_instance_uuid456': {'name': 'MacBook Air 2020', 'quantity': 234},
-                'example_master_data_instance_uuid789': {'name': 'iPhone 12', 'quantity': 100},
-            }
+    'master_data_accessed_fields': ['quantity', 'name'],
+    'master_data': [
+        {'name': 'MacBook Air 2020', 'quantity': 234},
+        {'name': 'iPhone 12', 'quantity': 100},
+    ],
+    "functions": {
+        'example_script_uuid123': {
+            'inputs': {
+                'free_text': {
+                    'source': 'document',
+                    'field': 'free_text',
+                },
+                'quantities': {
+                    'source': 'master_data',
+                    'field': 'quantity',
+                }
+            },
+            'outputs': {
+                'parsed_text': {
+                    'destination': 'document',
+                    'field': 'free_text',
+                }
+            },
         }
     }
 }

@@ -21,4 +21,14 @@ export class OperationApiService {
       .set('fields', '_id,current_step')
     return this.http.get(`${this.operationBaseUrl}/process`, { headers, params });
   }
+
+  createProcessInstance(processTypeId: string){
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
+    const params = new HttpParams()
+      .set('process_type', processTypeId)
+      
+    return this.http.post(`${this.operationBaseUrl}/process/`, { headers, params });
+  }
 }

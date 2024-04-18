@@ -43,7 +43,7 @@
                     <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary" (click)="onSelectCreateNewProcessInstance()">Add New</button>
+                    <button type="button" class="btn btn-primary" (click)="onCreateNewProcessInstance()">Add New</button>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
 </ng-template>
 
 <ng-template #__template_process_instance_create>
-    ji NY! Create new
+    <app-operation-process-create-new class="container-with-scrollable-content" [processInstanceId]="selectedProcessInstanceId"></app-operation-process-create-new>
 </ng-template>
 
 

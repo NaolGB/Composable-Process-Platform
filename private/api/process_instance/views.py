@@ -1,13 +1,17 @@
+import uuid
+from datetime import datetime
+from django.http import HttpRequest
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from process_engine.helpers import generate_id_from_display_name
 from process_engine.mongo_utils import get_client_for_user
 from process_engine.validation import validate_process_type
+from document_instance.views import DocumentInstanceView
 from tenant_provision.__permission__classes import IsUserAuthenticated, IsUserProfileAdmin, IsUserProfileAnalyst, IsUserProfileBusinessUser
 
 class ProcessInstanceView(APIView):
-    permission_classes = [IsUserAuthenticated, IsUserProfileAnalyst]
+    permission_classes = [IsUserAuthenticated, IsUserProfileBusinessUser]
     max_page_size = 50
     default_page_size = 10
 
@@ -60,5 +64,60 @@ class ProcessInstanceView(APIView):
             else:  # List view, no pagination
                 docs = list(collection.find(query, fields_dict))
                 return Response(docs, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def post(self, request):
+        print('hi NY!')
+        # NOTE: used for creating a new empty process instance
+        db = get_client_for_user(request.user)
+        collection = db.process_instance
+
+        # filter by process_type
+        process_type_id = request.query_params.get('process_type')
+        if not process_type_id:
+            return Response({"error": "Please provide a Process Type"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        process_type_document = db.process_type.find_one({"_id": process_type_id})
+        if not process_type_document:
+            return Response({"error": "Process Type not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # initiate document
+        new_process_instance_document = {
+            "_id": str(uuid.uuid4()), 
+            "process_type": process_type_id,
+            "document_instances": [],
+            "current_step": 'start',
+            "status": "created", # created, in-progress, paused, completed, failed, terminated
+            "created_at": datetime.now(),
+            "updated_at": datetime.now(),
+            "created_by": request.user.username,
+            "updated_by": request.user.username,
+        }
+
+        # add document instances
+        process_type_docume_type_ids = process_type_document['documents'].split(',')
+        for document_type_id in process_type_docume_type_ids:
+            request_for_document_instance = HttpRequest()
+            request_for_document_instance.user = request.user
+            request_for_document_instance.method = 'POST'
+            request_for_document_instance.POST = {'document_type': document_type_id}
+
+            response = DocumentInstanceView.as_view()(request_for_document_instance)
+            print('bye NY!')
+
+
+            if response.status_code == status.HTTP_201_CREATED:
+                new_process_instance_document['document_instances'].append(response.data['_id'])
+            else:
+                return Response({"error": "Document instance creation failed"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # post the new process instance
+        try:
+            result = collection.insert_one(new_process_instance_document)
+            if result.acknowledged:
+                return Response(new_process_instance_document, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"error": "Operation not acknowledged"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
