@@ -288,7 +288,6 @@ example_process_instance_uuid123 = { # _id: 'example_process_instance_uuid123'
     "current_step": 'check_credit_limit',
     "responder_users": ['user_uuid123'],
     "status": 'in_progress', # in_progress, completed, failed
-    "events": ['event_instance_uuid123'],
 }
 # process_instance ------------------------------------------------
 

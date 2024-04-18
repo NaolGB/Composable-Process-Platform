@@ -81,4 +81,11 @@ export class DesignApiService {
       .set('fields', '_id,display_name')
     return this.http.get(`${this.designBaseUrl}/process_type`, { headers, params });
   }
+
+  postProcessType(processType: any) {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.idTokenSignal()}`
+    })
+    return this.http.post(`${this.designBaseUrl}/process_type/`, processType, { headers });
+  }
 }

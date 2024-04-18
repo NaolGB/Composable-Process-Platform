@@ -10,12 +10,14 @@ import { permissionBusinessUserGuard } from './guards/permission-business-user.g
 import { DesignDocumentHomeComponent } from './design/document_type/design-document-home/design-document-home.component';
 import { DesignProcessHomeComponent } from './design/process_type/design-process-home/design-process-home.component';
 import { DesignProcessAddNewComponent } from './design/process_type/design-process-add-new/design-process-add-new.component';
+import { OperationProcessHomeComponent } from './operation/process_instance/operation-process-home/operation-process-home.component';
 
 export const routes: Routes = [
     {path: 'design/master-data-type', component: DesignMasterHomeComponent, canActivate: [authLoginGuard, permissionAnalystGuard], pathMatch: 'full'},
     {path: 'design/document-type', component: DesignDocumentHomeComponent, canActivate: [authLoginGuard, permissionAnalystGuard], pathMatch: 'full'},
     {path: 'design/process-type', component: DesignProcessHomeComponent, canActivate: [authLoginGuard, permissionAnalystGuard], pathMatch: 'full'},
     {path: 'design/process-type/add-new', component: DesignProcessAddNewComponent, canActivate: [authLoginGuard, permissionAnalystGuard], pathMatch: 'full'},
+    {path: 'operation/process', component: OperationProcessHomeComponent, canActivate: [authLoginGuard, permissionBusinessUserGuard], pathMatch: 'full'},
     {path: 'profile', component: ProfileComponent, canActivate: [authLoginGuard, permissionBusinessUserGuard], pathMatch: 'full'},
     {path: 'not-allowed', component: NotAllowedComponent, pathMatch: 'full'},
     {path: 'login', component: LoginComponent},

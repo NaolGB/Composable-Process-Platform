@@ -1,6 +1,7 @@
 <div class="selection-container" >
     <button type="button" (click)="reloadProcessFlowGraph()">Reload</button>
     <form [formGroup]="processTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
+        <button type="submit">Publish</button>
 
         <div *ngIf="selectedStepId === '__select_process_type'">
             <div class="input-group">
@@ -53,7 +54,25 @@
                 <div formGroupName="next_step" class="card">
                     <div class="card-body">
                         <h2>Next Steps</h2>
-                        <button type="button" (click)="onGenerateNewNextStep(selectedStepId)">Add Next Step</button>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Step
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="px-3 py-2">
+                                    <input type="text" #newStepInput class="form-control" placeholder="Add New">
+                                    <button type="button" class="btn btn-primary mt-2" 
+                                        (click)="onGenerateNewNextStep(selectedStepId, newStepInput.value)">Add New Step</button>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" *ngFor="let stepTrackerStep of stepsTracker | keyvalue" 
+                                    (click)="onAddExistingNextStep(selectedStepId, stepTrackerStep.key)"
+                                    [disabled]="stepTrackerStep.key === selectedStepId || stepsTracker[selectedStepId].nextSteps.includes(stepTrackerStep.key)"
+                                >
+                                    {{stepTrackerStep.value.displayName || stepTrackerStep.key}}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -71,11 +90,6 @@
             </div>
 
         </div>
-
-        <div>
-            <button type="submit" class="btn btn-primary" [disabled]="!processTypeForm.valid">Submit form</button>
-        </div>
-
     </form>
 </div>
 
@@ -91,3 +105,6 @@
 </div>
 
 <app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="documentTypesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)"></app-overlay-sidebar-checkbox>
+
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>

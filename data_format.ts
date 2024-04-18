@@ -170,7 +170,9 @@ const x = {
         "4cafce83-dd74-4f3a-91ab-06b14b17c349": 
             { 
                 "step_uid": "4cafce83-dd74-4f3a-91ab-06b14b17c349", 
-                "display_name": "Start", "type": "start", "manual_options": {}, 
+                "display_name": "Start", 
+                "type": "start", 
+                "manual_options": {}, 
                 "next_step": { 
                     "conditional_value": "", 
                     "conditions": { 

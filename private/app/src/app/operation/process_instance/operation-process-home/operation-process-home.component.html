@@ -1,0 +1,48 @@
+<div class="selection-container">
+    <div>
+        <h1>All Process Types</h1>
+        <p>Select to see process instance</p>
+    </div>
+    <div class="list-group scrollable" *ngIf="processTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action"
+            aria-current="false" 
+            *ngFor="let processType of processTypeList"
+            [class.active]="selectedProcessTypeId === processType._id"
+            (click)="onProcessTypeSelected(processType._id)"
+        >
+            {{processType.display_name || processType._id}}
+            
+        </button>
+    </div>
+</div>
+
+<div class="working-container">
+    <ng-container [ngSwitch]="selectedProcessTypeId">
+        <ng-container *ngSwitchDefault>
+            <ng-container *ngTemplateOutlet="__template_process_instance_overview"></ng-container>
+        </ng-container>
+    </ng-container>
+</div>
+
+<ng-template #__template_process_instance_overview>
+    <div class="card">
+        <div class="card-body">
+            <h2>Process Instances</h2>
+            <h6>List of current process instances</h6>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div class="flex-fill">
+                    <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onMasterDataTypeSelected('__button_master_data_type_add_new')">Add New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

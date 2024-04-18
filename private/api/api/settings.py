@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'document_type',
     'process_type',
     'function',
+    'process_instance',
     'tenant_provision',
     'user_profile',
 ]

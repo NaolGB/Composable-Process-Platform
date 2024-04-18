@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DesignApiService } from '../../services/design-api.service';
 import { CommonModule } from '@angular/common';
 import { ApiResponsePackageInterface, MasterDataTypeInterface, NotificationInterface, TableDataInterface } from '../../../interfaces/design-interfaces';
@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
 export class DesignMasterHomeComponent {
 	masterDataTypeList: any[] = [];
 	selectedMasterDataTypeId: string = '__button_master_data_type_overview';
-	notifications: NotificationInterface[] = [];
+	@Input() notifications: NotificationInterface[] = [];
 
 	overviewMasterDataOverviewTable: TableDataInterface | undefined;
 	filteredOverviewMasterDataOverviewTable: TableDataInterface | undefined;

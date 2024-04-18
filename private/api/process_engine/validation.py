@@ -30,3 +30,15 @@ def validate_document_type(document):
         validation_passed *= type(v) == dict
     print(3, validation_passed)
     return validation_passed
+
+def validate_process_type(document):
+    validation_passed = type(document) == dict
+    validation_passed *=  ("display_name" in document) and ("documents" in document) and ("steps" in document)
+
+    for k, v in document['steps'].items():
+        validation_passed *= "display_name" in v
+        validation_passed *= "type" in v
+        validation_passed *= "manual_options" in v
+        validation_passed *= "next_step" in v
+
+    return validation_passed

@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DesignApiService } from '../../services/design-api.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableComponent } from '../../../components/table/table.component';
-import { TableDataInterface } from '../../../interfaces/design-interfaces';
+import { NotificationInterface, TableDataInterface } from '../../../interfaces/design-interfaces';
 import { DataService } from '../../../services/data.service';
 import { GraphsProcessFlowComponent } from '../../../components/graphs-process-flow/graphs-process-flow.component';
 
@@ -18,6 +18,8 @@ import { GraphsProcessFlowComponent } from '../../../components/graphs-process-f
   styleUrl: './design-process-home.component.scss'
 })
 export class DesignProcessHomeComponent {
+  notifications: NotificationInterface[] = [];
+  
   processTypeList: any[] = [];
   selectedProcessTypeId: string = '__button_process_type_overview';
 
@@ -55,6 +57,14 @@ export class DesignProcessHomeComponent {
       this.router.navigate(['/design/process-type/add-new']);
     }
   }
+
+  addNotification(notification: NotificationInterface) {
+		this.notifications = [...this.notifications, notification];
+	}
+
+	onNotificationDismissed(notification: NotificationInterface) {
+		this.notifications = this.notifications.filter(n => n !== notification);
+	}
 
   onFilterTextChange(event: KeyboardEvent) {
 		const filterText = (event.target as HTMLInputElement).value;

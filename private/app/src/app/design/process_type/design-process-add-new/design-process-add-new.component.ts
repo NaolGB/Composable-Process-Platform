@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GraphsProcessFlowComponent } from '../../../components/graphs-process-flow/graphs-process-flow.component';
-import { CheckboxDataInterface, DocumentTypeInterface, ProcessStep, ProcessTypeInterface } from '../../../interfaces/design-interfaces';
+import { CheckboxDataInterface, DocumentTypeInterface, NotificationInterface, ProcessStep, ProcessTypeInterface } from '../../../interfaces/design-interfaces';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OverlaySidebarCheckboxComponent } from '../../../components/overlay-sidebar-checkbox/overlay-sidebar-checkbox.component';
 import { DataService } from '../../../services/data.service';
 import { DesignApiService } from '../../services/design-api.service';
+import { NotificationComponent } from '../../../components/notification/notification.component';
 
 @Component({
   selector: 'app-design-process-add-new',
@@ -13,6 +14,7 @@ import { DesignApiService } from '../../services/design-api.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    NotificationComponent,
     GraphsProcessFlowComponent,
     OverlaySidebarCheckboxComponent
   ],
@@ -20,6 +22,8 @@ import { DesignApiService } from '../../services/design-api.service';
   styleUrls: ['./design-process-add-new.component.scss']
 })
 export class DesignProcessAddNewComponent {
+  notifications: NotificationInterface[] = [];
+
   selectedStepId: string = '__select_process_type';
   selectedStepType: string = 'start';
   processTypeForm: FormGroup;
@@ -33,12 +37,12 @@ export class DesignProcessAddNewComponent {
 
   // keep track of all stepIds separately from the form to ensure change detection traks the correct step
   // this is necessary because the form is a nested object and change detection does not work as expected
-  stepsTracker: {[key:string]: string[]} = {};
+  stepsTracker: {[key:string]: {displayName: string, nextSteps: string[]}} = {};
 
   constructor(private formBuilder: FormBuilder, private dataService: DataService, private designApiService: DesignApiService) { 
     // create start step
     const startStepUid = dataService.generateUUID();
-    this.stepsTracker[startStepUid] = [startStepUid];
+    this.stepsTracker[startStepUid] = {displayName: 'Start', nextSteps: []};
 
     // initialize form with start step
     this.processTypeForm = this.formBuilder.group({ // initialize form with start step
@@ -158,13 +162,13 @@ export class DesignProcessAddNewComponent {
     );
   }
 
-  onGenerateNewNextStep(currentStepId: string) {
+  onGenerateNewNextStep(currentStepId: string, nextStepDisplayName: string) {
     const newStepUid: string = this.dataService.generateUUID();
-    this.stepsTracker[newStepUid] = [];
-    this.stepsTracker[currentStepId].push(newStepUid);
+    this.stepsTracker[newStepUid] = {displayName: nextStepDisplayName, nextSteps: []};
+    this.stepsTracker[currentStepId].nextSteps.push(newStepUid);
 
     // add new step to form
-    const newStepForm = this.generateStepForm('automated', newStepUid);
+    const newStepForm = this.generateStepForm('automated', newStepUid, nextStepDisplayName);
     this.processTypeFormStepsForm.addControl(newStepUid, newStepForm);
 
     // connect new step to selected step
@@ -172,12 +176,38 @@ export class DesignProcessAddNewComponent {
     this.reloadProcessFlowGraph();
   }
 
-  generateArrayFromNumber(num: number): number[] {
-    return Array(num).fill(0).map((x, i) => i);
+  onAddExistingNextStep(currentStepId: string, nextStepId: string) {
+    this.stepsTracker[currentStepId].nextSteps.push(nextStepId);
+    this.addCondition(currentStepId, nextStepId);
+    this.reloadProcessFlowGraph();
   }
 
+  addNotification(notification: NotificationInterface) {
+		this.notifications = [...this.notifications, notification];
+	}
+
+	onNotificationDismissed(notification: NotificationInterface) {
+		this.notifications = this.notifications.filter(n => n !== notification);
+	}
+
   onSubmit() {
-    console.log(this.processTypeForm.getRawValue());
+    this.designApiService.postProcessType(this.processType).subscribe(
+      (response: any) => {
+        this.addNotification({
+          message: 'Process Type Created Successfully',
+          type: 'success',
+          dismissed: false,
+          remainingTime: 5000
+        });
+    },
+    (error: any) => {
+      this.addNotification({
+        message: error.message,
+        type: 'error',
+        dismissed: false,
+        remainingTime: 5000
+      });
+    });
   }
 
   trackByStepId(index: number, stepId: string): string {
