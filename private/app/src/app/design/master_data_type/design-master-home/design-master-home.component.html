@@ -1,7 +1,9 @@
 <div class="selection-container">
     <div class="card title-card">
-        <h1>All Master Data</h1>
-        <p>Select to edit</p>
+        <div class="card-body">
+            <h3>All Master Data</h3>
+            <p>Select to edit</p>
+        </div>
     </div>
     <div class="list-group scrollable" *ngIf="masterDataTypeList">
         <button 
@@ -10,7 +12,7 @@
             [class.active]="selectedMasterDataTypeId === '__button_master_data_type_overview'"
             (click)="onMasterDataTypeSelected('__button_master_data_type_overview')"
         >
-            <p>Master Data Overview</p>
+            Master Data Overview
         </button>
         <button 
             type="button"
@@ -46,23 +48,23 @@
 <ng-template #__template_master_data_type_overview>
     <div class="card title-card">
         <div class="card-body">
-            <h2>Master Data Overview</h2>
-            <h6>List of all master data</h6>
+            <h3>Master Data Overview</h3>
+            <p>List of all master data</p>
         </div>
     </div>
+
     <div class="card control-card">
-        <div class="card-body">
-            <div class="d-flex justify-content-between">
-                <div class="flex-fill">
-                    <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
-                </div>
-                <div>
-                    <button type="button" class="btn btn-primary" (click)="onMasterDataTypeSelected('__button_master_data_type_add_new')">Add New</button>
-                </div>
+        <div class="card-body d-flex justify-content-between">
+            <div class="flex-fill">
+                <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" (click)="onMasterDataTypeSelected('__button_master_data_type_add_new')">Add New</button>
             </div>
         </div>
     </div>
     <app-component-table class="card scrollable" [tableData]="filteredOverviewMasterDataOverviewTable"></app-component-table>
+
 </ng-template>
 
 <ng-template #__template_master_data_type_add_new>

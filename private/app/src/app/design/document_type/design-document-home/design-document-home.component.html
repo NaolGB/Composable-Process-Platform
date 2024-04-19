@@ -1,8 +1,11 @@
 <div class="selection-container">
-    <div>
-        <h1>All Document Type</h1>
-        <p>Select to edit</p>
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Document Type</h3>
+            <p>Select to edit</p>
+        </div>  
     </div>
+
     <div class="list-group scrollable" *ngIf="documentTypeList">
         <button 
             type="button"
@@ -10,7 +13,7 @@
             [class.active]="selectedDocumentTypeId === '__button_document_type_overview'"
             (click)="onDocumentTypeSelected('__button_document_type_overview')"
         >
-            <p>Master Data Overview</p>
+            Document Type Overview
         </button>
         <button 
             type="button"
@@ -20,9 +23,7 @@
             [class.active]="selectedDocumentTypeId === documentType._id"
             (click)="onDocumentTypeSelected(documentType._id)"
         >
-            <span *ngIf="documentType.display_name">{{documentType.display_name}}</span>
-            <span *ngIf="!documentType.display_name">{{documentType._id}}</span>
-            
+            {{documentType.display_name || documentType._id}}            
         </button>
     </div>
 </div>
@@ -43,21 +44,19 @@
 </div>
 
 <ng-template #__template_document_type_overview>
-    <div class="card">
+    <div class="card title-card">
         <div class="card-body">
-            <h2>Document Type Overview</h2>
-            <h6>List of all document types</h6>
+            <h3>Document Type Overview</h3>
+            <p>List of all document types</p>
         </div>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex justify-content-between">
-                <div class="flex-fill">
-                    <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
-                </div>
-                <div>
-                    <button type="button" class="btn btn-primary" (click)="onDocumentTypeSelected('__button_document_type_add_new')">Add New</button>
-                </div>
+    <div class="card control-card">
+        <div class="card-body d-flex justify-content-between">
+            <div class="flex-fill">
+                <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" (click)="onDocumentTypeSelected('__button_document_type_add_new')">Add New</button>
             </div>
         </div>
     </div>

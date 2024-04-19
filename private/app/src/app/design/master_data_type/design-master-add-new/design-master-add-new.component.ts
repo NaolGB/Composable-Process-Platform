@@ -51,7 +51,11 @@ export class DesignMasterAddNewComponent {
   }
 
   get displayName()  {
-    return this.masterDataTypeForm.get('display_name')?.value;
+    return this.masterDataTypeForm.get('display_name')?.value || '';
+  }
+
+  get placeHodlerId() {
+    return this.dataService.nameToId(this.displayName);
   }
 
   addAttribute() {

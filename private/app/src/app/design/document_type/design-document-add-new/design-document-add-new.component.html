@@ -1,16 +1,19 @@
-<div class="card">
+<div class="card title-card">
     <div class="card-body">
-        <h2>Add New Master Data Type</h2>
+        <h3>Add New Document Type</h3>
+        <p>{{placeHodlerId}}</p>
     </div>
 </div>
+
 <ul class="nav nav-underline nav-fill">
     <li class="nav-item">
       <a class="nav-link" [class.active]="selectedTab !== 'function'" (click)="onSelectedTab('attribute')">Attributes</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [class.active]="selectedTab === 'function'" (click)="onSelectedTab('function')">Function</a>
+      <p class="nav-link" [class.active]="selectedTab === 'function'" (click)="onSelectedTab('function')">Functions</p>
     </li>
 </ul>
+
 <form [formGroup]="documentTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
     <div *ngIf="selectedTab === 'attribute'" class="container-with-scrollable-content">
         <div class="input-group">

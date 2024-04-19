@@ -86,6 +86,10 @@ export class DesignDocumentAddNewComponent {
     return this.documentTypeForm.get('display_name')?.value;
   }
 
+  get placeHodlerId() {
+    return this.dataService.nameToId(this.displayName);
+  }
+
   get master_data_type() {
     return this.documentTypeForm.get('master_data_type') as FormGroup;
   }
