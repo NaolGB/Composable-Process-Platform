@@ -1,0 +1,38 @@
+<div class="selection-container">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Active Requests</h3>
+            <p>Select to respond</p>
+        </div>
+    </div>
+    <div class="list-group scrollable" *ngIf="requestsDummyDataIds">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let request of requestsDummyDataIds"
+            [class.active]="selectedRequestId === request._id"
+            (click)="onRequestSelected(request._id)"
+        >
+            {{request.display_name || request._id}}            
+        </button>
+    </div>
+</div>
+
+<div class="working-container" *ngIf="!selectedRequestId">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>Requests</h3>
+            <p>Please select a request to repond to it</p>
+        </div>
+    </div>
+</div>
+
+<div class="working-container" *ngIf="selectedRequestId">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>{{requestsDummyData.display_name}}</h3>
+            <p>{{requestsDummyData.process_type}}</p>
+        </div>
+    </div>
+</div>

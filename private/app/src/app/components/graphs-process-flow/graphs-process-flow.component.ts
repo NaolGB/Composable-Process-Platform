@@ -183,6 +183,8 @@ Object.entries(this.relationship).forEach(([key, value]) => {
     if (child) {
       const centerX1 = xScale(value.x) + 25;
       const centerY1 = yScale(value.y) + 25;
+      const topY1 = yScale(value.y);
+      const bottomY1 = yScale(value.y) + 50;
       const centerX2 = xScale(child.x) + 25;
       const centerY2 = yScale(child.y) + 25;
 
@@ -193,7 +195,7 @@ Object.entries(this.relationship).forEach(([key, value]) => {
       if (isReverse) {
         // For reverse direction: step up before moving horizontally
         const horizontalOffset = 5; // Offset to avoid overlapping lines
-        pathD = `M ${centerX1+horizontalOffset} ${centerY1} V ${centerY2} H ${centerX2+25+arrowheadSize}`;
+        pathD = `M ${centerX1+horizontalOffset} ${topY1} V ${centerY2} H ${centerX2+25+arrowheadSize}`;
       } 
       // else if (isSibling) {
       //   // For siblings: step horizontally to differentiate
@@ -203,7 +205,7 @@ Object.entries(this.relationship).forEach(([key, value]) => {
       else {
         // Normal downward connection: a simple step down, then over
         const midY = centerY1 + (centerY2 - centerY1) / 2;
-        pathD = `M ${centerX1} ${centerY1} V ${midY} H ${centerX2} V ${centerY2-25-arrowheadSize}`;
+        pathD = `M ${centerX1} ${bottomY1} V ${midY} H ${centerX2} V ${centerY2-25-arrowheadSize}`;
       }
 
       group.append('path')
@@ -216,34 +218,67 @@ Object.entries(this.relationship).forEach(([key, value]) => {
   });
 });
 
-      
+          
     Object.entries(this.relationship).forEach(([key, value]) => {
       const nodeGroup = group.append('g'); // Create a group for each node and text
-    
+
+      // Rectangle for the node
       nodeGroup.append('rect')
-        .attr('x', xScale(value.x))
-        .attr('y', yScale(value.y))
-        .attr('width', 50)  // Static size for now, but will be scaled by zoom
-        .attr('height', 50)
-        .style('fill', 'steelblue')
-        .on('click', (event) => this.handleNodeClick(event, key));
-    
-      nodeGroup.append('text')
-        .attr('x', xScale(value.x) + 25) 
-        .attr('y', yScale(value.y) + 70) 
-        .attr('text-anchor', 'middle') 
-        .text(this.relationship[key].display_name) 
-        .style('font-size', '16px'); 
-    
-      
+          .attr('x', xScale(value.x))
+          .attr('y', yScale(value.y))
+          .attr('width', 50)  // Static size for now, but will be scaled by zoom
+          .attr('height', 50)
+          .attr('rx', 1) // Set the x-axis radius of the rectangle to 1px
+          .attr('ry', 1) // Set the y-axis radius of the rectangle to 1px
+          .style('stroke', 'black')
+          .style('fill', 'transparent') // Set the fill color to none
+          .on('click', (event) => this.handleNodeClick(event, key));
+
+      // Text configuration
+      const displayName = this.relationship[key].display_name;
+      const charsPerLine = 10;
+      const lineHeight = 20; // Line height in pixels
+      const lines = []; // Array to hold lines of text
+      for (let start = 0; start < displayName.length; start += charsPerLine) {
+          lines.push(displayName.substring(start, start + charsPerLine));
+      }
+
+      // Background rectangle for the text, dynamically sized
+      const textWidth = 8 * charsPerLine; // Example width based on character size
+      const textHeight = lines.length * lineHeight;
+      nodeGroup.append('rect')
+          .attr('x', xScale(value.x) + 25 - (textWidth / 2))
+          .attr('y', yScale(value.y) + 70 - textHeight / 2)
+          .attr('width', textWidth + (8))
+          .attr('height', textHeight + (8))
+          .attr('rx', 5)
+          .attr('ry', 5)
+          .style('fill', 'white');
+
+      // Text element with multiple tspan for each line
+      const textElement = nodeGroup.append('text')
+          .attr('x', xScale(value.x) + 25)
+          .attr('y', yScale(value.y) + 70 - textHeight / 2 + lineHeight)
+          .attr('text-anchor', 'middle')
+          .style('font-size', '16px')
+          .style('pointer-events', 'none');
+
+      lines.forEach((line, index) => {
+          textElement.append('tspan')
+              .attr('x', xScale(value.x) + 25)
+              .attr('dy', `${index > 0 ? lineHeight : 0}px`)
+              .text(line);
+      });
+
       const zoom = d3.zoom<SVGSVGElement, unknown>()
-        .scaleExtent([0.1, 100]) 
-        .on('zoom', (event) => {
-          group.attr('transform', event.transform);
-        });
-    
+          .scaleExtent([0.1, 100])
+          .on('zoom', (event) => {
+              group.attr('transform', event.transform);
+          });
+
       svg.call(zoom);
     });
+
   }
   
 }

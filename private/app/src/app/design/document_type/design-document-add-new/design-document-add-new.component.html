@@ -25,8 +25,10 @@
                     {{opt.display_name || opt._id}}
                 </option>
             </select>
-            <button type="button" (click)="onOpenSidebar('fields_to_display')">Select fields to display</button>
-            <button type="button" (click)="onOpenSidebar('fields_to_update')">Select fields to update</button>
+            <div class="btn-group" role="group">
+                <button type="button" (click)="onOpenSidebar('fields_to_display')" class="btn btn-outline-primary">Select fields to display</button>
+                <button type="button" (click)="onOpenSidebar('fields_to_update')" class="btn btn-outline-primary">Select fields to update</button>
+            </div>
         </div>
 
         <div formArrayName="attributes" class="scrollable">
@@ -39,14 +41,17 @@
                 <div class="input-group-text">
                     <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" [checked]="attribute.get('is_required')?.value || false">
                 </div>
-                <button (click)="onRemoveAttribute(i)" type="button" class="btn-close"></button>
+                <div (click)="onRemoveAttribute(i)"class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                    </svg>
+                </div>
             </div>
         </div>
         <div class="d-flex justify-content-between">
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button (click)="onAddAttribute()" class="btn btn-secondary flex-fill" type="button">add attr</button>
-            </div>
-            <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Submit form</button>
+            <button (click)="onAddAttribute()" class="btn btn-secondary flex-fill" type="button">Add Attribute</button>
+            <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Save</button>
         </div>
     </div>
 
@@ -54,13 +59,13 @@
         <div formArrayName="functions" class="scrollable">
             <div *ngFor="let function of functions.controls; let functionIndex=index trackBy: functionTrackBy" [formGroupName]="functionIndex" class="input-group">
                 <select formControlName="functionId" class="form-select" (change)="onFunctionSelect(functionIndex)">
-                    <option *ngFor="let opt of functionsList" [ngValue]="opt._id">{{opt._id}}</option>
+                    <option *ngFor="let opt of functionsList" [ngValue]="opt._id">{{opt.display_name || opt._id}}</option>
                 </select>
 
                 <!-- the the input control at index inputIndex of the funciton_inputs control for function at index i -->
                 <div formArrayName="functionInputs">
                     <div *ngFor="let input of functions.value[functionIndex].functionInputs let inputIndex=index; trackBy: inputTrackBy" [formGroupName]="inputIndex" >
-                        <label>Source:</label>
+                        <label>Input</label>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" formControlName="source" [value]="'master_data'">
                             <label class="form-check-label">Master Data</label>
@@ -90,7 +95,7 @@
 
                 <div formArrayName="functionOutputs">
                     <div *ngFor="let output of functions.value[functionIndex].functionOutputs let outputIndex=index; trackBy: outputTrackBy" [formGroupName]="outputIndex" >
-                        <label>Destination:</label>
+                        <label>Output</label>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" formControlName="destination" [value]="'master_data'">
                             <label class="form-check-label">Master Data</label>
@@ -113,16 +118,19 @@
                     </div>
                 </div>
 
-                <button (click)="onRemoveFunction(functionIndex)" type="button" class="btn-close"></button>
+                <div (click)="onRemoveFunction(functionIndex)"class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                    </svg>
+                </div>
             </div>
         </div>
         <div class="d-flex justify-content-between">
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button (click)="onAddFunction()" class="btn btn-secondary flex-fill" type="button">add func</button>
-            </div>
-            <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Submit form</button>
+            <button (click)="onAddFunction()" class="btn btn-secondary flex-fill" type="button">Add Function</button>
+            <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Save</button>
         </div>
     </div>
 </form>
 
-<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="masterDataTypeAttributesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)"></app-overlay-sidebar-checkbox>
+<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="masterDataTypeAttributesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)" [sidebarTitle]="'Select Fields'" [sidebarSubtitle]="selectedMasterData.display_name"></app-overlay-sidebar-checkbox>
