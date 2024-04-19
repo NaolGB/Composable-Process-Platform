@@ -29,6 +29,6 @@ export class OperationApiService {
     const params = new HttpParams()
       .set('process_type', processTypeId)
       
-    return this.http.post(`${this.operationBaseUrl}/process/`, { headers, params });
-  }
+    return this.http.post(`${this.operationBaseUrl}/process/`, {}, { headers, params }); // need to send {} as body
+  } 
 }

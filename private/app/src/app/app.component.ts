@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { DesignMasterHomeComponent } from './design/master_data_type/design-master-home/design-master-home.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
@@ -28,6 +28,10 @@ export class AppComponent implements OnInit{
   generalApiService = inject(GeneralApiService)
   navbarExpanded = false; 
 
+  constructor(
+    private router: Router
+  ) {}
+
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
       if(user) {
@@ -54,5 +58,9 @@ export class AppComponent implements OnInit{
   
   toggleNavbar() {
     this.navbarExpanded = !this.navbarExpanded; 
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 }

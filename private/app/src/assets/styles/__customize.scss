@@ -1,0 +1,28 @@
+@import './_spacing';
+.title-card {
+    background-color: transparent;
+    border: none;
+    margin-bottom: $spacing-1;
+
+    .card-body {
+        padding-left: 0;
+    }
+
+    .needs-padding {
+        padding-left: $spacing-1;
+    }
+}
+
+.control-card {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+
+    .card-body {
+        padding: 0;
+    }
+}
+
+.list-group-item {
+    border: none;
+}
