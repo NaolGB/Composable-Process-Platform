@@ -108,9 +108,17 @@
                 <div class="card">
                     <div class="card-body">
                         <h2>Document</h2>
-                        <select formControlName="document_type" class="form-select">
+                        <select formControlName="document_type" class="form-select" (change)="onSelectDocumentType(selectedStepId)">
                             <option *ngFor="let document of selectedDocumentTypes; let listIndex=index" [value]="document.id">
                                 {{ document.display_name || document.id}}
+                            </option>
+                        </select> 
+                    </div>
+                    <div class="card-body">
+                        <h2>Function</h2>
+                        <select formControlName="__function" class="form-select">
+                            <option *ngFor="let _func of selectedDocumentTypeObject?.functions| keyvalue; let listIndex=index" [value]="_func.key">
+                                {{ _func.key}}
                             </option>
                         </select> 
                     </div>

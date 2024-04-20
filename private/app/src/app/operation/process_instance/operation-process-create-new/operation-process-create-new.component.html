@@ -1,2 +1,23 @@
-<!-- {{processInstance | json}} -->
-hi NY
+<div class="card">
+    <div class="card-body">
+        <h2>{{processInstanceDummyData.process_type.display_name || processInstanceDummyData.process_type._id}}</h2>
+        <h6>{{processInstanceDummyData.current_step}}</h6>
+    </div>
+</div>
+
+<div class="card container-with-scrollable-content">
+    <div class="card-body container-with-scrollable-content">
+        <h4>Documents</h4>
+        <form [formGroup]="dummyDocForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit('option')">
+            <div formGroupName="attributes" class="scrollable">
+                <div *ngFor="let attribute of attributes.controls | keyvalue; let i=index" class="input-group">
+                    <input  formControlName="attribute.key" type="text" class="form-control" [placeholder]="attribute.key">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-secondary flex-fill" type="button">Cancel</button>
+                <button class="btn btn-primary flex-fill" type="submit" [disabled]="false">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -112,11 +112,14 @@ export class DesignProcessAddNewComponent {
     return this.processTypeFormStepsForm.get(stepId) as FormGroup;
   }
 
+
+
   onOpentSidebar() {
     this.showSidebar = true;
   }
 
-  onSelectDocumentType(documentTypeId: string) {
+  onSelectDocumentType(selectedStepId: string) {
+    const documentTypeId = this.processTypeFormStepsForm.get(selectedStepId)!.get('document_type')?.value;
     this.designApiService.getDocumentType(documentTypeId).subscribe(
       (response: any) => {
       this.selectedDocumentTypeObject = response;

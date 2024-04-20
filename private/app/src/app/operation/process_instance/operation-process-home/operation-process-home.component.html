@@ -1,7 +1,9 @@
 <div class="selection-container">
-    <div>
-        <h1>All Process Types</h1>
-        <p>Select to see process instance</p>
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Process Types</h3>
+            <p>Select to see process instance</p>
+        </div>
     </div>
     <div class="list-group scrollable" *ngIf="processTypeList">
         <button 
@@ -30,10 +32,10 @@
 </div>
 
 <ng-template #__template_process_instance_overview>
-    <div class="card">
+    <div class="card title-card">
         <div class="card-body">
-            <h2>Process Instances</h2>
-            <h6>List of current process instances</h6>
+            <h3>Process Instances</h3>
+            <p>List of current process instances</p>
         </div>
     </div>
     <div class="card">
@@ -52,7 +54,7 @@
 </ng-template>
 
 <ng-template #__template_process_instance_create>
-    <app-operation-process-create-new class="container-with-scrollable-content" [processInstanceId]="selectedProcessInstanceId"></app-operation-process-create-new>
+    <app-operation-process-create-new class="container-with-scrollable-content" [processInstanceId]="selectedProcessInstanceId" (apiResposnse)="handleProcessInstanceCreateNewApiResponse($event)"></app-operation-process-create-new>
 </ng-template>
 
 
@@ -60,3 +62,5 @@
     hi NY!
 </ng-template>
 
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>

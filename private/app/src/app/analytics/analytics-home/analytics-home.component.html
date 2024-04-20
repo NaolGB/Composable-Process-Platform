@@ -1,1 +1,64 @@
-<p>analytics-home works!</p>
+<div class="selection-container">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Master Data</h3>
+            <p>Select to edit</p>
+        </div>
+    </div>
+    <div class="list-group scrollable" *ngIf="processTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            [class.active]="selectedProcessTypeId === '__button_process_type_overview'"
+            (click)="onProcessTypeSelected('__button_master_data_type_overview')"
+        >
+            Overview
+        </button>
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let processType of processTypeList"
+            [class.active]="selectedProcessTypeId === processType._id"
+            (click)="onProcessTypeSelected(processType._id)"
+        >
+            {{processType.display_name || processType._id}}
+            
+        </button>
+    </div>
+</div>
+
+
+<div class="working-container">
+    <ul class="nav nav-underline nav-fill">
+        <li class="nav-item">
+          <p class="nav-link" [class.active]="selectedAnalyticsMode === '__analytics_control_tower'" (click)="onSelectAnalyticsMode('__analytics_control_tower')">Control Tower</p>
+        </li>
+        <li class="nav-item">
+            <p class="nav-link" [class.active]="selectedAnalyticsMode === '__analytics_flow'" (click)="onSelectAnalyticsMode('__analytics_flow')">Process Flow</p>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="selectedAnalyticsMode === '__analytics_drilldown'" (click)="onSelectAnalyticsMode('__analytics_drilldown')">Drilldown</a>
+        </li>
+    </ul>
+    <ng-container [ngSwitch]="selectedProcessTypeId">
+        <ng-container *ngSwitchDefault>
+            <ng-container *ngTemplateOutlet="__template_analytics_drilldown"></ng-container>
+        </ng-container>
+    </ng-container>
+</div>
+
+<ng-template #__template_analytics_drilldown>
+    <div class="card control-card">
+        <div class="card-body d-flex justify-content-between">
+            <div></div>
+            <select>
+                <option>Master Data</option>
+                <option>Documents</option>
+                <option selected>Events</option>
+            </select>
+        </div>
+    </div>
+    <app-component-table class="card scrollable" [tableData]="filteredEventTableData"></app-component-table>
+    
+</ng-template>

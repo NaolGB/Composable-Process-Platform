@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { OperationApiService } from '../../services/operation-api.service';
 import { DesignApiService } from '../../../design/services/design-api.service';
 import { CommonModule } from '@angular/common';
-import { TableDataInterface } from '../../../interfaces/design-interfaces';
+import { NotificationInterface, TableDataInterface } from '../../../interfaces/design-interfaces';
 import { DataService } from '../../../services/data.service';
 import { TableComponent } from '../../../components/table/table.component';
 import { OperationProcessCreateNewComponent } from '../operation-process-create-new/operation-process-create-new.component';
+import { NotificationComponent } from '../../../components/notification/notification.component';
 
 @Component({
   selector: 'app-operation-process-home',
@@ -13,12 +14,14 @@ import { OperationProcessCreateNewComponent } from '../operation-process-create-
   imports: [
     CommonModule,
     TableComponent,
+    NotificationComponent,
     OperationProcessCreateNewComponent
   ],
   templateUrl: './operation-process-home.component.html',
   styleUrl: './operation-process-home.component.scss'
 })
 export class OperationProcessHomeComponent {
+  @Input() notifications: NotificationInterface[] = [];
   processInstanceList: any[] = [];
   processTypeList: any[] = [];
   selectedProcessTypeId: string = '__button_process_type_overview';
@@ -73,16 +76,47 @@ export class OperationProcessHomeComponent {
     );
   }
   onCreateNewProcessInstance() {
-    this.operationAiService.createProcessInstance(this.selectedProcessTypeId).subscribe(
-      (response: any) => {
-        this.selectedProcessInstanceId = response._id;
-        this.selectedWorkingSectionMode = '__working_section_create_new_process_instance';
-      },
-      (error: any) => {
-        console.log('Error: ', error);
-      }
-    );
+    this.selectedWorkingSectionMode = '__working_section_create_new_process_instance';
+
+    // this.operationAiService.createProcessInstance(this.selectedProcessTypeId).subscribe(
+    //   (response: any) => {
+    //     this.selectedProcessInstanceId = response._id;
+    //     this.selectedWorkingSectionMode = '__working_section_create_new_process_instance';
+    //   },
+    //   (error: any) => {
+    //     console.log('Error: ', error);
+    //   }
+    // );
   }
+
+  handleProcessInstanceCreateNewApiResponse(response: any) {
+    if (response.success) {
+      this.addNotification({
+        message: response.message,
+        type: 'success',
+        dismissed: false,
+        remainingTime: 5000
+      });
+      this.onProcessTypeSelected(this.selectedProcessTypeId);
+    }
+    else {
+      this.addNotification({
+        message: response.message,
+        type: 'error',
+        dismissed: false,
+        remainingTime: 5000
+      });
+
+    }
+  }
+
+  addNotification(notification: NotificationInterface) {
+		this.notifications = [...this.notifications, notification];
+	}
+
+	onNotificationDismissed(notification: NotificationInterface) {
+		this.notifications = this.notifications.filter(n => n !== notification);
+	}
 
   onFilterTextChange(event: KeyboardEvent) {
 		const filterText = (event.target as HTMLInputElement).value;

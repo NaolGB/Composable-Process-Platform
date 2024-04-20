@@ -33,7 +33,6 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    console.log('submitting form');
     const rawLoginFormValue = this.rawLoginForm.value;
     this.authService
       .login(rawLoginFormValue.email!, rawLoginFormValue.password!)

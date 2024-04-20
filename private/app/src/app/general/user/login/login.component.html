@@ -5,7 +5,7 @@
 
 <div class="working-container">
     <form [formGroup]="rawLoginForm" class="container-with-limited-input" (ngSubmit)="onSubmit()">
-        <h2>Sign in</h2>
+        <h3>Sign in</h3>
         <div *ngIf="errorMessage">
             <div class="alert alert-danger" role="alert">
                 {{errorMessage}}
