@@ -1,0 +1,66 @@
+<div class="selection-container">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Process Types</h3>
+            <p>Select to see process instance</p>
+        </div>
+    </div>
+    <div class="list-group scrollable" *ngIf="processTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action"
+            aria-current="false" 
+            *ngFor="let processType of processTypeList"
+            [class.active]="selectedProcessTypeId === processType._id"
+            (click)="onProcessTypeSelected(processType._id)"
+        >
+            {{processType.display_name || processType._id}}
+            
+        </button>
+    </div>
+</div>
+
+<div class="working-container">
+    <ng-container [ngSwitch]="selectedWorkingSectionMode">
+        <ng-container *ngSwitchCase="'__working_section_create_new_process_instance'">
+            <ng-container *ngTemplateOutlet="__template_process_instance_create"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <ng-container *ngTemplateOutlet="__template_process_instance_overview"></ng-container>
+        </ng-container>
+    </ng-container>
+</div>
+
+<ng-template #__template_process_instance_overview>
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>Process Instances</h3>
+            <p>List of current process instances</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div class="flex-fill">
+                    <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onCreateNewProcessInstance()">Add New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-component-table [tableData]="filteredProcessInstanceOverviewTable" class="scrollable"></app-component-table>
+</ng-template>
+
+<ng-template #__template_process_instance_create>
+    <app-operation-process-create-new class="container-with-scrollable-content" [processInstanceId]="selectedProcessInstanceId" (apiResposnse)="handleProcessInstanceCreateNewApiResponse($event)"></app-operation-process-create-new>
+</ng-template>
+
+
+<ng-template #__template_process_instance_control>
+    hi NY!
+</ng-template>
+
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>

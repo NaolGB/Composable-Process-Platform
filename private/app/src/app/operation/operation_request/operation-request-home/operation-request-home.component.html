@@ -1,0 +1,67 @@
+<div class="selection-container">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Active Requests</h3>
+            <p>Select to respond</p>
+        </div>
+    </div>
+    <div class="list-group scrollable" *ngIf="requestsDummyDataIds">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let request of requestsDummyDataIds"
+            [class.active]="selectedRequestId === request._id"
+            (click)="onRequestSelected(request._id)"
+        >
+            {{request.display_name || request._id}}            
+        </button>
+    </div>
+</div>
+
+<div class="working-container" *ngIf="!selectedRequestId">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>Requests</h3>
+            <p>Please select a request to repond to it</p>
+        </div>
+    </div>
+</div>
+
+<div class="working-container" *ngIf="selectedRequestId">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>{{display_name}}</h3>
+            <p>{{process_type}}</p>
+        </div>
+    </div>
+    <div class="card container-with-scrollable-content">
+        <div class="card-body container-with-scrollable-content">
+            <h4>Documents</h4>
+            <form [formGroup]="dummyDocForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit('option')">
+                <div formGroupName="attributes" class="scrollable">
+                    <div *ngFor="let attribute of attributes.controls | keyvalue; let i=index" class="input-group">
+                        <input  formControlName="attribute.key" type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle flex-fill" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Options
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <button class="dropdown-item" *ngFor="let responseOption of optionsDummyData" type="submit">
+                                {{responseOption}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>

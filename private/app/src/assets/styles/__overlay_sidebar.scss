@@ -1,0 +1,45 @@
+@import './_colors';
+
+.sidebar-container {
+    display: flex;
+    height: 100vh; 
+    width: 100vw; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+  
+  
+  .overlay {
+    flex-grow: 1; 
+    background: rgba(0, 0, 0, 0.6); 
+    transition: opacity 0.3s ease;
+  }
+  
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 30%; 
+    height: 100%;
+    background-color: $white-2;
+    transition: transform 0.3s ease;
+  }
+
+.overlay-sidebar-main-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .scrollable {
+    flex: 1 1 0; 
+    overflow: auto; 
+    gap: 8px;
+  }
+}
+
+.overlay-sidebar-title-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

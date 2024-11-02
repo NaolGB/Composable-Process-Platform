@@ -1,0 +1,26 @@
+<div class="sidebar-container">
+    <div class="overlay" (click)="onToggleSidebar()"></div>
+    <div class="sidebar">
+        <div class="card overlay-sidebar-title-card">
+            <div class="card-body">
+                <h4>{{sidebarTitle}}</h4>
+                <p>{{sidebarSubtitle}}</p>
+            </div>
+        </div>
+
+        <form [formGroup]="formGroup" (ngSubmit)="onSave()" class="overlay-sidebar-main-section">
+            <div formArrayName="checkboxes" class="scrollable">
+                <div *ngFor="let checkboxControl of checkboxes.controls; let i = index" [formGroupName]="i">
+                    <input formControlName="is_checked" class="form-check-input" type="checkbox" value="" [id]="i">
+                    <label class="form-check-label" [for]="i">
+                        {{checkboxControl.get('display_name')!.value ||checkboxControl.get('id')!.value}}
+                    </label>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-secondary flex-fill" type="button" (click)="onToggleSidebar()">Cancel</button>
+                <button class="btn btn-primary flex-fill" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

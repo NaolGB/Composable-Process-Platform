@@ -1,0 +1,29 @@
+@import '../../../../assets/styles/_components';
+@import '../../../../assets/styles/_colors';
+@import '../../../../assets/styles/_background';
+
+.selection-container {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 100%;
+
+    background-color: $white-0;
+    
+    .scrollable {
+        flex: 1; 
+        overflow: auto; 
+    }
+}
+
+.working-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+
+    .scrollable {
+        flex: 1 1 0; 
+        overflow: scroll; 
+    }
+}

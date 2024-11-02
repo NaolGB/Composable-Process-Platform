@@ -1,0 +1,213 @@
+// Bootstrap customizations ------------------------------------------------
+@import './assets/styles/_colors';
+@import './assets/styles/_spacing';
+@import './assets/styles/_background';
+$border-radius: 1px;
+$spacer: $spacing-2;
+$table-cell-padding-x: $spacing-1;
+$table-cell-padding-y: $spacing-2;
+// $blue: $blue-2;
+$secondary: $black-1;
+
+
+@import 'bootstrap/scss/bootstrap';
+@import './assets/styles/_customize';
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+body {
+    font-family: 'Open Sans', sans-serif;
+  }
+
+// navbar ------------------------------------------------
+.navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: width 0.3s;
+    width: 50px; // required for the transition
+    border-right: 1px solid $gray-0;
+    gap: $spacing-1;
+    padding: $spacing-1;
+
+    .navbar-item-last {
+        margin-bottom: 0;
+    }
+    
+    .navbar-stick-top {
+        align-self: flex-start;
+    }
+    
+    .navbar-routes {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-1;
+        flex: 1 1 0;
+        width: 100%;
+        align-self: flex-start;
+    }
+    
+    .navbar-stick-bottom {
+        display: flex;
+        flex-direction: column;
+        align-self: flex-start;
+        margin-bottom: 0;
+        padding-bottom: 0;
+
+        .navbar-item {
+            margin-bottom: 0;
+        }
+    }
+}
+.navbar-expanded {
+    width: 250px;
+    
+    .navbar-item p {
+        opacity: 1;
+        visibility: visible;
+        transition-delay: 0s; // This ensures that the transition effect kicks in immediately after the navbar finishes transitioning
+    }
+
+    .navbar-item {
+        justify-content: flex-start;
+    }
+}
+
+.navbar-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: $spacing-3;
+    gap: $spacing-1;
+    color: $black-0;
+
+    p {
+        margin: 0; 
+        display: flex;
+        align-items: center; 
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis; 
+        opacity: 0;
+        visibility: hidden;
+        transition: visibility 0s linear 0.3s, opacity 0.3s linear; // Adjust this timing based on your needs
+    }
+}
+.navbar-item svg {
+    transition: fill 0.3s ease, transform 0.3s ease; // Smooth transition for color and transformation
+    cursor: pointer; // Indicates the element is clickable
+    fill: currentColor; // SVG color uses the text color
+}
+
+.navbar-item:hover svg {
+    fill: $black-2; // Darken the SVG on hover
+    transform: scale(1.1); // Slightly increase size on hover
+}
+
+.navbar-item:active svg {
+    fill: $black-3; // Further darken the SVG on click
+    transform: scale(0.9); // Slightly decrease size on click
+}
+
+
+
+.main-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.content-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.selection-container {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-1;
+    width: 30%;
+    height: 100%;
+    background-color: $white-2;
+
+    
+    .scrollable {
+        flex: 1; 
+        overflow: auto; 
+    }
+}
+
+.working-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: $spacing-1;
+    // gap: $spacing-1;
+
+    
+    .scrollable {
+        flex: 1 1 0; 
+
+        overflow: auto; 
+    }
+
+}
+
+.container-with-scrollable-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+    height: 100%;
+    width: 100%;
+
+    // background-color: darkorchid;
+    
+    .scrollable {
+        width: 100%;
+        flex: 1 1 0; 
+        overflow: auto; 
+    }
+}
+
+.container-with-limited-input {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    margin: auto;
+    text-align: center;
+    max-width: 500px;
+}
+
+#notification {
+    position: fixed;
+    bottom: 0;
+    left: $spacing-1;
+    z-index: 1000;
+    width: 100%;
+    max-width: 350px;
+}
+
+.icon-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: $spacing-1;
+    border-radius: $border-radius;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: $gray-1;
+    }
+
+    &:active {
+        background-color: $gray-2;
+    }
+}
+
+.icon-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

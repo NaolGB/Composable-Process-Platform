@@ -1,0 +1,136 @@
+<div class="card title-card">
+    <div class="card-body">
+        <h3>Add New Document Type</h3>
+        <p>{{placeHodlerId}}</p>
+    </div>
+</div>
+
+<ul class="nav nav-underline nav-fill">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="selectedTab !== 'function'" (click)="onSelectedTab('attribute')">Attributes</a>
+    </li>
+    <li class="nav-item">
+      <p class="nav-link" [class.active]="selectedTab === 'function'" (click)="onSelectedTab('function')">Functions</p>
+    </li>
+</ul>
+
+<form [formGroup]="documentTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
+    <div *ngIf="selectedTab === 'attribute'" class="container-with-scrollable-content">
+        <div class="input-group">
+            <input formControlName="display_name" type="text" class="form-control" placeholder="Name of Document Type">
+        </div>
+        <div formGroupName="master_data_type" class="input-group">
+            <select formControlName="id" class="form-select" (change)="onSelectMasterDataType($event)">
+                <option *ngFor="let opt of masterDataTypeList" [value]="opt._id">
+                    {{opt.display_name || opt._id}}
+                </option>
+            </select>
+            <div class="btn-group" role="group">
+                <button type="button" (click)="onOpenSidebar('fields_to_display')" class="btn btn-outline-primary">Select fields to display</button>
+                <button type="button" (click)="onOpenSidebar('fields_to_update')" class="btn btn-outline-primary">Select fields to update</button>
+            </div>
+        </div>
+
+        <div formArrayName="attributes" class="scrollable">
+            <div *ngFor="let attribute of attributes.controls; let i=index" [formGroupName]="i" class="input-group">
+                <select formControlName="type" class="form-select">
+                    <option *ngFor="let opt of documentAttributeTypeOptions">{{opt}}</option>
+                </select>
+                <input formControlName="display_name" type="text" class="form-control" placeholder="Display Name">
+                <input formControlName="default_value" type="text" class="form-control" placeholder="Default Value">
+                <div class="input-group-text">
+                    <input formControlName="is_required" class="form-check-input mt-0" type="checkbox" value="" [checked]="attribute.get('is_required')?.value || false">
+                </div>
+                <div (click)="onRemoveAttribute(i)"class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button (click)="onAddAttribute()" class="btn btn-secondary flex-fill" type="button">Add Attribute</button>
+            <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Save</button>
+        </div>
+    </div>
+
+    <div *ngIf="selectedTab === 'function'" class="container-with-scrollable-content">       
+        <div formArrayName="functions" class="scrollable">
+            <div *ngFor="let function of functions.controls; let functionIndex=index trackBy: functionTrackBy" [formGroupName]="functionIndex" class="input-group">
+                <select formControlName="functionId" class="form-select" (change)="onFunctionSelect(functionIndex)">
+                    <option *ngFor="let opt of functionsList" [ngValue]="opt._id">{{opt.display_name || opt._id}}</option>
+                </select>
+
+                <!-- the the input control at index inputIndex of the funciton_inputs control for function at index i -->
+                <div formArrayName="functionInputs">
+                    <div *ngFor="let input of functions.value[functionIndex].functionInputs let inputIndex=index; trackBy: inputTrackBy" [formGroupName]="inputIndex" >
+                        <label>Input</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="source" [value]="'master_data'">
+                            <label class="form-check-label">Master Data</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="source" [value]="'document'">
+                            <label class="form-check-label">Document</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="source" [value]="'static'">
+                            <label class="form-check-label">Static Value</label>
+                        </div>
+                        
+                        <select formControlName="field" *ngIf="input.source === 'master_data'" class="form-select">
+                            <option *ngFor="let masterData of selectedMasterData.attributes | keyvalue" [value]="masterData.key">
+                                {{masterData.value['display_name'] || masterData.key}}
+                            </option>
+                        </select>
+                        <select formControlName="field" *ngIf="input.source === 'document'" class="form-select">
+                            <option *ngFor="let attribute of attributes.controls; let attributeIndex = index" [value]="attributeIndex">
+                                {{ attribute.get('display_name')?.value || attributeIndex }}
+                            </option>
+                        </select> 
+                        <input formControlName="field" *ngIf="input.source === 'static'" type="text" class="form-control" placeholder="Feild">
+                    </div>
+                </div>
+
+                <div formArrayName="functionOutputs">
+                    <div *ngFor="let output of functions.value[functionIndex].functionOutputs let outputIndex=index; trackBy: outputTrackBy" [formGroupName]="outputIndex" >
+                        <label>Output</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="destination" [value]="'master_data'">
+                            <label class="form-check-label">Master Data</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" formControlName="destination" [value]="'document'">
+                            <label class="form-check-label">Document</label>
+                        </div>
+
+                        <select formControlName="field" *ngIf="output.destination === 'master_data'" class="form-select">
+                            <option *ngFor="let masterData of selectedMasterData.attributes | keyvalue" [value]="masterData.key">
+                                {{masterData.value['display_name'] || masterData.key}}
+                            </option>
+                        </select>
+                        <select formControlName="field" *ngIf="output.destination === 'document'" class="form-select">
+                            <option *ngFor="let attribute of attributes.controls; let attributeIndex = index" [value]="attributeIndex">
+                                {{ attribute.get('display_name')?.value || attributeIndex }}
+                            </option>
+                        </select> 
+                    </div>
+                </div>
+
+                <div (click)="onRemoveFunction(functionIndex)"class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button (click)="onAddFunction()" class="btn btn-secondary flex-fill" type="button">Add Function</button>
+            <button class="btn btn-primary flex-fill" type="submit" [disabled]="!documentTypeForm.valid">Save</button>
+        </div>
+    </div>
+</form>
+
+<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="masterDataTypeAttributesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)" [sidebarTitle]="'Select Fields'" [sidebarSubtitle]="selectedMasterData.display_name"></app-overlay-sidebar-checkbox>

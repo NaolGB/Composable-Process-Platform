@@ -160,7 +160,6 @@ cython_debug/
 #.idea/
 
 # data
-*.json
 logs/
 
 # playground
@@ -169,3 +168,4 @@ trash/
 
 # secrets
 *secret*
+.env

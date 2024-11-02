@@ -1,0 +1,50 @@
+<div class="selection-container">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Process Types</h3>
+            <p>Select to edit</p>
+        </div>
+    </div>
+    <div class="list-group scrollable" *ngIf="processTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            [class.active]="selectedProcessTypeId === '__button_process_type_overview'"
+            (click)="onProcessTypeSelected('__button_process_type_overview')"
+        >
+            Process Type Overview
+        </button>
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let processType of processTypeList"
+            [class.active]="selectedProcessTypeId === processType._id"
+            (click)="onProcessTypeSelected(processType._id)"
+        >
+            {{processType.display_name || processType._id}}
+        </button>
+    </div>
+</div>
+
+
+<div class="working-container">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>Process Type Overview</h3>
+            <p>List of all process types</p>
+        </div>
+    </div>
+
+    <div class="card control-card">
+        <div class="card-body d-flex justify-content-between">
+            <div class="flex-fill">
+                <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" (click)="onProcessTypeSelected('__button_process_type_add_new')">Add New</button>
+            </div>
+        </div>
+    </div>
+    <app-component-table class="scrollable" [tableData]="filteredProcessTypeOverviewTable"></app-component-table>
+</div>

@@ -1,0 +1,147 @@
+<div class="selection-container" >
+    <form [formGroup]="processTypeForm" class="container-with-scrollable-content" (ngSubmit)="onSubmit()">
+        <div class="d-flex justify-content-between">
+            <div (click)="reloadProcessFlowGraph()"class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                </svg>
+            </div>
+            <div (click)="onSubmit()" class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16">
+                    <path d="M11 2H9v3h2z"/>
+                    <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/>
+                </svg>
+            </div>
+            <div (click)="onSubmit()" class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-upload" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>
+                    <path fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div *ngIf="selectedStepId === '__select_process_type'" class="">
+            <div class="input-group mb-3">
+                <input formControlName="display_name" type="text" class="form-control" placeholder="Process Type Name">
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p>Documents</p>
+                        <div (click)="onOpentSidebar()" class="icon-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <ul class="list-group list-group-flush">
+                        <li *ngFor="let document of selectedDocumentTypes" class="list-group-item">
+                            {{document.display_name || document.id}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div formGroupName="steps" *ngIf="selectedStepId !== '__select_process_type'">
+            <div [formGroupName]="selectedStepId">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h3 class="mb-1">Step</h3>
+                        <div class="input-group">
+                            <input formControlName="display_name" type="text" class="form-control" placeholder="Step Name">
+                        </div>
+                        <div class="input-group">
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="start" [value]="'start'">
+                                <label class="form-check-label" for="start">Start</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="automated" [value]="'automated'">
+                                <label class="form-check-label" for="automated">Automated</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="manual" [value]="'manual'">
+                                <label class="form-check-label" for="manual">Manual</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input formControlName="type" class="form-check-input" type="radio" id="end" [value]="'end'">
+                                <label class="form-check-label" for="end">End</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div formGroupName="next_step" class="card mb-2">
+                    <div class="card-body">
+                        <p>Next Steps</p>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Add Next Step
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="d-flex justify-content-spacebetween">
+                                    <input type="text" #newStepInput class="form-control" placeholder="Add New">
+                                    <div (click)="onGenerateNewNextStep(selectedStepId, newStepInput.value)"class="icon-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-divider"></div>
+
+                                <button class="dropdown-item" *ngFor="let stepTrackerStep of stepsTracker | keyvalue" 
+                                    (click)="onAddExistingNextStep(selectedStepId, stepTrackerStep.key)"
+                                    [disabled]="stepTrackerStep.key === selectedStepId || stepsTracker[selectedStepId].nextSteps.includes(stepTrackerStep.key)"
+                                >
+                                    {{stepTrackerStep.value.displayName || stepTrackerStep.key}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Document</h2>
+                        <select formControlName="document_type" class="form-select" (change)="onSelectDocumentType(selectedStepId)">
+                            <option *ngFor="let document of selectedDocumentTypes; let listIndex=index" [value]="document.id">
+                                {{ document.display_name || document.id}}
+                            </option>
+                        </select> 
+                    </div>
+                    <div class="card-body">
+                        <h2>Function</h2>
+                        <select formControlName="__function" class="form-select">
+                            <option *ngFor="let _func of selectedDocumentTypeObject?.functions| keyvalue; let listIndex=index" [value]="_func.key">
+                                {{ _func.key}}
+                            </option>
+                        </select> 
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+<div class="working-container pattern-dots-1">
+    <app-graphs-process-flow 
+        *ngIf="showProcessGraph" 
+        [key]="processFlowGraphComponentKey" 
+        class="container-with-scrollable-content" 
+        [processFlow]="processType" 
+        (processFlowSelector)="handleProcessFlowSelectorEvent($event)"
+    ></app-graphs-process-flow>
+</div>
+
+<app-overlay-sidebar-checkbox *ngIf="showSidebar" (closeSidebar)="handleCloseSidebar()" [inputData]="documentTypesAsCheckboxData" (emmiterOnSave)="handleSidebarData($event)" [sidebarTitle]="'Documents'" [sidebarSubtitle]="'Add Document to Process Type'"></app-overlay-sidebar-checkbox>
+
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>

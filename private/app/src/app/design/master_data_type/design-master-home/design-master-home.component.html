@@ -1,0 +1,80 @@
+<div class="selection-container">
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>All Master Data</h3>
+            <p>Select to edit</p>
+        </div>
+    </div>
+    <div class="list-group scrollable" *ngIf="masterDataTypeList">
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            [class.active]="selectedMasterDataTypeId === '__button_master_data_type_overview'"
+            (click)="onMasterDataTypeSelected('__button_master_data_type_overview')"
+        >
+            Master Data Overview
+        </button>
+        <button 
+            type="button"
+            class="list-group-item list-group-item-action" 
+            aria-current="false" 
+            *ngFor="let masterDataType of masterDataTypeList"
+            [class.active]="selectedMasterDataTypeId === masterDataType._id"
+            (click)="onMasterDataTypeSelected(masterDataType._id)"
+        >
+            <span *ngIf="masterDataType.display_name">{{masterDataType.display_name}}</span>
+            <span *ngIf="!masterDataType.display_name">{{masterDataType._id}}</span>
+            
+        </button>
+    </div>
+</div>
+
+
+<div class="working-container">
+    <ng-container [ngSwitch]="selectedMasterDataTypeId">
+        <ng-container *ngSwitchCase="'__button_master_data_type_overview'">
+            <ng-container *ngTemplateOutlet="__template_master_data_type_overview"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'__button_master_data_type_add_new'">
+            <ng-container *ngTemplateOutlet="__template_master_data_type_add_new"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <ng-container *ngTemplateOutlet="__template_master_data_type_update"></ng-container>
+        </ng-container>
+    </ng-container>
+    
+</div>
+
+<ng-template #__template_master_data_type_overview>
+    <div class="card title-card">
+        <div class="card-body">
+            <h3>Master Data Overview</h3>
+            <p>List of all master data</p>
+        </div>
+    </div>
+
+    <div class="card control-card">
+        <div class="card-body d-flex justify-content-between">
+            <div class="flex-fill">
+                <input type="text" class="form-control" (keyup)="onFilterTextChange($event)" placeholder="Search">
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" (click)="onMasterDataTypeSelected('__button_master_data_type_add_new')">Add New</button>
+            </div>
+        </div>
+    </div>
+    <app-component-table class="card scrollable" [tableData]="filteredOverviewMasterDataOverviewTable"></app-component-table>
+
+</ng-template>
+
+<ng-template #__template_master_data_type_add_new>
+    <app-design-master-add-new class="container-with-scrollable-content" (apiResposnse)="handleMasterDataTypeApiResponse($event)"></app-design-master-add-new>
+</ng-template>
+
+<ng-template #__template_master_data_type_update>
+    <app-design-master-update class="container-with-scrollable-content" [selectedMasterDataTypeId]="selectedMasterDataTypeId" (apiResposnse)="handleMasterDataTypeApiResponse($event)"></app-design-master-update>
+</ng-template>
+
+
+<app-notification [notifications]="notifications" (notificationDismissed)="onNotificationDismissed($event)" id="notification">
+</app-notification>
